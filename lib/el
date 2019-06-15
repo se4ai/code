@@ -21,11 +21,11 @@ export PROMPT_COMMAND='echo -ne "::${_c7}@${_c0}$(hostname -s):${_c6}$(git branc
 
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
-alias gc="git config credential.helper 'cache --timeout=3600'"
+alias g0="git config credential.helper 'cache --timeout=3600'"
 alias get='git pull'
 alias grep='grep --color=auto'
 alias ls='ls -G'
-alias put='gc; git commit -am saving; git push; git status'
+alias put='g0; git commit -am saving; git push; git status'
 alias vi="/usr/local/bin/vim -u $Root/lib/dotvimrc"
 
 pathadd() {
