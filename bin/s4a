@@ -1,4 +1,3 @@
 #!/usr/bin/env python3
 
-import s4a
-print(help())
+import sys,s4a
