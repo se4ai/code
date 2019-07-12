@@ -79,6 +79,8 @@ XXX how tog et goals" the timmmatrix
     goals -> inc [label=11] 
 
 /*
+XXX bettter faster cheapr
+XXX find the most bugs in fewest lines
 Many learning systems have goals hardwired into them (e.g. reduce mean-squared error or reduce entropy).
 This means that those learning systems built their models to satisfy goal1, even though the generated
 models may be assessed via some other goal2. For example, many learners were developed and debugged
