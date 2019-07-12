@@ -29,7 +29,7 @@ _c8="\033[96m"     # magenta
 
 here() { cd $1; basename "$PWD"; }
 
-PROMPT_COMMAND='echo -ne "${_c2}sh ell${_c0}${_c0}:${_c6}$(git branch 2>/dev/null | grep '^*' | colrm 1 2) \033]0; $(here ..)/$(here .)\007";PS1="${_c1}$_c2$(here ..)/$_c3$(here .) ${_c6}\!>${_c0}\e[m "'
+PROMPT_COMMAND='echo -ne "${_c2}sh ell${_c0}${_c0}:${_c6}$(git branch 2>/dev/null | grep '^*' | colrm 1 2) \033]0; $(here ../..)/$(here ..)/$(here .)\007";PS1="${_c1}$_c0$(here ../..)/$_c2$(here ..)/$_c3$(here .) ${_c6}\!>${_c0}\e[m "'
 
 gfig() {
   git config --global credential.helper cache
