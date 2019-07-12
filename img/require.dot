@@ -1,0 +1,196 @@
+digraph {
+ rankdir=LR
+{rank=same; trans1; count1; effect; rite; data; nomiuse;well}
+
+/*
+
+The following diagram shows one way to map the Microsoft principles (the black shaded nodes marked
+a,b,c,d,e,f)
+into the IEEE principles (the gray sharded nodes marked 1,2,3,4,5,6,7,8):
+
+
+- _Compentence_ is all itself  since the IEEE definition of that principle seems to be more
+about the developer than the design patterns and algorithms which are being developed. 
+- There are two terms with similar meanings mentioned by
+IEEE and Microsfot: _accountability_ and _transparency_.  For simplicity sake, we just link them too each other.
+
+
+This mapping  is hardly definitive since many of these concepts are being rapidly evolved.
+One way to assist in the evolution of these concepts is to define them use discrete maths; i.e. using data structures
+and algorithms-- which is the point of the rest of this chapter. 
+
+## Desgin Details
+
+The principles supported bythis design are shown on one side the above diagram.
+The other sode of that daigram shows the modules and algorthms needed to support that design.
+Before exploring those modules and algorithms, we stress three points:
+
+- Most of the concepts in this diagram is not mentioned in a standard machine learning or AI text.
+  That is, ethical-aligned design raises many issues that extend our thinking far away from traditional approaches.
+- While this diagram looks complex, t reallly isn't. Much of  its complexity is in the mapping between
+  the IEEE and Microsoft principles. Apart from that, a few modules are enough to support most of this
+  ethically-aligned design. This chapters describes those modules, in broad strokes. Our sample source
+  code offers much more details on thise modules.
+- The aim of the following is to get software engineers
+   thinking about how to better design their systems.  
+   So while the following is **one** way, it is by not means  **the only** way, to design
+  for ethical AI.  
+We hope that the reader's 
+reaction to the this design  would be: "Hey! there's a better way to
+do this!" or "This code does not handle ABC so I propose DEF".
+
+### Core Concepts
+
+Three core concepts in that design are goals, clustering and streaming.
+
+*/
+goals  [shape=none]
+goals -> opt [label=1]
+/*
+
+#### Goals 
+
+Project managers can make a very large number of decsions about a
+project. Different kinds of projects have different definitoons
+of what is "best". For example:
+
+-  For safety critical applications, the goal
+is ultra-relibaility. For such systems, it is reasonable
+to spend much effort to fund most errors in a system. 
+- For other kinds of applications (e.g. rushing out a new software game so
+this organization can secure the cash flow needed for next month's salaries) 
+it it is reasonable to skip over low-priority bugs, just to ship the product sooner.
+
+The point here is that we cannot talk about a system's safety and realibaility, unless 
+we know its goals. Without those goals, we cannot define 
+what "unsafe conditions" mean, nor do we know 
+what 
+services must always be reliabled offered.
+Hemce we say:
+
+
+    goals -> reliability&safety
+
+XXX an say we are inclusive unless we underwtadnteh different goals of the different stakeholders. so knowledge of goals is key
+
+XXX how tog et goals" the timmmatrix
+*/ 
+    goals -> safe [label=110] 
+    goals -> inc [label=11] 
+
+/*
+Many learning systems have goals hardwired into them (e.g. reduce mean-squared error or reduce entropy).
+This means that those learning systems built their models to satisfy goal1, even though the generated
+models may be assessed via some other goal2. For example, many learners were developed and debugged
+while building models that maximize the goal of accuracy, which we can define as follows:
+
+- Suppose a test data set contains mixture of things we want to find ($$X$$) and other things ($$\neg X$$).
+- Suppose some learner looks at that data to guess  that some things are $$X$$ and some are not.
+- This leads to the following matrix:
+
+|notX| X  | &lt-- classified as
+|---|-------|-------------------
+| A |  C    | notX
+| B |  D    | X
+
+_Accuracy_ is all the correct gueses; i.e. $$\mathit{accuracy}=\frac{A+B}(A+B+C+D}$$. 
+Other goals of interest might be _recall_ which is how of the target things did we find
+(so $$\mathit{recall}=\frac{D}{B+D}$$) or _false alarms_ which is how often
+the learner shows us something we do not care about
+(so $$\mathit{false alarm}=\frac{C}{A+C}$$.)
+
+A
+strange thing about accuracy is that a model can be highly accurate, while still missing most
+of the things we want to find. Consider, for example, a set 1000 software projects of which 100
+are significantly challenged (where "challeged"  might mean things like these projects
+always deliver late or that these projects have a hard time retaining staff). Suppose the results
+from testing that model were as follows:
+
+|notX| X   | &lt-- classified as
+|----|-----|-------------------
+| A=90 |  C=10 | notX
+| B=0  |  D=0  |X
+
+See the problem? This learner is 90\% accurate by only a 10% recall for the things we want to find.
+It turns out that accuracy is not very accurate when the target class is relatively rare (in this case,
+10\%). But if we change to other  XXX
+
+
+
+
+a regresion model might try to learn
+equations that reduce the difference between their predictions and the actual values seen in  training
+data set.
+
+*/
+goals -> comp [label=0] 
+{goals;opt;} -> fair [label=2]
+
+
+stream -> stable
+{rank=same; cluster; goals; stream;}
+{trans; fair; safe;} -> count
+fair -> trans [label=21]
+{safe;priv; count;} -> comp [label=20]
+{inc; priv; } -> data [label=19]
+alearn [label="active\nlearning" shape=none]
+opt  [label=optimization shape=none]
+stream  [label=streaming shape=none]
+growth  [label="performance\ngrowth curves" shape=none]
+compress  [label="compress" shape=none]
+env  [label="certification\nenvelope" shape=none]
+repair  [label="repair" shape=none]
+sharing  [shape=none]
+transfer  [shape=none]
+cluster  [shape=none]
+context  [shape=none]
+explain  [shape=none]
+monitor  [shape=none]
+stable  [shape=none]
+obs [label=obsfication shape=none]
+anomaly  [label="anomaly\ndetection"shape=none]
+fftree  [shape=none label="rule\nlearner"] 
+
+fftree  -> opt [label=20] 
+stable -> safe [label=19]
+{cluster; compress -> obs;} -> priv [label=18]
+{safe; fair;} -> well [label=17]
+{safe; fair; priv; inc; } -> rite [label=16]
+stream -> anomaly -> monitor [label=15]
+stream -> monitor -> comp [label=14]
+
+cluster -> { fftree;} [label=13]
+{safe; fair;} -> nomiuse [label=12]
+{stream; repair;} -> alearn -> inc [label=10]
+
+{fftree;  } -> explain  -> {trans;} [label=9]
+cluster -> compress [label=8]
+cluster -> context -> comp [label=7]
+sharing -> comp [label=6]
+
+compress -> transfer -> sharing [label="7a"]
+stream -> repair -> comp [label=5]
+compress -> env -> comp [label=4]
+stream -> growth -> comp [label=3]
+trans [label="a.Transparency" shape=box style=filled fontcolor=white fillcolor=black]
+fair [label="b.Fairness" shape=box style=filled fontcolor=white fillcolor=black]
+inc [label="c.Inclusiveness" shape=box style=filled fontcolor=white fillcolor=black]
+safe [label="d.Reliability\n&Safety" shape=box style=filled fontcolor=white fillcolor=black]
+priv [label="e.Privacy\n&Security" shape=box style=filled fontcolor=white fillcolor=black]
+count [label="f.Accountability" shape=box style=filled fontcolor=white fillcolor=black]
+
+rite [label="1.Human\nRights" shape=box style=filled fillcolor=gray]
+well [label="2.Well\nBeing" shape=box style=filled fillcolor=gray]
+data [label="3.Data\nAgency" shape=box style=filled fillcolor=gray]
+effect [label="4.Competence" shape=box style=filled fillcolor=gray]
+trans1 [label="5.Transparency" shape=box style=filled fillcolor=gray]
+count1 [label="6.Accountability" shape=box style=filled fillcolor=gray]
+nomiuse [label="7.Aware of\nMisuse" shape=box style=filled fillcolor=gray]
+comp [label="8.Effectiveness" shape=box style=filled fillcolor=gray]
+
+
+trans-> trans1 
+count -> count1 
+
+}
+

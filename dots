@@ -1,0 +1,6 @@
+while true
+do
+	dot -Tpng -o $1.png $1.dot
+	echo -n "."
+        sleep 2
+done

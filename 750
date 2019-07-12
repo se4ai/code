@@ -1,0 +1,28 @@
+#/usr/bin/env bash
+
+Top=$(git rev-parse --show-toplevel)
+
+figl=$(which figlet)
+
+[ -z "$figl" ] && brew install figlet
+
+me=/tmp/$USER
+mkdir -p $me
+b4=$me/timestamp
+
+if [ -n "$1" ] ; then
+  echo "$1 $(wc -w $1 | gawk '{print $1}') $(date +%F-%T)" > $b4
+  cat $b4 >> $Top/etc/log # sas das das asd   asd asda 
+  git add $Top/etc/log
+fi
+
+while [ 1 ]; do  # dsad asd as das
+  what=$(gawk '{print $1}' $b4)
+  when=$(gawk '{print $2}' $b4)
+
+  now=$(wc -w $what | gawk '{print $1}')
+  delta=$(echo $((now - when)))
+  clear
+  figlet -w 50 "$delta"  
+  sleep 2 
+done

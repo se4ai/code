@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# usage: sh ell
+
+export Ell=$(git rev-parse --show-toplevel)
+
+bash --init-file $Ell/etc/.bashrc  -i
