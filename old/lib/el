@@ -34,4 +34,5 @@ pathadd() {
       fi
 }
 pathadd $Root/bin
+pathadd $Root/s4a
 pathadd /usr/local/bin

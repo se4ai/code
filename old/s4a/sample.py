@@ -2,9 +2,9 @@
 #--------- --------- --------- --------- --------- ---------
 from lib import *
  
-class Some(o):
+class Some:
   def __init__(i, init=[],max=None):
-    i.n, i.has;;  = 0, []
+    i.n, i.has  = 0, []
     i.max = max or my.some
     map(i.add,init)
   def add(i,x):
