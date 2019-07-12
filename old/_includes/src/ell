@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# usage: sh ell
+
+export Ell=$(PWD) 
+bash --init-file $Ell/.bashrc  -i

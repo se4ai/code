@@ -1,0 +1,1654 @@
+Data Mining
+===========
+
+Introduction
+------------
+
+Recommender systems study some structure to propose interesting places
+to go or interesting places to visit.  A core technology within a
+recommender system is some algorithm that finds and summarizes
+patterns in the structure or in past visits.  Such algorithms are
+called _data miners_.
+
+The rest of this book focuses on recommender systems. But before that,
+this chapter is a tutorial introduction to data mining.  
+
+
+Data mining is a very active field so any summary of the algorithms in
+this field will be incomplete. This section will mostly be based on
+algorithms mentioned by Wu et al.[^Wu08] in their a survey of
+influential algorithms (as conducted at the 2006 IEEE International
+Conference on Data Mining): C4.5, k-Means, Apriori, 
+AdaBoost, kNN, Naive Bayes, and CART.  Also mentioned will be Random
+Forests, DbScan, canopy clustering, Mini-batch K-means, single-pass K-Means, GENIC, the Fayyad-Irani discretizer, Infogain,
+PDDP, _newer methods_
+such as CLIFF, WHERE, W2 and the QUICK active learner.
+Note that, by _newer methods_, we  refer to the work of the
+author, his co-authors, or his graduate students. Caveat emptor.
+
+Finally, note a particular bias of the author.  In my view, data
+miners should not be used as black box tools that are applied without
+any comprehension of their internal workings.  It is better to think
+of them as a menu of design options that you can _mix and match_ as
+required. Hence, in the following, we will show how parts
+of one learner might be use for another.
+
+Different Learners for Different Data
+-------------------------------------
+
+Different kinds of data miners work best of different kinds
+of data. Such data may be views as tables of examples:
+
++ Tables have one column per feature and one row per example. 
++ The columns may be numeric (has numbers) or discrete (contain
+  symbols).
++ Also, some columns are goals (things we want to predict using the
+  other columns).
++ Finally, columns may contain missing values.
+
+For example, in _text mining_, where there is one column per
+word and one row per document, the columns contain many missing values
+(since not all words appear in all documents) and there may be
+hundreds of thousands of columns.
+
+Text mining applications can have many columns. _Big Data_
+applications can have any number of columns and millions to billions
+of rows.  For such large large data sets, a complete analysis may be
+impossible.  Hence, these must be sampled probabilistically using
+algorithms like PageRank or Naive Bayes.
+  
+On the other hand, when there are very few rows, data mining may fail
+since there are too few examples to support summarization. For such
+spare tables, _k-th nearest neighbors_ (kNN) may be best. kNN makes
+conclusions about new examples by looking at their neighborhood in the
+space of old examples. Hence, kNN only needs a few (or even only one)
+similar examples to make conclusions.
+
+If a table has many goals, then some may be competing; e.g. it may not
+be possible to find a car with the twin goals of low cost and low
+miles per gallon.  Such competing multi-goal problems can be studied
+using a _multi-objective optimizer_ like the genetic algorithms used
+in NSGA-II [^NSGA-II].
+
+If a table has no goal columns, then this is an _unsupervised_
+learning problem that might be addressed by (say) finding clusters of
+similar rows using, say, K-means or EM.  An alternate approach, taken
+by the APRORI  association rule learner, is to assume that ever column
+is a goal and to look for what combinations of any values predict for
+any combination of any other.
+
+If a table has one goal, the this is a _supervised_ learning problem
+where the task is to find combinations of values from the other
+columns that predict for the goal values.
+
++ Note that for data sets with one discrete goal feature,
+  it is common to call that goal the _class_ of the data set.
+  
+The following table shows a _simple data mining_ problem. Such problems
+are characterized by tables with just a
+few columns and not many rows (say, dozens to thousands). Traditionally,
+such simple data mining problems have been explored by C4.5 and CART
+(and note that with some clever sampling of the data, it is
+possible to scale these traditional learners to Big Data problems
+[^Catlett91][^Breiman01]).  In this table, we are trying to predict for the goal of
+`play?` (and note that `temp` and `humidity` are numeric columns and
+there are no missing values).
+
+ outlook |   temp |  humidity |  windy |   play?
+-------- |   ---- |  -------- |  ----- |  -----
+overcast |     64 |        65 |   TRUE |    yes
+overcast |     72 |        90 |   TRUE |    yes
+overcast |     81 |        75 |  FALSE |    yes
+overcast |     83 |        86 |  FALSE |    yes
+rainy    |     65 |        70 |   TRUE |     no
+rainy    |     71 |        91 |   TRUE |     no
+rainy    |     68 |        80 |  FALSE |    yes
+rainy    |     70 |        96 |  FALSE |    yes
+rainy    |     75 |        80 |  FALSE |    yes
+sunny    |     69 |        70 |  FALSE |    yes
+sunny    |     72 |        95 |  FALSE |     no
+sunny    |     75 |        70 |   TRUE |    yes
+sunny    |     80 |        90 |   TRUE |     no
+sunny    |     85 |        85 |  FALSE |     no
+
+Association Rules
+-----------------
+
+The APRIROI  learner seeks _associations_; i.e. sets of
+ranges that after often found in the same row. 
+First published in 1994,
+APRIORI is  a classic recommendation algorithm for assisting
+shopper. 
+It was
+initially developed to answer the _shopping basket_ problem;
+i.e. customers who buy X also buy what else? APRIORI
+can be used by, say, an on-line book store to make recommendations
+about what else a user might like to see. 
+
+
+To use APRIORI, all numeric values must be _discretized_; i.e. the numerics ranges
+replaced
+with a small number of discrete symbols. Later in this chapter,
+we discuss several ways to perform discretization but 
+a _X% chop_ is sometimes  as good
+as anything else. In this approach, numeric feature values are sorted and then
+divided into `X` equal sized bins.  `X=10` is a standard default but the above
+table is very small- so we will use `X=2` to generate:
+
+
+ outlook |        temp |    humidity | windy | play?
+-------- |   --------- |  ---------- | ----- | -----
+overcast |   over 73.5 |   over 82.5 | FALSE |  yes
+overcast |  up to 73.5 |  up to 82.5 |  TRUE |  yes
+overcast |  up to 73.5 |   over 82.5 |  TRUE |  yes
+overcast |   over 73.5 |  up to 82.5 | FALSE |  yes
+rainy    |   over 73.5 |  up to 82.5 | FALSE |  yes
+rainy    |  up to 73.5 |   over 82.5 |  TRUE |   no
+rainy    |  up to 73.5 |  up to 82.5 |  TRUE |   no
+rainy    |  up to 73.5 |   over 82.5 | FALSE |  yes
+rainy    |  up to 73.5 |  up to 82.5 | FALSE |  yes
+sunny    |   over 73.5 |   over 82.5 |  TRUE |   no
+sunny    |   over 73.5 |   over 82.5 | FALSE |   no
+sunny    |   over 73.5 |  up to 82.5 |  TRUE |  yes
+sunny    |  up to 73.5 |   over 82.5 | FALSE |   no
+sunny    |  up to 73.5 |  up to 82.5 | FALSE |  yes
+
+APRORI then looks for sets of ranges where the larger set
+is found often in the smaller.  For example, one such rules
+in our table is:
+
+```
+play=yes ==> humidity=up to 82.5 & windy=FALSE 
+```
+
+That is, often when we _play_, humidity is high and
+there is no wind. Other associations in this data set include:
+```
+humidity= up to 82.5 & windy=FALSE ==> play= FALSE
+humidity= over 82.5                ==> play=no 
+humidity= up to 82.5               ==> play= yes 
+temperature= up to 73.5            ==> outlook= rainy 
+outlook=overcast                   ==> play=yes 
+outlook=rainy                      ==> temperature= up to 73.5
+play= yes                          ==> humidity= up to 82.5 
+play=no                            ==> humidity=  over 82.5
+play=yes                           ==> outlook=overcast 
+```
+Note that in association rule learning, the left or right hand side of the rule  can contain one
+or more ranges. Also, while all the above are associations within
+our play data, some are much rarer than others. APRIORI can generate
+any number of rules depending on a set of tuning parameter that
+define, say, the minimum number of examples needed before we can print a rule.
+
+At the time, APRIORI was famous for its scalability. Running on a
+33MHz machine with 64MB of RAM, APRIORI was able to find associations
+in 838MB of data in under 100 seconds- which was quite a feat for
+those days. To achieve such speed:
+
++ APRIORI explored progressively larger combinations of ranges
++ The search for larger associations was constrained to just the ranges
+  that occurred frequently within the smaller rules.
+
+### Digression: Discretization and the Hedges Test
+
+One digression before  going on:
+the discretization process used by APRIORI is useful for many other learning
+schemes. Hence, we will return to discretization many times
+in this chapter.
+For now, we just say that 
+discretization need not be very clever [^Yang09]. For example, a
+_10% chop_ is often as good as anything else (exception: for
+small tables of data like that shown above, it may be necessary to use
+fewer chops, just in case not enough information falls into each bin).
+
+A newer approach to discretization is to generate many small bins
+(e.g. 16 bins) then combine adjacent bins whose mean values are about
+the same.  In this test, we have two bins `i` and `j=i+1`,
+each of which is characterized by its size, their mean, and standard
+deviation (denoted `n.mean, sd`, respectively). When we test if
+these two bins are different, we need to consider the following:
+
++ If the standard deviation is large, then this _confuses_ our ability to
+  distinguish the bins.
++ But if the sample size is large then we can _attenuate_ the effects
+  of the large standard deviation; i.e. the more we know about the
+  sample, the more certain we are of the mean values.
+  
+Combing all that, we arrive an informal measure of the difference
+between two means (note that this expression weights _confusion_ by
+how many samples are trying to confuse us):
+
+```
+attenuate = ni + nj
+confusion = (ni*sdi + nj*sdj)  / attenuate
+delta     = abs(meani - meanj) / confusion
+```
+
+A more formally accepted version of the above, as endorsed by Kampenes
+et al. [Kampenes07], is the following _Hedges' test_. To explain the
+difference between the above expression and _Hedges' test_, note that:
+
++ This test returns true if the _delta_ is less than some _small_
+  amount. The correct value of _small_ is somewhat debatable but the
+  values shown below are in the lower third of the _small_ values seen
+  in the 284 tests from the 64 experiments reviewed by Kampenes et al.
++ A `c` term is added to handle  small sample sizes (less than 20).
++ Standard practice in statistics is to:
+    + Use `n-1` in standard deviation calculations;
+  + Use variance (`sd^2`) rather than standard deviation.
+
+```
+function hedges(ni,meani,sdi, nj,meanj,sdj) {
+   small    = 0.17 # for a strict test. for a less severe test, use 0.38
+   attenuate = ni - 1 + nj -1
+   confusion = sqrt(((ni - 1) *sdi^2 + (nj-1) *sdj^2) / attenuate)
+   delta    = abs(meani - meanj) / confusion  
+   c        = 1 - 3/(4*(ni + nj - 2) - 1)
+   return delta * c < small
+}
+``` 
+
+
+Learning Trees
+--------------
+
+### C4.5
+
+APRIORI is a discussion tool rather than a decision tool. It find 
+sets of interesting associations rather than reporting the most
+important association. 
+
+The C4.5 decision tree learner [^Quinlan], on the other hand,
+tries to ignore everything except the minimum combination of feature ranges
+that lead to different decisions.
+C4.5 would summarize the above table as:
+
+```
+outlook = sunny
+|   humidity <= 75: yes 
+|   humidity > 75: no 
+outlook = overcast: yes 
+outlook = rainy
+|   windy = TRUE: no 
+|   windy = FALSE: yes 
+```
+
+To read this decision tree, note that sub-trees are indented and that
+any line containing a colon (`:`) is a prediction. For example, the
+top branch of this decision tree is saying that:
+
+```
+If outlook=sunny and humidity <= 75 then we will play golf.
+```
+
+Note that this decision tree does not include `temp`. This is not to
+say that golf playing behavior is unaffected by cold or heat. Rather,
+it is saying that for this data, the other features are more
+important.
+
+C4.5 looks for a feature value that simplifies the data. For
+example consider the above table with five examples of `no` playing of
+golf and nine examples of `yes`, we played golf. Note that the
+_baseline_ distributions in the table are p1=5/14 and p2=9/14 for `no`
+and `yes` (respectively). Now look at the middle of the above tree, at
+the branch `outlook=overcast`.  C4.5 built this branch since within
+that region, the distributions are very simple indeed: all the rows
+where the outlook is overcast have `play?=yes`. That is, p1=0 and p2=100\%.
+
+Formally, we say that decision tree learners look for splits in the
+data that reduce the diversity of the data.  But how to measure
+diversity?  We will say that:
+
++ A population that contains only one thing is not diverse;
++ A population that contains many things is more diverse.
+
+Consider some sheep and cows in a barnyard, which we will
+represent as a piece of paper.  Imagine that the animals do not like each other 
+so they huddle in different corners.  Say the sheep cover 10% of the yard
+and the cows cover 30%. To get some wool, we keep folding the piece of
+paper in half till we find all those sheep- a process we can represent
+mathematically as log2(0.1) The same cost to find the cows takes
+log2(0.3).  The expected value of that search is the probability of
+each population times the cost of finding that population; i.e.  
+
+```
+(0.1 * log2(0.1) + 0.3 * log2(0.3)) * -1 
+``` 
+The log of a probability less than one is negative so,
+by convention, we multiply by a minus sign. This informal example, while
+illustrative, has limitations (e.g. it ignores details like
+the 60% grass). The formal definition of symbol diversity comes from  Claude Shannon's
+famous information entropy expression:
+
+``` 
+entropy(p) = sum (-1 * p.i * log2(p.i)) 
+``` 
+
+For the formal derivation of this equation (that says nothing about
+sheep or cows or folding little bits of paper) see the excellent
+discussion in [^Shannon]. Shannon conceived of information entropy as a
+way to measure how much signal was in a transmission:
+
++ A piece of paper that is full of only one thing  has, by definition, one thing everywhere. In terms of
+  the above discussion, this is the population that is not diverse.
++ Such a piece of paper has no distinctions; i.e. no regions where one
+  thing becomes another.
++ Hence, to transmit that information takes zero bits since there is
+  nothing to say.
+
+Shannon's equation captures that. If you only have one thing
+then p=1 and entropy is zero: 
+
+``` 
+entropy( [ 1 ] ) = 0 
+``` 
+
+On the other hand, as we increase diversity, the more bits are
+required to transmit that signal.  For example, having three similar
+things is less diverse than having four or five similar things (as we
+might expect):
+
+```
+entropy( [10,10,10]       ) = 1.58
+entropy( [10,10,10,10]    ) = 2
+entropy( [10,10,10,10,10] ) = 2.32
+```
+
+Returning now to the golf example, recall that the relative frequency
+of each class was p1=5/14 and p2=9/14.  In that case:
+
+```
+e = entropy([5/14, 9/14])
+  = -5/14 * log2(5/14) - 9/14 *log2(9/14) = 0.94
+```
+
+For the subtree four rows selected by `outlook=overcast`, where p1=0
+and p2=100\%, we ignore the zero value (since there is no information there)
+and compute:
+
+```
+n1 = 4
+e1 = entropy([1]) = -1 * log2(1) = 0
+```
+
+Note that for the subtree with five rows selected by outlook=sunny,
+there are two `yes` and one `no`. That is:
+  
+```
+n2 = 5
+e2 = entropy([2/5, 3/5]) = 0.97
+```
+
+Also, and for the subtree with five rows selected by outlook=rainy,
+there are three `yes` and two `no`. Hence:
+
+```
+n3 = 5
+e3 = entropy([3/5, 2/5]) = 0.97
+```
+       
+From the above, we can compute the expected value of the entropy after
+dividing the 14 rows in our table using the above tree:
+
+```
+n      = n1 + n2 + n3 = 14 
+expect = 4/14 * 0 + 5/14 * 0.97 + 5/14 * 0.97 = 0.65 
+```
+
+That is, the above tree has simplified the data from e=0.94 to the
+new expected value of 0.65. 
+
+### CART
+
+The CART regression tree learner is another traditional learner first developed for simple data
+mining problems. Like C4.5, CART has been a framework within which
+many researchers have proposed exciting new kinds of data miners (for
+example, the research on CART lead to the invention of random forests,
+discussed below). Also, in certain classes of problem, CART is known
+to work as well or better as more complex schemes [^Dajaeger].
+
+The lesson here is that before rushing off to try to latest and
+greatest new learner, it is worthwhile spend some effort on simpler
+learners like CART and C4.5. At the very least, these simple learners
+will offer baseline results against which supposedly more
+sophisticated methods can be compared.
+
+Note that the entropy equation of C4.5 assumes that the goal class is discrete.
+The CART regression tree learner applies the same recursive split
+procedure of C4.5, but it assumes the goal class is numeric. 
+CART generates _regression trees_ which look the same as decision
+trees but their leaves contain numeric predictions.
+For such
+numeric goals, we can measure the diversity of the class distribution
+using standard deviation. For reasons of speed, it is useful to compute standard deviation
+using a single-pass algorithm.
+Suppose we have a  `n` numeric goals in a class distribution x1,x2,x3...
+If  `t` be the sum of all x variables
+and `t2` is the sum of the square of all x variables, then:
+```
+s = stdev = sqrt((t2-((t*t/n))/(n-1))
+```
+
+C4.5 and CART work in the same  way. They try split on all features,
+then selecting the one that most reduces diversity:
+
++ C4.5 finds splits that divides the `n` _discrete_ goals into `n.i`
+  divisions, each with entropy `e.i`
++ CART finds splits that divides the `n`n_numeric_ goals into `n.i`
+  divisions, each with standard deviation `s.i`
+
+Both algorithms then apply some weighted sum to compute the expected value of the split:
+
++ C45 : expected diversity = sum n.i/n * e.i
++ CART: expected diversity = sum n.i/n * s.i
+
+Once they find the split with the lowest diversity, they then recurse
+on each split.  This is core idea behind the _divide_ analysis pattern
+described below. As we shall see, it is very useful for a broad range
+of data mining tasks.
+
+
+
+
+### Hints and Tips for CART and C4.5
+
+Any recursive algorithm such as CART (or C4.5) needs a stopping
+criteria; e.g. stop when there are less than `M` examples falling into
+each sub-tree.
+
++ As `M` gets larger, it becomes harder to form new sub-trees so 
+  the total tree size shrinks.  That is, the tree becomes easier to read.
++ As `M` gets smaller, it becomes easier for the learner to explore
+  special cases within the data. That is, the predictions of the tree
+  can become more accurate. Random forests, discussed below, use very
+  small `M` values (e.g. `M=2`).
+
+For example _housing_ [^Housing] is a data set that describes 506
+houses from Boston.  With the default value of
+`M=4`, CART generates a tree with 28 leaves.
+But with `M=100`, we generate a much more readable and
+smaller tree with only 9 leaves:
+
+
+```
+STAT <= 9.725 : 
+|   RM <= 6.941 : 
+|   |   DIS <= 3.325 : 27.4
+|   |   DIS >  3.325 : 
+|   |   |   RM <= 6.545 : 23.8
+|   |   |   RM >  6.545 : 26.8
+|   RM >  6.941 : 36.0
+LSTAT >  9.725 : 
+|   LSTAT <= 15 : 
+|   |   DIS <= 4.428 : 
+|   |   |   TAX <= 300 : 21.9
+|   |   |   TAX >  300 : 20.3
+|   |   DIS >  4.428 : 19.7
+|   LSTAT >  15 : 
+|   |   CRIM <= 5.769 : 17.0
+|   |   CRIM >  5.769 : 13.6
+```
+
+
+Any line containing a colon (`:`) is a prediction. For example, the
+top branch of this decision tree is saying:
+
+```
+if STAT < 9.725 and RM <= 6.941 and DIS <= 3.325 then PRICE=27.4
+```
+
+(Here, STAT, RM, and DIS measure the socio-economic status of each
+suburb, the number of rooms in the house and the weighted distance to
+five employment centers.)
+
+The smaller tree, shown above, is less accurate than the tree grown
+with `M=4`.  However, the difference is not large.
+
++ At `M=4`, the predictions of the larger tree correlate with the
+  actual values at R<sup>2</sup> = 91%.
++ At `M=100`, the smaller tree has an R<sup>2</sup> of 86%.
+
+When discussing a learned model with users, sometimes it is worth
+loses a few points in performance in order to display a smaller, more
+easily understood, tree. Note that this trick of selecting `M` in
+order to balance performance vs readability can be applied to any
+tree learning procedure including CART or C4.5.
+
+Finally, tree learners often include a post-pruning step where the
+data miner experiments with removing sub-trees. In this post-pruning,
+if the predictive power of the pruned tree is not worse than the
+original tree, then the pruner recursively on the reduced tree.
+
+
+### Random Forests
+
+Traditional tree learners like CART and C4.5 cannot scale to Big Data
+problems since they assumes  all the data is loaded into main memory
+and executed within one thread.  There are many ways to address these
+issues including Catlett's original peepholing method
+[^Catlett91]. One of the most interesting, and simplest is Brieman's
+_random forest_ method [^Breiman01].
+
+The motto of random forests is this: if one tree is good, why not
+build a whole bunch?  To build a tree, pick a number `m` less than
+the number of features. Then, to build a forest, build many trees as
+follows:
+
++ Select some subset `d` of the training data;
++ Build a tree as above, but at each split, only consider `m` features
+  (selected at random).
++ Do not bother to post-prune.
+
+To find the right `d` and `m` values for a particular data set means
+running the forests, checking the error rates in the predictions, then
+apply engineering judgement to select better values.  Note that `d`
+cannot be bigger than what can fit into RAM. Also, a useful default
+for `m` is the log of the number of features.
+
+Random forests make predictions by passing test data down each
+tree. The output is the most common conclusion made by each tree.
+
+Random forests have two drawbacks:
+
++ Random forests do not generate a single simple model that users can browse and
+  understand. On the other hand, the forests can be queried to find the
+  most important features (by asking what features across all the trees
+  were used most as a split criteria).
++ Some commonly used data mining toolkit insist that all the data
+  loads into RAM before running random forests (and this is more an
+  error in the toolkit than with random forests).
+
+Nevertheless, random forests are remarkably effective:
+
++ Random forests generates predictions that are often as good, or
+  better, than many other learners [^Breiman01].
++ They are fast: In 2001, Breiman reports experts where running it on a data
+  set with 50,000 cases and 100 variables, it produced 100 trees in 11
+  minutes on a 800Mhz machine. On modern machines, random forest learning
+  is even faster.
++ They scale to data sets with a very large numbers of rows or
+  features: just repeatedly sample as much data as can fit into RAM.
++ They extends naturally into cloud computing: just build forests on
+  different CPUs.
+
+Also, like C4.5 and CART, it might be best to think of random forests
+as a framework within which we can explore multiple data mining
+methods:
+
++ When faced with data that is too big to process...
++ Many times repeat: learn something from subsets of the rows and features.
++ Make conclusions by sampling across that ensemble of learners.
+
+As seen with random forests, this strategy works well for decision
+tree learning- but it is useful for many other learners as well.
+
+Note that for this style of random learning to be practical, each
+model must be learned very fast.  Hence, when building such a learner,
+do not sweat the small stuff.  If something looks tricky then just
+skip it (e.g. random forests do not do post-pruning). The lesson of
+random forests is that multiple simple samples can do better than
+fewer and more complex methods.  Don't worry, be happy.
+
+A final note on random forests: they are an example of an _ensemble_
+learning method. The motto of ensemble learning is that if one expert
+is good, then many are better. While `N` copies of the same expert is
+clearly a waste of resources, `N` experts all learned from slightly
+different data can offer `N` different perspectives on the same
+problem. Ensemble learning is an exciting area of data mining- and one
+that has proved most productive.  For example:
+
++ In the annual KDD-cup is an international competition, all the first
+  and second-placed winners for 2009-2011 used ensemble methods.
++ In our own work, our current best-of-breed learner for effort estimation
+  is an ensemble method [^Koc12a]. 
+  
+Later in this chapter we will discuss other kinds of ensemble learners
+such as AdaBoost.
+
+### Applications of Tree Learning
+
+
+C4.5 and CART are  widely influential algorithms.  The  clarity and simplicity 
+of this kind of learning has allowed many researchers 
+to develop 
+innovative extensions. One such extension are the 
+_random forests_ discussed above. Other extensions include
+
++ The Fayyad-Irani discretizer is a cut-down version of C4.5 that
+  builds a tree from a single feature.  The leaves of that tree are
+  returned as the learned bins [^Fayyad93].
++ The InfoGain feature selector [^Hall03]. This algorithm does not
+  build any tree.  Rather, it acts like C4.5's first split when it
+  conducts a what-if query over all features. InfoGain sorts the
+  features by the entropy reduction that would result if the data was
+  split on that data. A standard InfoGain algorithm requires discrete
+  data and so is typically run over data that has been binned by
+  Fayyad-Irani.
++ PDDP is a tree learner that splits on synthesizes features
+  [^Boley98]. At each level of the recursion, PDDP finds the
+  eigenvectors of the correlation matrix of the data that falls into
+  each sub-branch.  Technically, this is a principle component
+  analysis (PCA) that transforms the data to a new coordinate system
+  such that the greatest variance by any projection of the data comes
+  to lie on the first coordinate (called the first principal
+  component).
++ WHERE [^Menzies12a] is a version of PDDP that uses the FASTMAP trick
+  to find an approximation to the first component. WHERE uses the
+  Aha distance function defined later in this chapter. After picking any
+  row `X` at random, WHERE finds
+  + The row `Right` that is furthest from `X`;
+  + It then finds the row `Left` that is furthest from `Right`.    
+  WHERE then projects all rows onto the line that runs from `Left` to `Right`
+  by finding:
+  + The distance `c` between `Left` and `Right`;
+  + For every row, the distance `a` and `b` to rows`Left` and `Right`.
+  With that information, the projection of a row along the `Left` and `Right`
+  line is `x=(a^2+c^2- b^2)/(2c)`. WHERE then splits
+  along that `x` axis and recurses on each split.
+  
+These variants can be much simpler that standard C4.5 (or, indeed,
+CART).  For example:
+
+
++ WHERE and PDDP can find much shallower trees than CART or C4.5. The
+  reason for this is that if there exists `N` correlated features,
+  then the principle component found by PCA (or the approximation
+  found by WHERE) can model those `N` features with one dimension.
++ WHERE runs much faster than PDDP. Finding the principle component
+  takes polynomial time while WHERE's projections take linear time
+  (only 4N distance measures between rows).
++ InfoGain does not even have to model the recursive tree data
+  structure.  This algorithm is widely used in text mining
+  since it runs in linear time and takes very little memory. Hall and
+  Holmes [^Hall03] comment that other feature selectors can be more
+  powerful, but are slower and take more memory.
++ Fayyad-Irani only needs to reason about two features at any one time
+  (the numeric feature being discretized and the class
+  feature). Hence, even if all the data cannot fit into RAM, it may
+  still be possible to run Fayyad-Irani (and if memory problems
+  persist, a simple pre-processor to the data that selects X% of the
+  rows at random may suffice for learning the discretized ranges).
+
+Just an aside, this Fayyad-Irani discretizer is useful for more than
+just building decision trees.  It is also useful a procedure for
+ranking performance results from different learners:
+
++ Consider a two-column data set where column1 is the performance
+  score of some learner and column2 is the name of that learner. If we
+  sort on column1 then apply Fayyad-Irani, all the learners with some
+  scores will be grouped together in the one bin. In this rig, the
+  _best_ learner is the most common learner found in the bin with
+  greatest value.
++ Alternatively, consider a small modification of Fayyad-Irani, but
+  this time we are recursing through a sorted list of buckets, sorted
+  on their mean score. Each bucket contains all the performance scores
+  on one learner.  The first level split finds the index of the list
+  that divides the buckets into two lists, which we will call `list1`
+  and `list2`, that are up to and above the split:
+  + Let the mean of the performance scores in entire list and `list1` and `list2` be `mean0`,
+    `mean1` and `mean2`.
+  + Let the number of performance scores in  `list1` and `list2` be `n1,n2`.
+  A good split is the one that maximizes the maximizes the expected
+  value of the sum of square of the mean differences before and after
+  divisions; i.e. n1 * abs(mean1 - mean0)^2 + n2 * abs(mean2 - mean0)^2
+
+This is the Scott-Knott procedure for ranking different
+treatments. This procedure recurses, on the bins in each split, but
+only if some statistical test agrees that distributions in `list1` and
+`list2` are statistically different. This procedure is quite clever in
+that it can divide `T` treatments using `log2(T)` comparisons.  Mittas
+and Angelis [^Mittas12] recommend using ANOVA to test if `list1` and
+`list2` are significantly statistically different.  If the
+distributions are non-Gausssian, they also recommend applying the
+Bloom transform to the data as a pre-processor. It turns out that if
+we use the simpler Hedges procedure (described above), then the
+learners are grouped in the same way as using an ANOVA+Bloom test.
+
+
+
+Naive Bayes
+-----------
+
+When working with a new data set, it is prudent to establish a
+_baseline_ result using the most direct and simplest approach.  Once
+that baseline performance is known, then it is possible to know how
+much more work is required for this data.
+
+The most direct and simplest learning method discussed in this chapter
+is a Naive Bayes classifier.  Despite their name, Naive Bayes
+classifiers are hardly _naive_. In fact, they offer a range of
+important services such as learning from very large data sets,
+incremental learning, anomaly detection, row pruning, and feature
+pruning- all in near linear time (i.e. very fast). Better yet,
+implementing those services is trivially simple.
+
+But the reason they are called naive is that  they  assumes that within one class,
+all
+features are statistically independent. That is, knowledge about the
+value of one feature does not tell us anything about the value of any
+other.  So a Naive Bayes classifier can never look at table of medical
+diagnosis to infer that `pulse=0` is associated with `temperature=cold`.
+
+Proponents of tree learning would dispute this  Naive Bayes assumption.
+They prefer algorithms like C4.5 or CART or random forests since
+tree learners always collect information in context: that is, all sub-trees
+refer to data in the context of the root of that tree.
+
+Strange to say,  Naive Bayes performs often as well, or better, as
+decision tree learning- an observation that is carefully documented
+and explained by Domingos and Pazzini [^Domingos97][^1].  This is very
+good news since it means that a Naive Bayes classifier can summarize
+the data using a simple frequency table. Hence, a Naive Bayes
+classifier has:
+
++ A tiny memory footprint
++ Is very fast to training (and, as shown below, very fast to make conclusions);
++ Simple to build.
+
+Naive Bayes classifiers use Bayes theorem to make predictions. Tables of data
+are separated into their various classes.
+Statistics are then collected for each class. For example, here are the
+statistics for the weather
+data shown. Note that all these numbers are divided into the two class variables
+`play?=yes` and `play?=no`.
+
+```
+            outlook                   temp               humidity
+=====================    =================      =================
+           yes    no             yes    no            yes      no
+sunny       2      3             83     85             86      85
+overcast    4      0             70     80             96      90
+rainy       3      2             68     65             80      70
+          -----------            ----------            ----------
+sunny     2/9    3/5    mean     73     74.6  mean     79.1   86.2
+overcast  4/9    0/5    std dev   6.2    7.9  std dev  10.2    9.7
+rainy     3/9    2/5
+
+              windy           play?
+===================     ===========
+           yes   no     yes     no
+false       6     2      9       5
+true        3     3
+            -------     ----------
+false     6/9   2/5     9/14  5/14
+true      3/9   3/5
+```
+
+
+Underneath each feature are some cumulative statistics. For example:
+
++ The mean `humidity` is different for `yes` and `no`: 79.1 and 86.2 (respectively). 
++ `Overcast` appears 4/9 times when we play and zero times with we do not play. That is,
+  if in the future we see  `outlook=overcast` then it is far more likely that we
+  play that otherwise (to be precise, it is infinitely more likely that we will play)..
+  
+One way to view a  Naive Bayes classifier is a clustering algorithm where we have
+clustered together all things with the same class into the same cluster. When new data
+arrives we travel to ever cluster and ask it to vote how `does this look familiar to you?`.
+And the  cluster (class) that offers the most votes is used to make the prediction.
+
+The voting procedure is to use Bayes' rule. Bayes' rule says that our new belief
+in an hypothesis is the product of our old beliefs times any new evidence; i.e.
+
+``` 
+new = now * old 
+``` 
+
+(Aside: This simple equation hides a trick. If the test case (which is the
+`now` term in the above equation) has a missing feature, we just
+assume that it offers no evidence for a conclusion.  Hence, we can
+just skip over that feature. Note that _this is a vastly method_
+scheme for handling missing values than other learners like C4.5. In
+C4.5, if a sub-tree starts with some feature that is missing in the
+test case, C4.5 some conclusion based on an intricate what-if query of
+all sub-trees.)
+
+In Bayes' rule, the probability of an hypothesis `H` given evidence `E`:
+```
+P(H|E) = P(E|H) * P(H) / P(E)
+```
+In this expression:
+
++ The `P(E)` term is the probability of the evidence. Since this is
+  the same for each test case, it can be ignored (and a good thing too
+  since it is very unclear how to calculate that term).
++ The `old` term is the prior probability of the hypothesis, denoted
+  `P(H)`. This is just the frequency of each hypothesis. In our
+  playing example, `H` is `yes` or `no` and `P(yes)=9/14`
+  `P(no)=5/14`.
++ The probability of the evidence given the hypothesis, denoted
+  `P(E|H)`, is looked up from the table of statistics. This is the
+  `now` term.
+
+For example, if we were told that tomorrows' forecast was sunny, the
+classes would offer the following votes on how likely it is that we
+will play or not:
+
++ P(yes | outlook=sunny ) = 2/9 * 9/14 = 0.39
++ P(no  | outlook=sunny ) = 3/5 * 5/14 = 0.14
+
+Since `yes` offers more votes, we would conclude that tomorrow we will
+play. Note that as more evidence arrives, the more information we can
+add to `now`. For example,
+
++ Let the forecast be for sunshine, 66 degrees, 90\% humidity and wind.
++ That is `E = (outlook=sunshine, temp=66, humid=90 and wind=true)`.
++ To handle this conjunction, we multiply together the individual
+  probabilities as follows:
+    + P(yes | E) = 2/9 * 0.0340 * 0.0221 * 3/9 * 9/14 = 0.000036
+    + P(no  | E) = 3/5 * 0.0291 * 0.0380 * 3/5 * 5/14 = 0.000136
++ To report the above, we normalized the probabiltieis; i.e. divide
+  each by the sum of all:
+    + P(yes | E) = 0.00036  / (0.00036 + 0.000136) = 21%
+    + P(no  | E) = 0.000136 / (0.00036 + 0.000136) = 79%
++ That is, for this forecast, `no` is offering more votes than
+  `yes`. Hence, for this forecast, we would predict `no`.
+
+The above calculation had some long decimal numbers. Where did (e.g.)
+0.0340 come from?  Recall that `temp=66` and for the class `yes`, the
+above table reports that the mean temperature was 73 with a standard
+deviation of 6.2.  How likely is 66 on a bell-shaped curve whose mean
+is 73 and whose standard deviation is 6.2?  We say that:
+
++ The closer we get to the mean value, the _higher_ the likelihood;
++ The greater the diversity in the data,  the _lower_  the likelihood of  any particular value.
+
+Both these notions can be expressed in terms of a bell-shaped curve; a.k.a. the normal or Gaussian distribution.
+The area under this curve must sum to one so the _wider_ the curve, the _lower_ the top-of-hill (where the mean is).
+Hence, a standard Naive Bayes classifier uses a Guassian probability distribution function to computer
+the likelihood of any particular number:
+
+```
+function gaussianPdf(mean, stdev, x) {
+  return 1/(stdev * sqrt(2*pi)) ^ (-1*(x-mean)^2/(2*stdev*stdev))
+}
+print gaussianPdf(73, 6.2, 66)
+==> 0.0340
+```
+
+Note that this calculation assumes that the underlying distribution is a
+bell-shaped Gaussian curve.  While this can be  a useful engineering
+approximation, it may not be true in many situations.  Hence, many
+Bayes classifiers discretize their numerics before making
+predictions, thus avoiding the need for this Gaussian assumptions.
+A repeated result is that the performance of Naive Bayes is improved
+by discretization [^Dougherty95].
+
+### Anomaly Detection
+
+If data miners are used for mission critical or safety critical
+applications, it is important to understand when they cannot be
+trusted.  This is the role of the anomaly detector. Such detectors
+trigger when the new example is outside the range of the examples used
+to train the learner.
+Several recent high-profile disasters could have
+been averted if anomaly detectors were running on learned models:
+
++ In 1999, NASA's $125M Mars climate orbiter burned up in the Martian
+  atmosphere after a mix-up in the units used to de sign and control
+  the system. Meters were confused with feet and, as a result, the
+  orbiter passed 60km, not 150km above the Martian atmosphere. The
+  confusion in the units was apparent on-route to Mars- the spacecraft
+  required unusually large course corrections [^Mars99]. Sadly, the
+  ground crew had no anomaly detector to alert them to how serious
+  this deviation was from the craftâ€™s expected behavior.
++ In 2003, anomaly detection might have also saved the crew of the
+  Columbia space shuttle. That shuttle was struck at launch by a block
+  of frozen foam measuring 1200 in<sup>3</sup> and traveling at 477
+  mph (relative to the vehicle). Engineers concluded that such a
+  strike was not hazardous using a program called CRATER. CRATER was
+  trained on much smaller and much slower projectiles: a normal CRATER
+  example was a 3 in<sup>3</sup> piece of debris traveling at under
+  150 mph.  An anomaly detector could have alerted NASA to mistrust
+  the engineersâ€™ conclusions since they were drawn from a region well
+  outside of CRATERâ€™s certified expertise.  As it was, Columbia was
+  deemed safe for re-entry, at which time a hypersonic shock wave
+  entered the site of the strike and tore the craft apart.
+
+Anomaly detection is a very active area of research in data mining.
+For a detailed survey, see [^Chandola09]. But to give the reader a
+sample of how to build an anomaly detector, we mention here one
+anomaly detector that can be built using the above Bayesian statistics
+table.
+
+Farnstrom and his colleagues [^Farnstrom] use the above Bayesian
+statistics table to detect anomalous examples as follows:
+
++ Read each row and replace its class value with some single symbol
+  (e.g.  _global_).
++ For this _global_ class, build the above Bayes statistics
+  table. With that table, compute the `suspect` region for each
+  feature;
+    + For numeric attributes, it is outside the mean value plus or
+    minus 1.96 times the standard deviation (this corresponds to a
+    95% confidence interval).
+  + For discrete attributes, list all values that occur less than 5%
+    of the time in that row.
++ When new data arrives, count how many times each feature falls into
+  the `suspect` region:
+    + Reject any row that has more than `n` features with suspect
+    values.  Note that Farnstrom uses `n=1` but this is a parameter
+    that can be tuned.  In the next section, we discuss incremental
+    learner where, at least during the initial learning phase, all
+    the data will be anomalous since this learner has never seen
+    anything before. For learning from very few examples, `n` should
+    be greater than one.
+     
+The above shows how to detect anomalies- not what to do with
+them. This is a domain decision. For example, in the case of the Mars
+climate orbiter, the control commands to the craft could have been
+adjusted.   
+
+Another possibility is to store the anomalies in a bucket and, when
+that bucket gets too big, run a second learner just on those harder
+examples. 
+For example, the trees generated by WHERE could be incrementally modified as follows:
+
++ Build a tree from X$% of the data;
++ When new data arrives, push it down the tree to its nearest leaf cluster
++ At every level of that descent, check the `Left` and `Right` pairs. If the new,
+  instance falls outside the range `Left` and `Right`:
+  + Add the instance to a bucket of anomalies;
+  + Mark which of  `Left` and `Right` is closest to the anomaly.
+  + If the number of anomalies grows beyond some threshold, then rebuild any sub-tree
+    with those anomalies. In that rebuild, use all the anomalies and any  `Left` and `Right` row
+  not by the last point.
+
+Note that this approach implies we only need to rebuild parts of the tree- which is useful
+for any incremental learning scheme.
+
+A more general version of this approach is the _AdaBoost_
+algorithm [^Freund97].  This is a _meta-learner_ scheme; i.e. it can
+be applied to any learner (e.g. Naive Bayes, CART, C4.5, etc).  Like
+random forests, is one of the most important ensemble methods, since
+it has solid theoretical foundation, very accurate prediction, great
+simplicity (a few dozen lines of code to implement), and wide and
+successful applications.  AdaBoost builds a sequence of classifiers
+`c1,c2,...` using some learner.  Every time an example is
+misclassified by classifier `ci`, it gets an increased weight.
+Examples with the greater weights are used by the next classifier
+`cj`. Each classifier in this sequence is marked with a
+misclassification score. Each member of the ensemble votes on every
+test item, and that vote is weighted by each learner's
+misclassification score. The interesting thing about this algorithm is
+that it boost the performance of a weak learner to a higher score.
+
+### Incremental Bayes
+
+Naive Bayes is an excellent candidate for mining very large of very
+long streams of data. This is due to the fact that 
+the working memory of a Naive Bayes classifier can be very small:
+
++ A summary of the data seen so far;
++ The next test case to classify.
+
+Such an incremental Naive Bayes classifier might work as follows:
+
++ When a new test case arrives, classify it using the existing statistics.
++ Then (and only then) update the statistics with the new case.
+
+Some heuristics for incremental learning include the following:
+
++ Use a learner that updates, very fast. In this respect,
+  a Naive Bayes classifier
+  is a good candidate since its memory footprint is so small.
++ To emulate something like a random forest ensemble, split the
+  incoming data into 10 streams (each containing 90% of the incoming
+  data) and run a separate learner for each stream. Let each stream
+  make a prediction and report the majority decision across all
+  streams (perhaps weighted by accuracy performance statistic seen for
+  all these learners). Note that since Naive Bayes has such a small
+  footprint, then the memory overhead of running ten such classifiers
+  is not excessive.
++ Add an initial randomizer buffer that reads the input data in
+  blocks of (say) 10,000 examples, then spits them out in a random
+  order (for a linear-time randomizer, see [^Fisher-Yates]). This
+  random buffer minimizes _order effects_ where the learned model
+  is just some quirk of the ordering of the data. Also, this buffer
+  is useful for collecting preliminary statistics on the data such as the
+  minimum and maximum value of numeric values.
++ Skip any suspect examples (as defined by the Farnstrom detector) or
+  run the anomalies in their own separate stream.
++ If you doubt the Gaussian assumption, use an incremental discretizer
+  to convert the numbers to discrete values.  Incremental
+  discretization need not be a complex task [^Gama06].
++ If you use the Gaussian assumption, then be wary of floating point
+  errors (particularly for very long data streams).  Incrementally
+  compute standard deviation using Knuth's method [^Kunth]
++ Do not trust the classifier till it has seen enough data. Experience
+  with simple data sets is that the performance of incremental Naive
+  Bayes plateaus after a few hundred examples or less, but you need to
+  check that point in your own data. In any case, it is wise to have some
+  start-up period where classification is disabled.
++ To check for the performance plateau, divide the data into _eras_
+  of, say, 100 examples in each era. Collect performance statistics
+  across 10 streams.  Compute the mean and standard deviation of
+  accuracy in each era `i`. Declare a plateau if the performance of
+  era `j=i+1` is the same as era `i` (e.g. using the Hedge's effect
+  size rule shown above).
+
+For some data sets, the number of examples to reach plateau may be
+surprisingly brief. For example, certain defect data sets plateau
+after a 100 (or less) examples [^Menzies08]. _Recent results_ with the QUICK
+_active learner_ suggest that this can be reduced to even fewer if we
+intelligently select the next example for training.  For example, in
+some software effort estimation data sets, we have plateaued after
+just a dozen examples, or even less [^Koc12b].
+
+### Data set shift
+
+David Hand [^Hand06] warns that classifiers can make mistakes when
+their models become out-dated. This can occur when some structure is learned
+from old data, then the data generating phenomenon changes. For example,
+software effort estimations trained on COBOL can be re-calibration
+if programmers move to JavaScript.
+
+There are many ways to handle such _data set shift_ and for a state
+of the art report, see the work of Minku and Yao [^Minku12a][Minku12b]. But just
+to describe a simple way to handle data set shift, consider the incremental
+Bayes classifier described above. 
+In the following circumstances, a very simple 
+data set shift scheme can be applied:
+
++ The number of examples required to reach the performance plateau is `t1`;
++ The rate of data set shift is `t2`;
++ The data shifts at a slower rate than the time required to
+  reach plateau (i.e. `t1` is less than `t2`).
+
+In this (not uncommon) situation, a data scientist can handle data set shift by 
+running two learners:
+
++ An incremental Bayes classifier (described above);
++ And any other learner they like (which, in fact, could also be a
+  Bayes classifier).
+:w
+:
+While the performance plateau remains flat, the data scientist can 
+apply the other learner to all data seen too date. But if the performance
+plateau starts changing (as measured by, say, the Hedges test) then 
+the data scientist needs to dump the old model and start learning afresh.
+
+### Feature Pruning
+
+One advantage of tree learners over Naive Bayes is that the trees
+can be a high-level and succinct representation of what was learned from the data.
+On the other hand, 
+the internal data structures of a Bayes classifier are not very pleasant to browse.
+Many business users require some succinct summary of those internals.
+
+Feature selection is an active area of data mining research. Two classic
+references in this area come from Kohavi [^Kohavi97] and Hall and Holmes [^Holmes03]
+(and see the recent update by Huan Liu and others [Liu'10]). A repeated result
+is that in many data sets, most features can be removed without damaging our
+ability to make conclusions about the data.
+
+Recent results show that a Bayes classifer can easily be converted
+into a feature pruner. We call this algorithm CLIFF [^Peters13].  It
+is detailed here as yet another example of what can be done with a
+supposedly naive Naive Bayes classifier. CLIFF discretizes all numeric
+data (using a 10% chop) then counts how often each discretized range
+occurs in each class.
+
+```
+Classes = all classes
+for one in Classes:
+  two = Classes - one
+  c1  = |one|    # number of examples in class "one"
+  c2  = |two|    # all other examples
+  for f in features:
+     ranges = discretized(f)
+     for range in ranges:
+        n1, n2 = frequency of range in one, two
+    r1, r2 = n1/c1, n2/c2
+    f.ranges[range].value[one] = r1*r1/(r1+r2)
+```
+The equation in the last line rewards ranges that are:
+
++ More frequent in class `one` (this is the `r1*r1` term);
++ And which  are relatively more frequent in
+  class `one` than classes `two` (this is in the fraction). 
+  
+A range with high _value_ is _powerful_ in the sense that it is
+frequent evidence for something that selects for a particular class.  In CLIFF,
+we say that:
+
++ The _power of a range_ is maximum of its `value`s over all  classes (as
+  calculated by the above);
++ The _power of a  feature_ is the maximum power of all its ranges.
+
+CLIFF can prune features by discarding those with least power. Further,
+within each feature, it can prune ranges with lower power. 
+
+CLIFF is very simple for implement. Once a programmer has built a
+Naive Bayes classifier nd a discretizer, CLIFF is 30 lines or less in
+a high-level language such as Python.  Our experience with this
+algorithm is that it can convert large data sets into a handful of
+most powerful ranges that can be discussed with a user.
+
+### Row Pruning
+
+For our last example of applications of Naive Bayes, we turn to row
+pruning.  Just like with feature pruning, a repeated result is that
+most data sets can be pruned back to a small percentage of exemplars
+(also known as prototypes)..  For example, Changâ€™s prototype
+generators [^Chang74] replaced training sets of size (514, 150, 66)
+with prototypes of size (34, 14, 6) (respectively). That is,
+prototypes maybe as few as (7,9,9)% of the original data.
+
+
+If we prune a data set in this way, then all subsequent reasoning runs
+faster. Also, performance quality can improve since we have removed
+strange outlier examples. 
+
+There are many ways to do row pruning, also called instance selection,
+is an active area of data mining [^Garcia12]. For example, David Aha
+[^Hart68] proposes an incremental procedure where, starting with a
+random selection of the data, if a new test case is misclassified,
+then it is deemed to be different to all proceeding examples. Hart
+recommends selecting just those novel instances.  Kocaguneli prefers a
+clustering approach, followed the deletion of all clusters that would
+confuse subsequent inference (i.e. those with the larger variance or
+entropy of any numeric or discrete class variable) [Koc12b].
+
+Hart's and Kocaguneli's methods are much slower than a newer methods
+based on CLIFF [^Peters13].  Recall that CLIFF finds _power_ ranges;
+i.e. those ranges that tend to select for a particular class.  If a
+row contains no power ranges, then it is not an interesting row for
+deciding between one class and another. To delete these dull rows,
+CLIFF scores and sorts each row by the product of the power of the
+ranges in that row. If then returns the top 10% scoring rows. Note
+that this procedure runs in linear time, once the power ranges are
+known.
+
+
+
+Instance-based Reasoning
+========================
+
+Instance-based reasoning make conclusions by looking at the distances between examples.
+When a new test example arrives, we can infer its properties by finding other similar examples.
+This style of learning is called _lazy learning_ since nothing happens till the new
+text example arrives. This lazy approach can be quite slow so it is customary to add a 
+pre-processor step that clusters the data. Once those clusters are known, then 
+it is faster to find similar examples, as follows:
+
++ Find the nearest cluster to the new test example;
++ Ignore everything that is not in that cluster;
++ Find similar examples, but only looking in that cluster.
+
+Clustering is an _unsupervised_ learning algorithm in that, during
+clustering, it ignores any class feature.  This is a very different
+approach to nearly all the algorithms above, which were _supervised_;
+i.e. they treated the class feature in a way that was special and
+different to all the other features.  The only exception was APRIORI
+that does not treat any feature different to any other (so it is
+_unsupervised_).
+
+
+A core issue within clustering is how to measure the distance between
+rows of examples.  For example, some use _kernel functions_ to
+computed a weighted distance between rows.Much could be said on these
+more complex approaches but presenting that material would be a
+chapter all on its own. Suffice to say that with a little column
+pruning, somethings very simple functions suffice [^Koc11a].  For
+example, consider the _overlap_ defined for discretized data
+where the distance between two rows is the number of ranges that occur in both rows.
+Note that this _overlap_ measure scales to very large data sets, using 
+a reverse index that records what ranges occur in what rows. Given that reverse
+index, 
+simple set intersection operators on the reverse index can then quickly find:
+
++ If any two rows have no  shared ranges (so distance = infinity);
++ Otherwise, the distance between two rows is the number of shared ranges.
+
+This measure is used by McCallum and others  [^McCallum00] in their work on canopy clustering
+(discussed below) as well as the W2 instance-based planner [^Brady10]. W2 accepts
+as input the _context_ that is of interest to some manager; i.e. a subset of the data
+features that mention a subset of the feature ranges. For example:
+
++ A manager might pose the question "what is the best action for
+  projects with programmer capability equals low or very low and the
+  database size is large or very large".
++ W2 finds the `K` projects nearest this context (sorted by their
+ overlap).
++ Next, for the first time in all this processing, W2 looks at the
+  class variable which might contain information (say) about the
+  development time of the projects. It then divides the projects into
+  the `k1` projects it likes (those with lowest development effort)
+  and the `k2` is does not (and `K=k1=k2`).
++ Next, it sorts the ranges by the `value` of each range (as defined
+  above in the section on feature pruning).
++ Lastly, it conducts experiments where the first `i-th` items in that
+  sorted ranges of values are applied to some hold-out set.
+
+As output, W2  prints its recommendations back to the manager. That manager is a list
+of things to change in the project. That list contains the first `i` items in the list
+of sorted sort that select for
+projects in the hold out set with least (say) development time.
+
+Another commonly used distance function is a Euclidean measure was
+offered in David Aha's classic paper on instance-based reasoning
+[^Aha91]. This measure begins by normalizing all numerics min to max,
+0 to 1. Such normalization:
+
++ _Normalization lets us compare distances between numerics of different scale).  To
+  see why this is an issue, consider a database which lists rocket
+  speeds and astronaut shoe sizes. Even if an astronaut shoe size
+  increases by 50% from 8 to 12. That difference would be lost when
+  compared to rocket speeds (that can range from zero to 41*106 meters
+  per second). If we normalize all numerics zero to one, then a 100%
+  change in shoe size (that can range from zero to 20) will not be
+  lost amongst any changes to the rocket speed.
++ _Normalization let us compare distances between numeric and discrete features_.  Aha
+  offers the following distance measure for non-numerics: if two
+  non-numeric values are the same, then their separation is zero;
+  else, it is one.  That is, the maximum difference for non-numerics
+  is the same maximum difference for any normalized numeric value.  If
+  we combine numeric normalization with Ahaâ€™s rule, then we can
+  compare rows that contain numeric and non-numeric features.  
+  
+Aha also offers a method for handling missing data. The intuition behind this method is
+that if a value is missing, assume the worst case and return the maximum possible value.
+To implement that, Aha recommends the following procedure.
+When finding the difference between two values  `xi` and `yi` from feature `i`:
+
++ If both values are missing, return the maximum distance
+  (assuming normalized data, then this maximum value is one).  
++ If the
+  feature is non-numeric:
+    + If one is absent, return one. 
+    + Else if values are the same, return zero. 
+  + Else, return one.  
++ If the feature
+  is numeric then:
+     + If only one value is present, then return the
+       largest of `(1âˆ’value)` and  `(valueâˆ’1)`.  
+   + Otherwise return `xiâˆ’yi`.
+
+Now that we can compute `xi - yi`, we can use the standard  Euclidean measure:
+```
+Dist = sqrt(sum wi*(xi-yi)^2) / sqrt(sum wi)
+```
+Where, `wi` is some weight that defaults to one (but might otherwise be set
+by the feature pruning tools described above).
+This value returns a number in the range zero to one.
+
+Note that for small data sets, it is enough to implement this distance
+function, without any clustering.  The standard `k-th` nearest
+neighbor algorithm generates predictions by finding the `k` rows
+nearest any new test data, then reporting the (say) median value of
+the class variable in that sample.
+
+Returning now to clustering, this is a large and very active area of research (see [^Jain99] and [^Jain10]).
+The rest of this chapter discusses a few  fast and scalable
+clustering algorithms.
+
+DBScan [^Ester] use some heuristic to divides the data into
+  neighborhoods. For all neighborhoods that are unclustered, it finds
+  any one with _enough_ examples in an adjacent neighborhood (where
+  _enough_ is a domain-specific parameter). A cluster is then formed
+  of these two neighborhood and the process repeats for any neighbors
+  of this expanding cluster.
+
+Canopy clustering [^McCallum00] a very fast distance measure used
+  extensively at Google to divide data into groups of nearby items
+  called _canopies_.  Then it perform more elaborate (and more CPU
+  expensive) analysis, but only within these canopies.
+
+Farnstrom (who we mentioned above) proposed a modification to the  standard K-means algorithm .
+These modifications allow for incremental learning of clusters. In standard K-means, `K` rows are picked at
+  random to be the centroids. All the other rows are then labelled
+  according to which row is nearest. Each centroid is then moved to
+  the middle of all the rows with that label. The process repeats
+  until the centroid positions stabilize. Note that K-means can be
+  slow since it requires repeated distance measurements between all
+  centroids and all rows. Also, it demands that all the rows are
+  loaded into RAM at one time. Farnstrom fixes both these problems
+  with his _simple single pass k-means_ (SSK) algorithm:
+  
++ Work through the data in batches of size, say, 1% (ideally,
+    selected at random).
++ Cluster each batch using  K-means. 
++ For each new batch, call K-means 
+  to adjust the clusters from the last batch for the new data.
++ New data is only added to the old clusters it is not anomalous (as
+  defined by the Farnstrom anomaly detector, mentioned above).
++ In theory, this might result in some old centroid now have no data
+  from the new 1% of the data. In this case, a new centroid is
+  created using the most distant point in the set of anomalous data
+  (but in practice, this case very rarely happens).
+  
+Another fast clusterer based on K-means is Mini-Batch K-means
+[^Sculley10].  Note that Mini-Batch K-means also process the data in
+batches. However in this algorithm the processing within each batch is
+simpler than SSK:
+  
++ Each centroid maintains a count `v`' of the number of rows that
+  where its nearest neighbor.
++ The data is read in batches of size `M`'.
++ The fewer the rows that used that centroid, the more it must be moved to a new position.
+  Hence, after each batch has updated `v`:
+    + Compute `n=1/v`;
+  + For each centroid:
+      + Recall all rows `r` in the batch that found this centroid to be its nearest neighbor
+      + For each such run, move all values `c` in that towards `r` by
+        an amount `(1 - n)c + nr` (note that large `v` implies small
+        `n` which translates to "do not move the heavily used
+        centroids very much).
+
+Sculley reports that this approach runs orders of magnitude faster
+than standard k-means [^Sculley10].  Also, it is an incremental
+algorithm that only needs RAM for the current set of centroids and the
+next batch.  But how to determine the right number of centroids.  One
+method, which we adapt from the the GENIC incremental cluster [^Gupta04], is to
+pick a medium number of cluster then, after each prune:
+  
++ Find and delete the `x` dull centroids with  `c/C*N < rand()`, where `C` is the sum
+  of all the `c` values from the `N` clusters. 
++ If `x` is less than `C/4` then set `x` to `C/4`
++ Select any `x` rows at random and add them to the set of centroids. Note
+  that this either replaces dull centroids or adds new centroids if we do not have enough.
+  
+Note that the Fanrsrom approach and Mini-Batch K-means satisfy the famous
+_Data Mining Desiderata_ [^Bradley98]. According to that decree,
+a scalable data miner has the following properties:
+
++ Require one scan (or less) of the database if possible: a single  
+  data scan is considered costly, early termination if appropriate is
+  highly desirable.
++ On-line â€œanytimeâ€ behavior: a â€œbestâ€ answer is always available,
+  with status information on progress, expected remaining time,
+  etc. provided
++ Suspendable, stoppable, resumable; incremental  progress saved to resume a stopped job.
++ Ability to incrementally incorporate additional data with existing models efficiently. 
++ Work within confines of a given limited RAM buffer. 
++ Utilize variety of possible scan modes: sequential,index, and sampling scans if available. 
++ Ability to operate on forward-only cursor over a view of the
+  database. This is necessary since the database view may be a result
+  of an expensive join query, over a potentially distributed data
+  warehouse, with much processing required to construct each row
+  (case).
+
+Once the clusters are created, then it not uncommon practice to
+apply a supervised learner to the data in each cluster.  For example:
+
++  NBTrees uses a tree learner to divide the data, then builds one Naive
+   Bayes classifier for each leaf [^Kohavi96].
++  WHERE applies the _principle of envy_ to clustered data. Each cluster
+   asks "who is my nearest cluster with better class scores than me?".
+   Data mining is then applied to that cluster and the resulting
+   rules are applied back to the local cluster [^Menzies12a]. WHERE built those
+   rules using a more intricate version of W2, described above.
+   
+There are several  advantage to intra-cluster learning:
+
++ _The learner runs on fewer examples_: For example, WHERE builds a tree of clusters whose leaves
+  contain the square root of the number of examples in the whole data set.
+  For any learner that takes more than linear time to process examples,
+  running multiple learners on the square root of the data is faster than
+  running one learner on all the data.
++ _The learner runs on a more homogeneous set of examples_ : To increase
+  the reliability of the predictions from a data miner, it is useful
+  to build the learner from similar examples. By learning on a per-cluster
+  basis, a learner is not distracted by dissimilar examples in other cluster.
+  In the case of WHERE, we found that the predictions generated per-cluster
+  where much better than those found after learning from all the data
+  (and by "better" we mean lower variance in the predictions and better
+  median value of the predictions.).
+
+
+References
+==========
+
+[^1]: In short, they found the volume of the zone where
+Naive Bayes would make a different decision to some optimal Bayes
+(one that knows about correlations between features). That region is
+very small and grows even smaller as the number of features
+in the data set increases.
+
+[^Aha91]: David W. Aha, Dennis Kibler, and Marc
+K. Albert. 1991. Instance-Based Learning Algorithms. Mach. Learn. 6, 1
+(January 1991), 37-66.
+
+[^Boley98]: Daniel Boley. 1998. Principal Direction Divisive
+Partitioning. Data Mining and Knowledge Discovery 2, 4 (December
+1998), 325-344.
+
+[^Bradley98]: "Scaling Clustering Algorithms to Large Databases",
+P. S. Bradley and Usama M. Fayyad and Cory Reina, Knowledge Discovery
+and Data Mining, 1998
+
+[^Brady10]: Adam Brady and Tim Menzies. 2010. Case-based reasoning vs
+parametric models for software quality optimization. In Proceedings of
+the 6th International Conference on Predictive Models in Software
+Engineering (PROMISE '10). ACM, New York, NY, USA,
+
+[^Breiman01]: Breiman, Leo (2001). "Random Forests". Machine Learning
+45 (1): 5â€“32.
+ 
+[^Catlett91]: Catlett, J.: Mega induction: A test flight. In: Proc. of
+8th International Conference on Machine Learning, San Marco,
+California, pp. 596â€“599 (1991)
+
+[^Chandola09]: Varun Chandola, Arindam Banerjee, and Vipin Kumar,
+"Anomaly Detection : A Survey", ACM Computing Surveys, Vol. 41(3),
+Article 15, July 2009.
+
+[^Chang74]: C. Chang, "Finding prototypes for nearest neighbor
+classifiers," IEEE Trans. on Computers, pp. 1179â€“1185, 1974.
+
+[^Dajaeger]: Karel Dejaeger, Wouter Verbeke, David Martens, Bart
+Baesens, "Data Mining Techniques for Software Effort Estimation: A
+Comparative Study," IEEE Transactions on Software Engineering,
+vol. 38, no. 2, pp. 375-397, March-April, 2012
+
+[^Dapse]: See DAPSEâ€™13, the International Workshop on Data Analysis
+Patterns in Software Engineering, San Francisco, USA, May, 2013.
+
+[^Domingos97]: Pedro Domingos and Michael J. Pazzani, "On the
+Optimality of the Simple Bayesian Classifier under Zero-One Loss",
+Machine Learning, vol. 29, no. 2-3, pp 103-130, 1997.
+
+[^Dougherty95]: Supervised and Unsupervised Discretization of Continuous
+Features.  James Dougherty, Ron Kohavi, and Mehran Sahami. ICML, page
+194-202. Morgan Kaufmann, (1995)
+
+[^Ester]: Martin Ester, Hans-Peter Kriegel, JÃ¶rg Sander, Xiaowei Xu
+(1996). "A density-based algorithm for discovering clusters in large
+spatial databases with noise". In Evangelos Simoudis, Jiawei Han,
+Usama M. Fayyad. Proceedings of the Second International Conference on
+Knowledge Discovery and Data Mining (KDD-96). AAAI Press. pp. 226â€“231
+
+[^Farnstrom]: Farnstrom, F., Lewis, J., and Elkan,
+C. 2000. Scalability for clustering algorithms revisited. SIGKDD
+Explor. Newsl. 2, 1 (Jun. 2000), 51-57.
+
+[^Fayyad93]: Fayyad, Usama M.; Irani, Keki B. (1993) "Multi-Interval
+Discretization of Continuous-Valued Attributes for Classification
+Learning". hdl:2014/35171., Proceedings of the International Joint
+Conference on Uncertainty in AI (Q334 .I571 1993), pp. 1022-1027
+
+[^Fisher-Yates]: http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+
+[^Freund97] Freund Y, Schapire RE (1997) A decision-theoretic
+generalization of on-line learning and an application to boosting. J
+Comput Syst Sci 55(1):119â€“139
+
+[^Gama06]:
+Discretization from Data Streams: applications to Histograms and Data Mining (2006)
+by J Gama, C Pinto
+Proceedings of the 2006 ACM Symposium on Applied Computing.
+
+[^Garcia12]: Salvador GarcÄ±a, JoaquÄ±n Derrac, Jose Ramon Cano, and
+Francisco Herrera IEEE TRANSACTIONS ON PATTERN ANALYSIS AND MACHINE
+INTELLIGENCE, VOL. 34, NO. 3, MARCH 2012 417 Prototype Selection for
+Nearest Neighbor Classification: Taxonomy and Empirical Study
+
+[^Gupta04]: Gupta, Chetan and Grossman, R.,
+2004 SIAM International Conference on Data Mining,
+Genic: A single pass generalized incremental algorithm for clustering
+2004
+
+[^Hall03]: MA Hall, G Holmes, Benchmarking attribute selection
+techniques for discrete class data mining Knowledge and Data
+Engineering, IEEE Transactions on 15 (6), 1437-1447, 2003.
+
+[^Hand06]: David J. Hand, Classifier Technology and the Illusion of Progress,
+Statistical Science, Vol. 21, No. 1. (2006), pp. 1-14
+
+[^Hart68] P. Hart, â€œThe condensed nearest neighbor rule (corresp.),â€
+Information Theory, IEEE Transactions on, vol. 14, no. 3, pp. 515 â€“
+516, may 1968.
+
+[^Housing]: http://archive.ics.uci.edu/ml/datasets/Housing.
+
+[^Jain99]: A. K. Jain, M.N. Murthy and P.J. Flynn, Data Clustering: A
+Review, ACM Computing Reviews, Nov 1999.
+
+
+[^Jain10]: A. K. Jain, "Data Clustering: 50 Years Beyond K-Means" ,
+Pattern Recognition Letters, Vol. 31, No. 8, pp. 651-666, 2010.
+
+
+[^Kampenes07]: Vigdis By Kampenes, Tore DybÃ¥, Jo Erskine Hannay, Dag
+I. K. SjÃ¸berg: A systematic review of effect size in software
+engineering experiments. Information & Software Technology 49(11-12):
+1073-1086 (2007)
+
+[^Knuth]:
+http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Online_algorithm
+
+[^Koc11]: E. Kocaguneli, T. Menzies, and J. Keung. Kernel methods for
+software effort estimation. Empirical Software Engineering, pages
+1â€“24, 2011.
+
+[^Koc12a]: Ekrem Kocaguneli, Tim Menzies, Jacky W. Keung, "On the
+Value of Ensemble Effort Estimation," IEEE Transactions on Software
+Engineering, vol. 38, no. 6, pp. 1403-1416, Nov.-Dec., 2012
+
+[^Koc12b]: Ekrem Kocaguneli,Tim Menzies,Jacky Keung,David Cok,Ray
+Madachy, Active Learning and Effort Estimation: Finding the Essential
+Content of Software Effort Estimation Data,  IEEE Transactions on
+Software Engineering, vol. 99, no. PrePrints, p. 1, , 2012.
+
+
+
+[^Kohavi96]: Ron Kohavi (1996). Scaling up the accuracy of naive-Bayes
+classifiers: a decision tree hybrid. Proceedings of the Second
+International Conference on Knowledge Discovery and Data Mining.
+
+
+
+[^Kohavi97]: 
+Ron Kohavi, George H. John, Wrappers for feature subset selection,
+Artificial Intelligence
+Volume 97, Issues 1â€“2, December 1997, Pages 273â€“324.
+
+
+[^Liu10]: H. Liu, H. Motoda, R. Setiona, Z. Zhao, Feature Selection:
+An Ever Evolving Frontier in Data Mining JMLR: Workshop and Conference
+Proceedings 10: 4-13 The Fourth Workshop on Feature Selection in Data
+Mining, 2010.
+
+[^Mars99]: http://mars.jpl.nasa.gov/msp98/news/mco991110.html
+
+[^McCallum00]: McCallum, A.; Nigam, K.; and Ungar L.H. (2000) "Efficient
+Clustering of High Dimensional Data Sets with Application to Reference
+Matching", Proceedings of the sixth ACM SIGKDD international
+conference on Knowledge discovery and data mining, 169-178
+
+[^Menzies08]: Tim Menzies , Burak Turhan , Ayse Bener , Gregory Gay ,
+Bojan Cukic , Yue Jiang Implications Of Ceiling Effects In Defect
+Predictors, PROMISE 2008, Leipzig, Germany
+
+[^Menzies12a]: Tim Menzies, Andrew Butcher, David Cok, Andrian Marcus,
+Lucas Layman, Forrest Shull, Burak Turhan, Thomas Zimmermann, "Local
+vs. Global Lessons for Defect Prediction and Effort Estimation," IEEE
+Transactions on Software Engineering, vol. 99, no. PrePrints, p. 1, ,
+2012
+
+[^Minku12a]: MINKU, L. L.; YAO, X. . "DDD: A New Ensemble Approach For
+Dealing With Concept Drift.", IEEE Transactions on Knowledge and Data
+Engineering, IEEE, v. 24, n. 4, p. 619-633, 2012.
+
+[^Minku12b]: MINKU, L.; YAO, X. . â€œCan Cross-company Data Improve
+Performance in Software Effort Estimation?â€, Proceedings of the 8th
+International Conference on Predictive Models in Software Engineering
+(PROMISE'2012), p. 69-78, Lund, Sweden, September 2012
+
+[^Mittas12]: N. Mittas and L. Angelis, â€œRanking and clustering
+software cost estimation models through a multiple comparisons
+algorithm,â€ IEEE Transactions on Software Engineering (pre-print),
+2012
+
+[^NSGA-II]: Deb, K.; Pratap, A.; Agarwal, S.; Meyarivan, T.; , "A fast
+and elitist multiobjective genetic algorithm: NSGA-II," Evolutionary
+Computation, IEEE Transactions on , vol.6, no.2, pp.182-197, Apr 2002
+doi: 10.1109/4235.996017
+
+[^Peters13]: Fayola Peters, Tim Menzies, Liang Gong and Hongyu Zhang,
+Balancing Privacy and Utility in Cross-Company Defect Prediction, IEEE
+Transactions on Software Engineering, vol. 99, no. PrePrints, p. 1,
+2013.
+
+[^Sculley10]: D. Sculley. 2010. Web-scale k-means clustering. In
+Proceedings of the 19th international conference on World wide web
+(WWW '10). ACM, New York, NY, USA, 1177-1178
+
+[^Shannon]: http://goo.gl/SRaC2
+
+[^Quinlan]: Quinlan, J. R. C4.5: Programs for Machine Learning. Morgan
+Kaufmann Publishers, 1993.
+
+[^Wu08]: Xindong Wu, Vipin Kumar, J. Ross Quinlan, Joydeep Ghosh, Qiang
+Yang, Hiroshi Motoda, Geoffrey J. McLachlan, Angus Ng, Bing Liu,
+Philip S. Yu, Zhi-Hua Zhou, Michael Steinbach, David J. Hand and Dan
+Steinberg, Top 10 Algorithms in Data Mining, Knowledge and Information
+Systems, 14(2008), 1: 1-37.
+
+[^Yang09]: Ying Yang, Geoffrey I. Webb: Discretization for naive-Bayes
+learning: managing discretization bias and variance. Machine Learning
+74(1): 39-74 (2009)
+
+There are two approaches to teaching data mining and we will do both:
+
++ The _algorithmic_ approach reviews a set of commonly used data mining
+  algorithms. We will use this approach to introduce some core
+  ideas.
++ The _analysis patterns_ approach where we step back and look at
+  common usage patterns that combine  the algorithms. 
+
+The analysis patterns studied here will be:
+
++ _Data carving_ : Much of data mining is actually throwing away
+  superfluous details. Like Michelangelo cutting into marble
+  to release its buried sculpture, in data carving we
+    1.   Find an irrelevancy;
+  2.   Throw it away;
+  3.   Go to step 1.
++ _Divide_ :  A very common data carving technique is divide the data into two,
+  then recursive explore each split.
+  As we shall see, a  wide range of algorithms use divide.
++ _Evolve_ : Industrial data scientists know that their main goal in data carving is helping
+  clients, or researchers, change and improve their ideas.
++ _Engage_ :  Running algorithms is all very well but ideally we use them as 
+  part of a community of silicon and carbon intelligences, working towards some
+  goal. In that community, algorithms offer new insights that humans  
+  discuss and critiqued. This leads to more insight, more business knowledge, 
+  and more important
+  questions that can be addressed in the next round of data carving.
++ _Contrast_ : One way to help engagement is to contrast between different
+  items in the training data.  There are many ways to use contrast sets:
+     + _Diagnosis_ : (a.k.a. what went wrong) is the contrast between what we liked before and
+     what we do not like now.
+   + _Planning_ : (a.k.a. what to do) is the contrast between what the current situation
+     and what we might like better in the future.
+   + _Monitoring_ : (a.k.a. what not do) is the contrast between the
+     current situation and what we definitely do not want to see in
+     the future.  
+  It turns out the important contrast between things can be much
+  shorter that a detailed description of the things themselves. That
+  is, contrast set learning can generate succinct diagnoses, plans,
+  monitors that are quick to read, critique, and apply.:w
+:w
+

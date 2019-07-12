@@ -1,0 +1,18 @@
+url: se4ai.info
+about:
+ title: "SE 4 AI"
+ who: Tim Menzies 
+ when: 2019
+ what: 'SE in the age of AI'
+ email: 'timm@ieee.org'
+ bold: '003366'
+markdown: kramdown
+kramdown:
+ input: GFM
+ auto_ids: true
+ hard_wrap: false
+ highlighter: rouge
+users:
+ erik:
+  name: Erik
+  email_address: erik.gillespie@wizbang.com

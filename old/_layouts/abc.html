@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		{% include header.html %}
+	</head>
+	<body>
+		<div class=wrapper>
+			{% include banner.html %}
+			<center>
+				<table>
+					<tr><td align=right><b>ABC:</b> </td><td width=20></td><td>	
+							<a href="data.md">Data</a> |  
+							<a href="mine.md">Data Mining</a> |  
+							<a href="optimize.md">optimization</a> 
+						</td></tr>
+				</table>
+			</center>
+			<hr>
+			<h1>{{page.title}}</h1>
+			{{ content }}
+			<hr>
+			<center>
+				{% include footer.html %}
+			</center>
+		</div>
+	</body>
+</html>
