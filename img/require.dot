@@ -1,5 +1,5 @@
 digraph {
- rankdir=LR
+ #rankdir=LR
 {rank=same; trans1; count1; effect; rite; data; nomiuse;well}
 
 /*
@@ -46,7 +46,8 @@ do that!" or "This code does not handle ABC so it needs DEF and here is a sample
 Three core concepts in that design are goals, clustering and streaming.
 
 */
-goals  [label="Goals", shape=none]
+edge [color=red]
+goals  [label="Goalss", shape=none]
 /*
 
 #### Goals 
@@ -107,7 +108,7 @@ This is an important part of ethically-aligned design so we say:
 
 */
    opt  [label=Optimization shape=none]
-   goals -> opt [label=1]
+   goals -> opt 
 
 /*  
 
@@ -181,7 +182,7 @@ in decisions about not hiring a job candidate).
 */
 
    fair [label="b.Fairness" shape=box style=filled fontcolor=white fillcolor=black]
-   {goals;opt;} -> fair [label=2]
+   {goals;opt;} -> fair 
 
 /*
 
@@ -229,7 +230,7 @@ That is:
 
 
    stable  [label="stability",shape=none]
-   stable -> safe [label=19]
+   stable -> safe 
 
 /*
 
@@ -288,6 +289,13 @@ data set.
 
 */
 
+"col.py" -> {"num.py";"sym.py"} [arrowhead="diamond"]
+
+
+{"num.py";"sym.py"; "row.py"} -> "rows.py" [arrowhead="none"]
+"rows.py" -> {stream;cluster}
+edge [color=blue]
+
 
 stream -> stable
 {rank=same; cluster; goals; stream;}
@@ -295,7 +303,7 @@ stream -> stable
 fair -> trans [label=21]
 {safe;priv; count;} -> comp [label=20]
 {inc; priv; } -> data [label=19]
-alearn [label="active\nlearning" shape=none]
+alearn [label="incremental\nlabelling" shape=none]
 stream  [label=streaming shape=none]
 growth  [label="performance\ngrowth curves" shape=none]
 compress  [label="compress" shape=none]
