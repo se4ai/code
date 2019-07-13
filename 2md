@@ -4,9 +4,9 @@
 
 Top=$(git rev-parse --show-toplevel)
 
-There=$Top/../code/src
-
-worker() {
+There=$Top/../web
+Url=https://github.com/se4ai/code/tree/master
+py2md() {
 gawk 'BEGIN {  
          q="\""
          print ""
@@ -17,8 +17,10 @@ gawk 'BEGIN {
         print "---"
         print "title: " $0
         print "layout: default"
-        print "hascode: true"
+        print "code: true"
         print "---"
+        print ""
+        print "Read the code on [Github]("$Url/$1")."
         print ""
       }
   /^"""</,/^>"""/ {  next } 
@@ -36,24 +38,22 @@ gawk 'BEGIN {
             }'
 } 
 main() {
-  arg=$1
+  com=$1
+  arg=$2
   file=$(basename $arg)
   stem="${file%%.*}"
-  out=$Top/${stem}.md
+  out=$There/${stem}.md
   echo "# $(basename $arg) ==> $out"
-  cat $1 | worker  > $out
+  cat $1 | $com $file  > $out
   git add $out
 }
 if [ -n "$1" ]; then
   main $1
   git commit -am as
 else
-  for f in $There/*.md; do
-    main $f
+  for f in $There/*.py; do
+    main py2md $f
   done
-  for f in $There/*.put; do
-    main $f
-   done
   git commit -am as
   git push
 fi

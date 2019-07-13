@@ -83,6 +83,11 @@ set-option -g visual-silence off
 set-window-option -g monitor-activity off
 set-option -g bell-action none
 
+#old set-window-option -g window-status-current-bg red 
+#new set-window-option -g window-status-current-style bg=red i
+#old set-option -g pane-active-border-fg blue 
+#new set-option -g pane-active-border-style fg=blue.
+
 #  modes
 setw -g clock-mode-colour colour5
 setw -g mode-attr bold
