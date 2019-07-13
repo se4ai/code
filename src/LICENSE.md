@@ -1,6 +1,3 @@
-
-"""
-
 # BSD 2-Clause License
 
 Copyright (c) 2019, Tim Menzies and Tom Zimmermann

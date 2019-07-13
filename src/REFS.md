@@ -1,6 +1,3 @@
-
-"""
-
 # References
 
 ## Ao

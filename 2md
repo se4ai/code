@@ -5,9 +5,23 @@
 Top=$(git rev-parse --show-toplevel)
 
 There=$Top/../web
-Url=https://github.com/se4ai/code/tree/master
+Url="https://github.com/se4ai/code/tree/master"
+
+md2md() {
+  cat $1 | gawk '
+  /^# /{ sub(/^#/,"")
+        print "---"
+        print "title: \"" $0 "\""
+        print "layout: default"
+        print "---"
+        next
+      }
+  1 '
+} 
 py2md() {
-gawk 'BEGIN {  
+  url="$2"
+  file="$1"
+  cat $file | gawk 'BEGIN {  
          q="\""
          print ""
          First = 1      
@@ -15,12 +29,12 @@ gawk 'BEGIN {
   }         
   /^# /{ sub(/^#/,"")
         print "---"
-        print "title: " $0
+        print "title: \"" $0 "\""
         print "layout: default"
         print "code: true"
         print "---"
         print ""
-        print "Read the code on [Github]("$Url/$1")."
+        print "Read the code on [Github]('$url') <font color=orange><i class=\"fab fa-github-3x\"></i></font>."
         print ""
       }
   /^"""</,/^>"""/ {  next } 
@@ -37,24 +51,38 @@ gawk 'BEGIN {
   END     { if (In) print "````"
             }'
 } 
+AFTER=true
 main() {
-  com=$1
-  arg=$2
+  com=$2
+  arg=$1
   file=$(basename $arg)
   stem="${file%%.*}"
   out=$There/${stem}.md
-  echo "# $(basename $arg) ==> $out"
-  cat $1 | $com $file  > $out
-  #git add $out
+  if [ "$1" -nt "$out" ]; then
+    echo "# $(basename $arg) ==> $out"
+    $com $1 $Url/$file > $out
+    (cd $There; git add $out)
+    AFTER=finish
+  fi
 }
-if [ -n "$1" ]; then
-  main $1
-  git commit -am as
-else
-  for f in $There/*.py; do
-    main py2md $f
-  done
-  #git commit -am as
-  #git push
-fi
 
+finish() {
+  cd $There
+  git commit -am as
+  git push
+}
+
+mkdir -p $There/img
+
+cd $Top
+for f in $(diff -q img $There/img | gawk '{print $(NF-1)}'); do
+  g=$(basename $f)
+  echo "adding $g"
+  cp img/$g $There/img/$g
+  AFTER=finish
+done 
+
+for f in src/*.py; do main $f py2md ; done
+for f in src/*.md; do main $f md2md ; done
+
+$AFTER

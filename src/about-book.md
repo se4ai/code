@@ -1,9 +1,6 @@
+# About this book
 
-"""
-
- ## About this book
-
- This book is about using better software engineering to build better AI software. Most of our case studies come from our experience in applying AI to software engineering-- which means that **this book is about  SE for AI for SE**.
+This book is about using better software engineering to build better AI software. Most of our case studies come from our experience in applying AI to software engineering-- which means that **this book is about  SE for AI for SE**.
 
  AI is a very broad topic, discussed in
  [so](REFS.md#norvig-2009) 
@@ -12,7 +9,7 @@
  [other](REFS.md#witten-2016)
  books. What make this book different is trhee things. Firstly,  we look
  at 
- AI tools that have had much recent   impact on software
+ AI tools with recent   impact on software
  engineering. Specifically, we will talk a lot about data mining algorithms;
  some about optimizers; and a little about theorem provers
  (and we say more about  all these, [below](#3tools)).
@@ -24,21 +21,21 @@
  - Your  first question should not be  be  "what data miners should I apply to this data?";
  - Rather, it should be  "what are the ethical requirements of this development? And how can we best support those requirements?".
   
-  ## But is "SE for AI" that important?
+## But is "SE for AI" that important?
 
   It is timely to talk about SE for AI.  **AI software is still software**. And any  software
    (be it AI software, or otherwise) needs installation, configuration, maintenance, interfacing to other software, testing, certification,  user support, usability additions, and packaging (for distribution). As shown below, Bill Benton from Redhat [reports that](REFS.md/#benton-2019) that when we look at the data mining pipelines used to distribute and scale AI tools, there is  much overlap between the activities of data scientists and   more traditional activities  like data engineer and application developer. That is,   
    **AI software needs care and feeding by software engineersi**. 
 
 <p align="center">
-  <img  src="img/benton19.png">
+  <img  src="/img/benton19.png">
 </p>
 
    Another reason to explore SE for AI is that  
    **most "AI software" is not about AI**.   David Sculley  [offers the following  diagram](REFS.md/#sculley-2015) showing the size (in lines of code) of  Google's software suite. Note how small is the AI box (shown in black), buried away in the middle of all the other software.
 
 <p align="center">
-  <img  src="img/googleloc.png">
+  <img  src="/img/googleloc.png">
 </p>
 
 
@@ -138,10 +135,10 @@ _Unsupervised algorithms_   group together items with similar values. Some algor
 Another kind of unsupervised learning algorithm, are _association rule learners_ that report what column values often occur together.  For example, if we look for patterns in logs of software projects from the 1980s and the 2010s, an association rule learner might report that:
 
 ```
-# rule format: IF ==> THEN
-# IF, THEN = lists of column values
-[age=old, speed=fast] ==> [language=c, os=unix]
-[application=web] ==> [os=aws] 
+  # rule format: IF ==> THEN
+  # IF, THEN = lists of column values
+  [age=old, speed=fast] ==> [language=c, os=unix]
+  [application=web] ==> [os=aws] 
 ```
 
 Unlike clustering algorithms, association rule learners offer some  generalization since they do not report all the rows or all the columns.
@@ -178,7 +175,7 @@ For example, splitting _age_ are 120 years  divides the goal of  _heartRate_  in
 
 Sometimes, such splits are misleading since they hide important numeric detail. And other times, such splits are very useful since they reduce the search space. This is because concepts spread out across a very large numeric range can be made visible by condensing the large range into a few splits.  
 
-# Exercise
+## Quiz
 
 
 In this papge,  find two technical terms; e.g. the CART data miner, e.g. the NSGA-II optimier
