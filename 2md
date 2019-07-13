@@ -79,6 +79,7 @@ for f in $(diff -q img $There/img | gawk '{print $(NF-1)}'); do
   g=$(basename $f)
   echo "adding $g"
   cp img/$g $There/img/$g
+  (cd $There/img; git add $g)
   AFTER=finish
 done 
 
