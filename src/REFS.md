@@ -24,6 +24,11 @@ Y. Brun and A. Meliou, “Software fairness,” ser. ESEC/FSE 18. NY, USA: ACM, 
 
 ## C
 
+### Chak 2019
+
+Joymallya Chakraborty, Tianpei Xia, Fahmid M. Fahid, Tim Menzies, 2019,
+Software Engineering for Fairness: A Case Study with Hyperparameter Optimization
+IEEE ASE'19.
 
 ### Chen 2018
 
@@ -91,6 +96,10 @@ Mark Harman, S. Afshin Mansouri, and Yuanyuan Zhang. 2012.
 applications." ACM Comput. Surv. 45, 1, Article 11 (December 2012),
 61 pages. DOI=http://dx.doi.org/10.1145/2379776.2379787
 
+### Hall 2003
+
+Hall, Mark & Holmes, Geoffrey. (2003). Benchmarking Attribute Selection Techniques for Discrete Class Data Mining. Knowledge and Data Engineering, IEEE Transactions on. 15. 1437- 1447. 10.1109/TKDE.2003.1245283. 
+
 ## I
 
 ### IEEEethics 2019
@@ -124,6 +133,10 @@ Problems. Science 208, 4450 (1980), 1335–1342.
 DOI:http://dx.doi.org/10.1126/science.208.4450.1335
 arXiv:http://science.sciencemag.org/content/208/4450/1335.full.pdf
 
+### Levenson 1995
+
+Nancy G. Leveson. 1995. Safeware: System Safety and Computers. ACM, New York, NY, USA.
+
 ### Lipton 2016
 
 Zachary C Lipton. 2016. The mythos of model interpretability. arXiv
@@ -142,6 +155,10 @@ Wei Ji Ma, Masud Husain, and Paul M Bays. 2014. Changing concepts of working mem
 Thilo Mende and Rainer Koschke. 2010. Effort-aware defect prediction
 models. In Software Maintenance and Reengineering (CSMR), 2010 14th
 European Conference on. IEEE, 107–116.
+
+### Menzies 2009a
+
+Tim Menzies, Oussama El-Rawas, Jairus Hihn, and Barry Boehm. 2009. Can we build software faster and better and cheaper?. In Proceedings of the 5th International Conference on Predictor Models in Software Engineering (PROMISE '09). ACM, New York, NY, USA, , Article 2 , 9 pages. DOI=http://dx.doi.org/10.1145/1540438.1540442
 
 ### MicroAi 2019
 
@@ -219,6 +236,10 @@ Press, Cambridge, MA, USA, 2503-2511.
 Shiang-Yen Tan and Taizan Chan. 2016. Defining and conceptualizing
 actionable insight: a conceptual framework for decision-centric
 analytics. arXiv preprint arXiv:1606.03510 (2016).
+
+### Tan 2016a
+
+Tantithamthavorn, C., McIntosh, S., Hassan, A. E., & Matsumoto, K. (2016, May). Automated parameter optimization of classification techniques for defect prediction models. In 2016 IEEE/ACM 38th International Conference on Software Engineering (ICSE) (pp. 321-332). IEEE.
 
 ## W
 

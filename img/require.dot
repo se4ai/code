@@ -6,83 +6,243 @@ digraph {
 
 The following diagram shows one way to map the Microsoft principles (the black shaded nodes marked
 a,b,c,d,e,f)
-into the IEEE principles (the gray sharded nodes marked 1,2,3,4,5,6,7,8):
+into the IEEE principles (the gray shaded nodes marked 1,2,3,4,5,6,7,8):
 
 
-- _Compentence_ is all itself  since the IEEE definition of that principle seems to be more
+- _Competence_ is all itself  since the IEEE definition of that principle seems to be more
 about the developer than the design patterns and algorithms which are being developed. 
 - There are two terms with similar meanings mentioned by
-IEEE and Microsfot: _accountability_ and _transparency_.  For simplicity sake, we just link them too each other.
+IEEE and Microsoft: _accountability_ and _transparency_.  For simplicity sake, we just link them too each other.
 
 
 This mapping  is hardly definitive since many of these concepts are being rapidly evolved.
 One way to assist in the evolution of these concepts is to define them use discrete maths; i.e. using data structures
 and algorithms-- which is the point of the rest of this chapter. 
 
-## Desgin Details
+## Design Details
 
-The principles supported bythis design are shown on one side the above diagram.
-The other sode of that daigram shows the modules and algorthms needed to support that design.
+The principles supported by this design are shown on one side the above diagram.
+The other side of that diagram shows the modules and algorithms needed to support that design. 
 Before exploring those modules and algorithms, we stress three points:
 
 - Most of the concepts in this diagram is not mentioned in a standard machine learning or AI text.
   That is, ethical-aligned design raises many issues that extend our thinking far away from traditional approaches.
-- While this diagram looks complex, t reallly isn't. Much of  its complexity is in the mapping between
+- While this diagram looks complex, it really isn't. Much of  its complexity is in the mapping between
   the IEEE and Microsoft principles. Apart from that, a few modules are enough to support most of this
   ethically-aligned design. This chapters describes those modules, in broad strokes. Our sample source
-  code offers much more details on thise modules.
-- The aim of the following is to get software engineers
-   thinking about how to better design their systems.  
-   So while the following is **one** way, it is by not means  **the only** way, to design
-  for ethical AI.  
+  code offers much more details on these modules.
+- The back of this book offers KNEAD[^knead],  a sample implementation of this ethically-aligned design for AI
+tools. 
+   while KNEAD following is **one** way to build an ethically-aligned AI tool, it is by not means  **the only** way
+to do it.
 We hope that the reader's 
-reaction to the this design  would be: "Hey! there's a better way to
-do this!" or "This code does not handle ABC so I propose DEF".
+reaction to this code is  "Hey! There's a better way to
+do that!" or "This code does not handle ABC so it needs DEF and here is a sample implementation of that".
+
+[^knead]: KNEAD is short for "the Knowledge Needed for Ethically-Aligned Design".
 
 ### Core Concepts
 
 Three core concepts in that design are goals, clustering and streaming.
 
 */
-goals  [shape=none]
-goals -> opt [label=1]
+goals  [label="Goals", shape=none]
 /*
 
 #### Goals 
 
-Project managers can make a very large number of decsions about a
-project. Different kinds of projects have different definitoons
-of what is "best". For example:
+Before doing anything else, we reason about the _goals_ of the system.
+To show that a system is performing as is it should be,
+we need to know what people expect from that system,
+That is, the first thing we must say is that:
+
+    Goals -> Competence
+
+*/
+
+    effect [label="Competence" shape=box style=filled fillcolor=gray]
+    goals -> comp  
+
+/*
+
+Anyone who has done any requirements engineering knows that systems
+are build for stakeholders and different stakeholders have different goals.
+For example, project managers can make a very large number of decisions about a
+project and  different kinds of projects have different definitions
+of what is "best":
 
 -  For safety critical applications, the goal
-is ultra-relibaility. For such systems, it is reasonable
+is ultra-reliability. For such systems, it is reasonable
 to spend much effort to fund most errors in a system. 
-- For other kinds of applications (e.g. rushing out a new software game so
+- For other kinds of applications (such as rushing out a new software game so
 this organization can secure the cash flow needed for next month's salaries) 
 it it is reasonable to skip over low-priority bugs, just to ship the product sooner.
 
-The point here is that we cannot talk about a system's safety and realibaility, unless 
-we know its goals. Without those goals, we cannot define 
-what "unsafe conditions" mean, nor do we know 
-what 
-services must always be reliabled offered.
-Hemce we say:
+One way to reason about the _inclusiveness_ of a system is to ask how well
+does the system meet  the goals of different stakeholders.
+
+      Goals -> Inclusiveness  
+
+*/
+    goals -> inc  
+/*
+Of course, in practice, not every goal of every stakeholder can be satisfied.
+Sometimes, AI tools have to trade-off between competing goals. For example,
+in the 1990s,
+NASA had the goals of "better,faster,cheaper" space ships. But after some
+very high-profile (and every expensive) mission failures, that mantra
+was often modified to "better,faster,cheaper, pick any two" [^bfc]. 
+
+[^bfc]: For an interesting discussion on what worked, and what did not work,
+with "better, faster, cheaper", see [Can we build software faster and better and cheaper?](/REFS#menzies-2009a).
+
+To accommodate trading off between multiple goals, _optimization_ software
+allows their users to enter in some _objective function_ which can be
+used to assess different solutions. That is, with optimizes, the
+goals are part of the input space, supplied prior to execution. Using that
+optimizer, we can better meet the goals of our stakeholders. 
+This is an important part of ethically-aligned design so we say:
+
+    Goals -> Optimization
+
+*/
+   opt  [label=Optimization shape=none]
+   goals -> opt [label=1]
+
+/*  
+
+A certain kind of optimizer, called a _hyperparameter optimizer_
+is very useful for  improving learners. AI tools such as data miners
+come with numerous "magic"  hyperparameters which are set via
+"engineering judgment" (otherwise known as "guesses").
+For example:
+
+-  When learning a random forest, one such magic
+control hyperparameter is the number of trees in the forest. 
+- One common result is that the performance of Naive Bayes classifiers
+  can be improved via _discretization_  which means dividing  columns of numeric
+  data into a couple of bins. In this case, the number of bins is the hyperparameter.
+
+The performance gains from hyperparameter optimization can be [very large indeed [^hyper]. Hence we say:
+
+[^hyper]: See [Fu et al.](/REFS#fu-2017s) and the work of [Tantithamthavorn et al.](/REFS:tan-2016a).
+
+    Optimization -> Effectiveness
+
+But hyperparameter optimization can be very slow, unless large problems are divided into smaller ones.
+Hence, for pragmatic reasons, it is useful to cluser the space of options before doing optimization.
 
 
-    goals -> reliability&safety
+   Clustering -> Optimization
 
-XXX an say we are inclusive unless we underwtadnteh different goals of the different stakeholders. so knowledge of goals is key
+*/
 
-XXXx better faster cheaper
-
-XXX how tog et goals" the timmmatrix
-*/ 
-    goals -> safe [label=110] 
-    goals -> inc [label=11] 
+    opt -> comp
+    cluster  [shape=none]
+    cluster -> opt
 
 /*
-XXX bettter faster cheapr
+
+While not widely appreciated,
+hyperparameter optimizers are also very useful for maintaining fairness. 
+To understand that sentence, a little data mining theory is needed. Data can be fitted
+to many models [^simp]. 
+
+![](https://imgs.xkcd.com/comics/curve_fitting.png)
+
+Each of these models can perform differently.
+One performance measure, that is relevant to fairness, is 
+that we should not use
+certain attribute if we we can help it
+(e.g. attributes relating to gender, age, race, etc)[^fair1]. 
+[In our experience](/REFS#chak-2019), 
+if we do/do not tell the learner about the fairness goal,
+then we will/will not generate fair models.
+That is:
+
+[^simp]: To avoid needlessly complex models, one common technique 
+is _simplest first_. 
+For example, when Mark Hall and Geoffrey Holmes implemented
+the [CFS feature selector](/REFS#hall-2003)
+as 
+a _forward select_ search over _N_ features starts with _N_ models (each containing one feature) then
+mixes and matches those models to build progressively large feature sets. This search stops
+when the larger models are performing no better than the smaller ones. 
+
+[*fair1]: Of course, sometimes those attributes are more important than anything else
+for predicting some goal. For example, many illnesses are age related. That said,
+when using attributes like age, race, or gender is optional (i.e. we can achieve our
+goals without using that kind of sensitive information) then it is at the least kind and polite
+to do so (and, at the very most, it can be illegal to do so; e.g. using gender information
+in decisions about not hiring a job candidate).
+
+  Goals and Optimization -> Fairness
+
+*/
+
+   fair [label="b.Fairness" shape=box style=filled fontcolor=white fillcolor=black]
+   {goals;opt;} -> fair [label=2]
+
+/*
+
+Goals are important for more that just competency and inclusion and fairness.
+Reliability and safety have to be assessed with respect to a system's goals.
+Without knowledge of the  goals, we may not be able to:
+
+- Define what "unsafe conditions" mean;  
+- Or declarer what services must always be reliable offered.
+
+Hence we say:
+
+    Goals -> Reliability & Safety
+
+*/
+
+    safe [label="d.Reliability\n&Safety" shape=box style=filled fontcolor=white fillcolor=black]
+    goals -> safe
+
+/*
+
+There are many other aspects to reliability and safety (in fact, there are whole
+conferences devoted to that very topic[^issre]). Covering all those aspects would
+require an entirely separate book](/REFS#evensong-1995).
+Here, we restrict ourselves to one aspect of reliability that are usual skipped
+over in data mining textbooks.
+Most learners suffer from a _sampling bias_ where different data (or different ordering of the
+  training data) leads to different models. Hence, we require that the performance of an
+  AI tool be _stable_ across a reasonable variation of the data. For example, while sometimes
+  it is useful to replace an old model with a better one, we would hope that some model be
+  _stable_ for at least some period of time after it was created.
+
+XXX stabilit y needs regions , not points (harman quote)
+
+[^issre]: See the International Symposium on Software Reliability Engineering.
+
+
+
+That is:
+
+    stability -> reliability
+
+
+*/
+
+
+   stable  [label="stability",shape=none]
+   stable -> safe [label=19]
+
+/*
+
+XXX how tog et goals" the timmmatrix
+
 XXX find the most bugs in fewest lines
+
+Note that a many learners need some form of adaption to be a good goal-based reasoner.  As shown
+in our sample code, that adapation is not difficult and the resulting goal-based reasoner
+uses many components that would be familiar to anyone with some machine learning experience:
+
+- First cluster the data 
+
 Many learning systems have goals hardwired into them (e.g. reduce mean-squared error or reduce entropy).
 This means that those learning systems built their models to satisfy goal1, even though the generated
 models may be assessed via some other goal2. For example, many learners were developed and debugged
@@ -127,8 +287,6 @@ equations that reduce the difference between their predictions and the actual va
 data set.
 
 */
-goals -> comp [label=0] 
-{goals;opt;} -> fair [label=2]
 
 
 stream -> stable
@@ -138,7 +296,6 @@ fair -> trans [label=21]
 {safe;priv; count;} -> comp [label=20]
 {inc; priv; } -> data [label=19]
 alearn [label="active\nlearning" shape=none]
-opt  [label=optimization shape=none]
 stream  [label=streaming shape=none]
 growth  [label="performance\ngrowth curves" shape=none]
 compress  [label="compress" shape=none]
@@ -146,17 +303,14 @@ env  [label="certification\nenvelope" shape=none]
 repair  [label="repair" shape=none]
 sharing  [shape=none]
 transfer  [shape=none]
-cluster  [shape=none]
 context  [shape=none]
 explain  [shape=none]
 monitor  [shape=none]
-stable  [shape=none]
 obs [label=obsfication shape=none]
 anomaly  [label="anomaly\ndetection"shape=none]
 fftree  [shape=none label="rule\nlearner"] 
 
 fftree  -> opt [label=20] 
-stable -> safe [label=19]
 {cluster; compress -> obs;} -> priv [label=18]
 {safe; fair;} -> well [label=17]
 {safe; fair; priv; inc; } -> rite [label=16]
@@ -177,16 +331,13 @@ stream -> repair -> comp [label=5]
 compress -> env -> comp [label=4]
 stream -> growth -> comp [label=3]
 trans [label="a.Transparency" shape=box style=filled fontcolor=white fillcolor=black]
-fair [label="b.Fairness" shape=box style=filled fontcolor=white fillcolor=black]
 inc [label="c.Inclusiveness" shape=box style=filled fontcolor=white fillcolor=black]
-safe [label="d.Reliability\n&Safety" shape=box style=filled fontcolor=white fillcolor=black]
 priv [label="e.Privacy\n&Security" shape=box style=filled fontcolor=white fillcolor=black]
 count [label="f.Accountability" shape=box style=filled fontcolor=white fillcolor=black]
 
 rite [label="1.Human\nRights" shape=box style=filled fillcolor=gray]
 well [label="2.Well\nBeing" shape=box style=filled fillcolor=gray]
 data [label="3.Data\nAgency" shape=box style=filled fillcolor=gray]
-effect [label="4.Competence" shape=box style=filled fillcolor=gray]
 trans1 [label="5.Transparency" shape=box style=filled fillcolor=gray]
 count1 [label="6.Accountability" shape=box style=filled fillcolor=gray]
 nomiuse [label="7.Aware of\nMisuse" shape=box style=filled fillcolor=gray]
