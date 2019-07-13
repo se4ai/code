@@ -1,12 +1,13 @@
-#!/usr/bin/env bash
-
 # usage: sh ell
 
-WGET=$(which wget)
-GIT=$(which git)
-
-if [ -z "$WGET" ]; then echo "missing: wget"; exit; fi
-if [ -z "$GIT"  ]; then echo "missing: git";  exit; fi
+AFTER=true
+for c in wget git tmux vim bash gawk; do
+   if [ -z "$(which $c)" ]; then 
+     AFTER=exit
+     echo "#E> missing: $c"
+    fi
+done
+$AFTER
 
 export Ell=$(git rev-parse --show-toplevel)
 From=https://raw.githubusercontent.com/se4ai/code/master/etc
