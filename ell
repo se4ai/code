@@ -1,7 +1,7 @@
 # usage: sh ell
 
 AFTER=true
-for c in wget git tmux vim bash gawk; do
+for c in python3 wget git tmux vim bash gawk; do
    if [ -z "$(which $c)" ]; then 
      AFTER=exit
      echo "#E> missing: $c"
