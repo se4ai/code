@@ -45,7 +45,7 @@ main() {
   out=$There/${stem}.md
   echo "# $(basename $arg) ==> $out"
   cat $1 | $com $file  > $out
-  git add $out
+  #git add $out
 }
 if [ -n "$1" ]; then
   main $1
@@ -54,7 +54,7 @@ else
   for f in $There/*.py; do
     main py2md $f
   done
-  git commit -am as
-  git push
+  #git commit -am as
+  #git push
 fi
 
