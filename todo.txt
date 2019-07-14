@@ -15,6 +15,52 @@ need to highlight hte mantras and the technical terms
 need refs for
 
 \cite{ladd1998evidence,burrell2016machine,corbett2018measure,galindo2000credit,yan2013system,chalfin2016productivity,ajit2016prediction,berk2015machine,berk2016forecasting}. 
+w:w
+
+Understanding the _neighborhood_ of a solutions is an
+open and pressing issue. As [Mark Harmon](REFS#harman-2007) says:
+
+- "In some software engineering applications, solution robustness may be as important as solution functionality. For example, it may be better to locate an area of the search space that is rich in fit solutions, rather than identifying an even better solution that is surrounded by a set of far less fit solutions.
+- "Hitherto, research has tended to focus on the production of the fittest possible results. However, many application areas require solutions in a search space that may be subject to change. This makes robustness a natural second order property to which the research community could and should turn its attention.”
+
+
+Many software engineering
+problems are over-constrained and no precise solution over all
+variables is achievable. In that scenario, the best we
+can do explore is trade offs between potentiall competing goals.
+In this approach:
+
+-  Problem solving means
+searching through the available alternatives until an acceptability threshold is met on some goals (as apposed to reaching a "best" point for all possible
+goals).  
+- It necessary to know how far any particular decision can be changed without compromising some
+objective.
+
+For this reason, we need solutions that speak of _regions_, not
+_points_. That is,       
+is a reasonable way to configure an agile prokect.
+
+The result of such a search is a _frontier_ of solutions; i.e.
+a curve of solutions within the space of different goals such that those solutions cannot be
+improved for any one goal without compromising another.
+ allocation of resources from which it is impossible to reallocate so as to make any one individual or preference criterion better off without making at least one individual or preference criterion worse off.
+Vifredo Pareto called the se
+
+The term satisficing, ] was introduced by Herbert A. Simon in 1956,[3] although the concept was first posited in his 1947 book Administrative Behavior.[4][5] 
+Herbert Simon describes this method as _satisficing_
+(a portmanteau of satisfy and suffice).
+He posits that it is all we can do when 
+ an optimal solution cannot be determined.
+
+
+In that scenario,  the best we can do is satisficing.partial solutions based on
+heuristic search methods are preferred. Solution robustness is a
+major problem for such partial heuristic searches.  2 The results
+of such partial heuristic search may be “brittle”; i.e. small changes
+to the search results may dramatically alter the effectiveness of
+the solution [31].
+
+When offering partial solutions, it is very important to also offer insight into the space of options around the proposed solution. Such neighborhood information is very useful for managers with only partial control over their projects since it can give them confidence that even if only some of their recommendations are effected, then at least the range of outcomes is well understood.
 
 
 # Code

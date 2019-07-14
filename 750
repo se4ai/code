@@ -23,6 +23,7 @@ while [ 1 ]; do  # dsad asd as das
   now=$(wc -w $what | gawk '{print $1}')
   delta=$(echo $((now - when)))
   clear
-  figlet -w 70 "$delta new words"  
+  figlet -w 70 "$delta"  
+  echo "new words"
   sleep 2 
 done

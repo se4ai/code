@@ -1,5 +1,5 @@
 digraph {
- #rankdir=LR
+ rankdir=LR
 {rank=same; trans1; count1; effect; rite; data; nomiuse;well}
 
 /*
@@ -43,16 +43,89 @@ do that!" or "This code does not handle ABC so it needs DEF and here is a sample
 
 ### Core Concepts
 
-Three core concepts in that design are goals, clustering and streaming.
+Three core concepts in that design are clustering, goals, and streaming.
 
 */
-edge [color=red]
-goals  [label="Goalss", shape=none]
+edge [color=blue]
+goals  [label="Goals", shape=none]
 /*
+
+#### Clustering
+
+For many  reasons, clustering is at the core of this design. Reasoning
+is rarely one-size-fits-all. When we go to see  a doctor, we expect that
+the treatments offered are contextualized to what is appropriate
+for people like us having problems like us.
+
+Many authors discuss contextualizing the reasoning of AI tools.
+For example, [Kai Petersen & Claes Wohlin](REFS#petersen-2009)
+ offer a rich set of dimensions
+ along which software projects can be contextualized (processes,
+ product, organization, market, etc). But what they do
+not  offer is a  way to learn
+ new contextualizations for new projectsi.
+Also,
+ while their arguments are convincing, they offer no experimental
+ confirmation that their contexts are the "right" contexts. 
+
+Clustering is useful for (a) when local contexts matter, but  (b) we are not sure if reusing
+someone's prior definitions for "context" are appropriate. Under those conditions,
+we can run a clustering algorithm tofind informative groups within data.
+
+
+Clustering is also useful for pragmatic reasons:
+Some problems are too complex to run all together--
+in which case it can be useful to [explore several small sub-problems](REFS#majumder-2018)
+(found by clustering) rather
+then one super-large problem.
+
+Also, models complex enough to cover all the data can become succinct and easily
+understood when learned just  from local clusters.
+
+Further, by learning different models for each cluster, the performance of the per-cluster
+models can be better than those that seek to ocver all the data. For example,
+recursive clustering is an interesting way to implet multi-objective optimizers XXXsway
+
+Not only that, but clustering is useful for anomaly detection,
+compression, sharing, privacy, and repair.
+
+- Once data is clustered, we can [buidl an anomaly detector](REFS#peters-2015)
+by recording the avegaeg distance between rows in each cluster. New rows are anomalous if they  are unusually distant
+from the other rows in its nearest cluster
+- Another thing we can do with clusters is to compress the data by 
+[retaining only some rows from each cluster](REFS#nair-2018). 
+This makes
+  clustering a useful method for sharing data (do not share all the data, just a few samples
+  from each cluster). 
+- Further, this can be basis of a privacy algorithm. If we are only sharing compressed data,
+then all the rows _not_s ahred are 100% private. As to the data that we do share, a 
+[little mutation of those rows](ROWS#peters-2015) can decrease the odds that these rows will reveal sensitive information.
+- Note also that clustering and compression enables
+_certification envelopes_; i.e. oracles that can advise if you
+are asking the right model the right questions.  Certification envelopes let us check if
+new data is something the model is already familiar with (and if not, we can alert
+the user that the model may give misleading results for this new data). 
+
+XXX incremetnal revpair
+
+Certication
+envelope might have [saved the lives of the Columbia Space Shuttle crew](REFS#columbia-2003).
+At launch, Columbia was struck with a
+1200 cubic centimeter block of ice travelling 470mph (relative to
+the craft). A model called CRATER reported that that this ice struck
+would have neglible imapct on the craft.  But CRATER was trained in 3
+cubic centimeter ice blocks travelling at less that 100 mph.  
+Since CRATER had no certification envelope, this
+mismatch between CRATER's area of expertise, and the question
+it was now being asked, was not detected. 
+When Columbia re-entered the atmospher,
+it
+spun out of control and disintegrated (killing the crew of eight)
+since the ice had punched a large hole in its airframe.
+
 
 #### Goals 
 
-Before doing anything else, we reason about the _goals_ of the system.
 To show that a system is performing as is it should be,
 we need to know what people expect from that system,
 That is, the first thing we must say is that:
@@ -60,6 +133,19 @@ That is, the first thing we must say is that:
     Goals -> Competence
 
 */
+edge [color=red]
+anomaly  [label="anomaly\ndetection"shape=none]
+compress  [label="compress" shape=none]
+cluster -> context -> comp 
+{cluster; compress -> obs;} -> priv 
+cluster -> { fftree;} 
+cluster -> compress 
+compress ->  sharing 
+env  [label="certification\nenvelope" shape=none]
+compress -> env -> anomaly -> {comp; safe;}
+env -> safe
+
+edge [color=blue]
 
     effect [label="Competence" shape=box style=filled fillcolor=gray]
     goals -> comp  
@@ -139,7 +225,7 @@ Hence, for pragmatic reasons, it is useful to cluser the space of options before
 */
 
     opt -> comp
-    cluster  [shape=none]
+    cluster  [label="cluster.py" shape=ellipse]
     cluster -> opt
 
 /*
@@ -207,30 +293,159 @@ Hence we say:
 There are many other aspects to reliability and safety (in fact, there are whole
 conferences devoted to that very topic[^issre]). Covering all those aspects would
 require an entirely separate book](/REFS#evensong-1995).
-Here, we restrict ourselves to one aspect of reliability that are usual skipped
+Here, we restrict ourselves to certain aspects of reliability that are usual skipped
 over in data mining textbooks.
-Most learners suffer from a _sampling bias_ where different data (or different ordering of the
-  training data) leads to different models. Hence, we require that the performance of an
-  AI tool be _stable_ across a reasonable variation of the data. For example, while sometimes
-  it is useful to replace an old model with a better one, we would hope that some model be
-  _stable_ for at least some period of time after it was created.
+For example,
+one 
+important componet of reliability is monitoring for problems,
+then quickly repairing those problems as they arise. That is, it is not enough
+just to deliver a working AI tool; it is also important to stream any new
+data past the AI tool, quickly fixing anything that goes wrong.
+That is:
 
-XXX stabilit y needs regions , not points (harman quote)
+    streaming -> monitoring -> repair -> reliability
 
 [^issre]: See the International Symposium on Software Reliability Engineering.
 
+*/
 
+   stable  [label="stability",shape=none]
+   monitor  [shape=none]
+   repair  [label="repair" shape=none]
+   stream  [label=streaming shape=none]
+   stream -> monitor -> repair -> safe 
+
+/*
+
+Another kind of stability is _solution stability_; that is to say,
+how effective is a recommendation within some _neighborhood_ of
+change?  For example,
+ small perturbations in the data
+should not lead to large changes in the model. But this is often
+not the case.  The following figure shows results from learning a
+linear repregresion model of the form $$y=\beta_0 + \beta_1x_1 +
+\beta_2x_2...$$, 20 times, each time using two-thirds of the available
+training data. Note how the observed $$beta_i$$ values vary widely
+(8 of them even cross the $$\beta_i=0$$ line which means that in
+different samples they are psitively or negativly correlated to
+$$y$$.
+
+
+![](/img/varybeta.png){:class="img-responsive img-rounded"}
+
+A very useful
+  test is to repeat all the learning ten times, each time using 90% of the data, then check for variations
+in the learned model. If such a test shows that the learned model varies widely across
+different training data samples, then that means that before any model is presented to the user,
+the data should be clustered and different models generated from different regions of the data.
+That is
+
+    clustering -> stability -> explanation
+
+
+*/
+   cluster -> stable -> explain 
+
+/*
+
+Recently it has been shown](REFS#agrawal-2018) that such conclusion
+stability
+can be enhaced, at least partially, by
+[optimizating for model stability](REFS#agrawal-2018)..
+That is, while
+building models, we can make
+decisions  that decrease variability in the conclusions of the learned model.
+That is:
+
+   optimization -> stability -> reliability
+
+*/
+   opt -> stable -> safe 
+
+/*
+
+Yet another kind of stability is _recommendation stability_.
+To make this idea
+more concrete,
+consider the following two recommendations generated by an AI tool.
+When configuring a project's staffing and development expectations,
+an AI tool might offer a _ponts_-based or a _rule_-based recommendation.
+A points-based recommendation might be:
+
+       language=Python, yearsOfExperience=5, userStoriesPerSprint=10
+
+while a _rule_-based recommendation might be:
+
+       yearsOfExperience in 3 to 5, userStoriesPerSprint in 5 to 15
+
+Note that the points-based recommendation is _brittle_; i.e. any small change to its exact
+recommendation might break its effectiveness.  On the other hand, the rule
+shows what we can safely cnage (e.g. _yearsOfExperience_ from 3 to 5) and even
+what we can ingore (_language_).
 
 That is:
 
-    stability -> reliability
+    rules -> stability -> reliability
 
 
 */
 
+   fftree  [shape=none label="rules.py"] 
+   fftree -> stable 
 
-   stable  [label="stability",shape=none]
-   stable -> safe 
+/*
+
+#### Clutering
+
+*/
+
+edge [color=black]
+
+stream -> stable
+{rank=same; cluster; goals; stream;}
+{trans; fair; safe;} -> count
+fair -> trans [label=21]
+{safe;priv; count;} -> comp [label=20]
+{inc; priv; } -> data [label=19]
+alearn [label="incremental\nlabelling" shape=none]
+growth  [label="performance\ngrowth curves" shape=none]
+sharing  [shape=none]
+#transfer  [shape=none]
+context  [shape=none]
+explain  [shape=none]
+obs [label=obsfication shape=none]
+
+fftree  -> opt [label=20] 
+{safe; fair;} -> well [label=17]
+{safe; fair; priv; inc; } -> rite [label=16]
+stream -> anomaly -> monitor [label=15]
+stream -> monitor -> comp [label=14]
+
+{safe; fair;} -> nomiuse [label=12]
+{stream; repair;} -> alearn -> inc [label=10]
+
+{fftree;  } -> explain  -> {trans;} [label=9]
+sharing -> comp [label=6]
+
+stream -> repair -> comp [label=5]
+stream -> growth -> comp [label=3]
+trans [label="a.Transparency" shape=box style=filled fontcolor=white fillcolor=black]
+inc [label="c.Inclusiveness" shape=box style=filled fontcolor=white fillcolor=black]
+priv [label="e.Privacy\n&Security" shape=box style=filled fontcolor=white fillcolor=black]
+count [label="f.Accountability" shape=box style=filled fontcolor=white fillcolor=black]
+
+rite [label="1.Human\nRights" shape=box style=filled fillcolor=gray]
+well [label="2.Well\nBeing" shape=box style=filled fillcolor=gray]
+data [label="3.Data\nAgency" shape=box style=filled fillcolor=gray]
+trans1 [label="5.Transparency" shape=box style=filled fillcolor=gray]
+count1 [label="6.Accountability" shape=box style=filled fillcolor=gray]
+nomiuse [label="7.Aware of\nMisuse" shape=box style=filled fillcolor=gray]
+comp [label="8.Effectiveness" shape=box style=filled fillcolor=gray]
+
+
+trans-> trans1 
+count -> count1 
+
 
 /*
 
@@ -294,66 +509,6 @@ data set.
 
 {"num.py";"sym.py"; "row.py"} -> "rows.py" [arrowhead="none"]
 "rows.py" -> {stream;cluster}
-edge [color=blue]
-
-
-stream -> stable
-{rank=same; cluster; goals; stream;}
-{trans; fair; safe;} -> count
-fair -> trans [label=21]
-{safe;priv; count;} -> comp [label=20]
-{inc; priv; } -> data [label=19]
-alearn [label="incremental\nlabelling" shape=none]
-stream  [label=streaming shape=none]
-growth  [label="performance\ngrowth curves" shape=none]
-compress  [label="compress" shape=none]
-env  [label="certification\nenvelope" shape=none]
-repair  [label="repair" shape=none]
-sharing  [shape=none]
-transfer  [shape=none]
-context  [shape=none]
-explain  [shape=none]
-monitor  [shape=none]
-obs [label=obsfication shape=none]
-anomaly  [label="anomaly\ndetection"shape=none]
-fftree  [shape=none label="rule\nlearner"] 
-
-fftree  -> opt [label=20] 
-{cluster; compress -> obs;} -> priv [label=18]
-{safe; fair;} -> well [label=17]
-{safe; fair; priv; inc; } -> rite [label=16]
-stream -> anomaly -> monitor [label=15]
-stream -> monitor -> comp [label=14]
-
-cluster -> { fftree;} [label=13]
-{safe; fair;} -> nomiuse [label=12]
-{stream; repair;} -> alearn -> inc [label=10]
-
-{fftree;  } -> explain  -> {trans;} [label=9]
-cluster -> compress [label=8]
-cluster -> context -> comp [label=7]
-sharing -> comp [label=6]
-
-compress -> transfer -> sharing [label="7a"]
-stream -> repair -> comp [label=5]
-compress -> env -> comp [label=4]
-stream -> growth -> comp [label=3]
-trans [label="a.Transparency" shape=box style=filled fontcolor=white fillcolor=black]
-inc [label="c.Inclusiveness" shape=box style=filled fontcolor=white fillcolor=black]
-priv [label="e.Privacy\n&Security" shape=box style=filled fontcolor=white fillcolor=black]
-count [label="f.Accountability" shape=box style=filled fontcolor=white fillcolor=black]
-
-rite [label="1.Human\nRights" shape=box style=filled fillcolor=gray]
-well [label="2.Well\nBeing" shape=box style=filled fillcolor=gray]
-data [label="3.Data\nAgency" shape=box style=filled fillcolor=gray]
-trans1 [label="5.Transparency" shape=box style=filled fillcolor=gray]
-count1 [label="6.Accountability" shape=box style=filled fillcolor=gray]
-nomiuse [label="7.Aware of\nMisuse" shape=box style=filled fillcolor=gray]
-comp [label="8.Effectiveness" shape=box style=filled fillcolor=gray]
-
-
-trans-> trans1 
-count -> count1 
 
 }
 

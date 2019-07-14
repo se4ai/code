@@ -6,6 +6,9 @@
 
 Behnoush Abdollahi and Olfa Nasraoui. 2016. Explainable restricted Boltzmann machines for collaborative filtering. arXiv preprint arXiv:1606.07129 (2016).
 
+### Agrawal 2018
+
+Agrawal, Amritanshu, Wei Fu, and Tim Menzies. "What is wrong with topic modeling? And how to fix it using search-based software engineering." Information and Software Technology 98 (2018): 74-88.
 
 ## B
 
@@ -31,7 +34,12 @@ IEEE ASE'19.
 
 Di Chen, Wei Fu, Rahul Krishna, and Tim Menzies. 2018. Applications of psychological science for actionable analytics. In Proceedings of the 2018 26th ACM Joint Meeting on European Software Engineering Conference and Symposium on the Foundations of Software Engineering (ESEC/FSE 2018). ACM, New York, NY, USA, 456-467. DOI: https://doi.org/10.1145/3236024.3236050
 
-[download]
+
+### Columbia 2003
+
+Report of Columbia Accident Investigation Board.
+Aug. 26, 2003. 
+[Volume1](http://www.nasa.gov/columbia/home/CAIB_Vol1.html).
 
 
 ### Craven 2014
@@ -85,6 +93,11 @@ Joel Grus. 2019.
 "Data Science from Scratch: First Principles with Python" (2nd ed.). O'Reilly Media, Inc
 
 ## H
+
+### Harman 2007
+
+M. Harman. The current state and future of search based software engineering. In Future of Software Engineering, ICSE’07. 2007.
+
 
 ### Harman 2012
 
@@ -147,6 +160,11 @@ preprint arXiv:1606.03490 (2016).
 Wei Ji Ma, Masud Husain, and Paul M Bays. 2014. Changing concepts of working memory. Nature neuroscience 17, 3 (2014), 347–356.
 
 
+### Majumder 2018
+
+Suvodeep Majumder, Nikhila Balaji, Katie Brey, Wei Fu, and Tim Menzies. 2018. 500+ times faster than deep learning: a case study exploring faster methods for text mining stackoverflow. In Proceedings of the 15th International Conference on Mining Software Repositories (MSR '18). ACM, New York, NY, USA, 554-563. DOI: https://doi.org/10.1145/3196398.3196424
+
+
 ### Mende 2010
 
 Thilo Mende and Rainer Koschke. 2010. Effort-aware defect prediction
@@ -162,6 +180,10 @@ Tim Menzies, Oussama El-Rawas, Jairus Hihn, and Barry Boehm. 2009. Can we build 
 Microsoft AI principles. 2019. https://www.microsoft.com/en-us/ai/our-approach-to-ai
 
 ## N
+
+### Nair 2018
+
+Nair, V., Menzies, T., Siegmund, N., & Apel, S. (2018). Faster discovery of faster system configurations with spectral learning. Automated Software Engineering, 25(2), 247-277.
 
 ### Norvig 2009
 
@@ -181,6 +203,10 @@ Cournapeau, Matthieu Brucher, Matthieu Perrot, and Édouard Duchesnay.
 2011. "Scikit-learn: Machine Learning in Python". J. Mach. Learn.
 Res. 12 (November 2011), 2825-2830.
 http://jmlr.csail.mit.edu/papers/v12/pedregosa11a.html
+
+### Petersen 2009
+
+K. Petersen and C. Wohlin, "Context in industrial software engineering research," in Empirical Software Engineering and Measurement, 2009. ESEM 2009. 3rd International Symposium on, Oct. 2009, pp. 401 –404.
 
 ### Phillips 2017
 
@@ -225,6 +251,10 @@ systems." In Proceedings of the 28th International Conference on
 Neural Information Processing Systems - Volume 2 (NIPS'15), C.
 Cortes, D. D. Lee, M. Sugiyama, and R. Garnett (Eds.), Vol. 2. MIT
 Press, Cambridge, MA, USA, 2503-2511.
+
+### Simon 1956
+
+Simon, Herbert A. (1956). "Rational Choice and the Structure of the Environment" . Psychological Review. 63 (2): 129–138. CiteSeerX 10.1.1.545.5116. doi:10.1037/h0042769. 
 
 ## T
 
