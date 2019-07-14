@@ -208,6 +208,10 @@ http://jmlr.csail.mit.edu/papers/v12/pedregosa11a.html
 
 K. Petersen and C. Wohlin, "Context in industrial software engineering research," in Empirical Software Engineering and Measurement, 2009. ESEM 2009. 3rd International Symposium on, Oct. 2009, pp. 401 –404.
 
+### Peters 2015
+
+Fayola Peters, Tim Menzies, and Lucas Layman. 2015. LACE2: better privacy-preserving data sharing for cross project defect prediction. In Proceedings of the 37th International Conference on Software Engineering - Volume 1 (ICSE '15), Vol. 1. IEEE Press, Piscataway, NJ, USA, 801-811.
+
 ### Phillips 2017
 
 Nathaniel D Phillips, Hansjoerg Neth, Jan K Woike, and Wolfgang
