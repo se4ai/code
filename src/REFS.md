@@ -18,6 +18,10 @@ William Benton. 2019.
 "Machine learning and discovery with Kubernetes". SEMLA'19.
 https://freevariable.com/slides/semla-2019.pdf
 
+### Brickell 2008
+
+J. Brickell and V. Shmatikov, “The cost of privacy: destruction of data- mining utility in anonymized data publishing,” in Proceeding of the 14th ACM SIGKDD international conference on Knowledge discovery and data mining. New York, NY, USA: ACM, 2008, pp. 70–78.
+
 ### Brun 2018
 
 Y. Brun and A. Meliou, “Software fairness,” ser. ESEC/FSE 18. NY, USA: ACM, pp. 754–759.
@@ -34,6 +38,9 @@ IEEE ASE'19.
 
 Di Chen, Wei Fu, Rahul Krishna, and Tim Menzies. 2018. Applications of psychological science for actionable analytics. In Proceedings of the 2018 26th ACM Joint Meeting on European Software Engineering Conference and Symposium on the Foundations of Software Engineering (ESEC/FSE 2018). ACM, New York, NY, USA, 456-467. DOI: https://doi.org/10.1145/3236024.3236050
 
+### Chen 2018a
+
+Chen, J., Nair, V., Krishna, R., & Menzies, T. (2018). " Sampling" as a Baseline Optimizer for Search-based Software Engineering. IEEE Transactions on Software Engineering
 
 ### Columbia 2003
 
@@ -126,6 +133,10 @@ Miryung Kim, Thomas Zimmermann, Robert DeLine, and Andrew Begel.
 Teams. In Proceed- ings of the 38th International Conference on
 Software Engineering (ICSE ’16). ACM, New York, NY, USA, 96–107.
 DOI:http://dx.doi.org/10.1145/2884781.2884783
+
+### Krall 2015
+
+Krall, Joseph, Tim Menzies, and Misty Davies. "Gale: Geometric active learning for search-based software engineering." IEEE Transactions on Software Engineering 41.10 (2015): 1001-1018.
 
 ### Krishna 2015
 
@@ -259,6 +270,13 @@ Press, Cambridge, MA, USA, 2503-2511.
 ### Simon 1956
 
 Simon, Herbert A. (1956). "Rational Choice and the Structure of the Environment" . Psychological Review. 63 (2): 129–138. CiteSeerX 10.1.1.545.5116. doi:10.1037/h0042769. 
+
+### Spears 2001
+
+Diana F. Gordon. (2001).
+APT Agents: Agents That Are Adaptive Predictable and Timely.
+International Workshop on Formal Approaches to Agent-Based Systems
+FAABS 2000: Formal Approaches to Agent-Based Systems pp 278-293 
 
 ## T
 
