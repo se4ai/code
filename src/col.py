@@ -5,7 +5,7 @@
 """
 from main import my
 from memo import memos, fresh
-from lib import nump,items
+from lib import nump,items,Pretty
 import math
 """
 

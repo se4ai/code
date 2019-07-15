@@ -1,5 +1,6 @@
 
 # Introduction
+need a notation fo observables
 
 
 needs intro notes on optimizers

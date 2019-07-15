@@ -10,6 +10,13 @@ from lib import *
 from col import Col,Num,Sym
 import math
 
+n=Num()
+for x in [1,2,3,4]: n+x
+print(n,n.sd)
+s=Sym()
+for x in 'abbcccc': s+x
+print(s,s.mode, s.ent)
+#dict(n=n.mu,sd=n.sd,lo=n.lo, hi=n.hi))
 @ok
 def _col1():
   c= Col()
