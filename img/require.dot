@@ -9,12 +9,76 @@ a,b,c,d,e,f)
 into the IEEE principles (the gray shaded nodes marked 1,2,3,4,5,6,7,8):
 
 
-- _Competence_ is all itself  since the IEEE definition of that principle seems to be more
+The top levels of the diagram are mostly definitioanl things. For example, 
+
+
+    (Fairness, Explanation) -> Transparancey
+    (Transparency, Relability & Safety) -> Accountability
+
+We would also say that
+
+    (Fairness, Reliability & Safety, 
+    Incusiveness, Privacy & Security) -> Human Rights
+    
+    (Accountability. Privacy & Security,
+    Reliability & Safety) -> Effectivess.
+
+In our reading of these principles, _data agency_ is a matter of people understand
+what data is there, and knowing is it secure; i.e.
+
+    (Inclusivemess, Privacy & Security) -> Data Agency
+
+As to the other links, as near as we can tell,
+well-being and awareness of misure are very similar since:
+ 
+   (Fairness, Reliability&safety) -> Well-being
+   (Fairness, Reliability&safety) -> Awareness of Misuse
+
+There are two terms with similar meanings mentioned by
+IEEE and Microsoft: _accountability_ and _transparency_.  For simplicity sake, 
+we just link them too each other.
+
+Lastly,  _competence_ is all itself  since the IEEE definition of that principle seems to be more
 about the developer than the design patterns and algorithms which are being developed. 
-- There are two terms with similar meanings mentioned by
-IEEE and Microsoft: _accountability_ and _transparency_.  For simplicity sake, we just link them too each other.
 
 
+*/
+edge [color=green, penwidth = 2]
+{rank=same; cluster; goals; stream;}
+{trans;  safe;} -> count
+fair -> trans 
+{safe;priv; count;} -> comp 
+{inc; priv; } -> data 
+growth  [label="performance\ngrowth curves" shape=none]
+sharing  [shape=none]
+#transfer  [shape=none]
+context  [shape=none]
+explain  [shape=none]
+
+#fftree  -> opt 
+{safe; fair;} -> well 
+{safe; fair; priv; inc; } -> rite 
+{safe; fair;} -> nomiuse 
+
+
+trans [label="a.Transparency" shape=box style=filled fontcolor=white fillcolor=black]
+inc [label="c.Inclusiveness" shape=box style=filled fontcolor=white fillcolor=black]
+priv [label="e.Privacy\n&Security" shape=box style=filled fontcolor=white fillcolor=black]
+count [label="f.Accountability" shape=box style=filled fontcolor=white fillcolor=black]
+
+rite [label="1.Human\nRights" shape=box style=filled fillcolor=gray]
+well [label="2.Well\nBeing" shape=box style=filled fillcolor=gray]
+data [label="3.Data\nAgency" shape=box style=filled fillcolor=gray]
+trans1 [label="5.Transparency" shape=box style=filled fillcolor=gray]
+count1 [label="6.Accountability" shape=box style=filled fillcolor=gray]
+nomiuse [label="7.Aware of\nMisuse" shape=box style=filled fillcolor=gray]
+comp [label="8.Effectiveness" shape=box style=filled fillcolor=gray]
+
+
+trans-> trans1 
+count -> count1 
+
+/*
 This mapping  is hardly definitive since many of these concepts are being rapidly evolved.
 One way to assist in the evolution of these concepts is to define them use discrete maths; i.e. using data structures
 and algorithms-- which is the point of the rest of this chapter. 
@@ -52,73 +116,162 @@ goals  [label="Goals", shape=none]
 
 #### Clustering
 
-For many  reasons, clustering is at the core of this design. Reasoning
-is rarely one-size-fits-all. When we go to see  a doctor, we expect that
+For many  reasons, clustering is at the core of  our
+ethically-aligned-design. What we believe and how we act
+often needs to get tuned to the current situation.
+When we go to see  a doctor, we expect that
 the treatments offered are contextualized to what is appropriate
 for people like us having problems like us.
-
-Many authors discuss contextualizing the reasoning of AI tools.
-For example, [Kai Petersen & Claes Wohlin](REFS#petersen-2009)
+[Kai Petersen & Claes Wohlin](REFS#petersen-2009)
  offer a rich set of dimensions
  along which software projects can be contextualized (processes,
- product, organization, market, etc). But what they do
+ product, organization, market, etc). That said,
+what they do
 not  offer is a  way to learn
- new contextualizations for new projectsi.
+ new contextualizations for new projects.
 Also,
  while their arguments are convincing, they offer no experimental
  confirmation that their contexts are the "right" contexts. 
 
-Clustering is useful for (a) when local contexts matter, but  (b) we are not sure if reusing
+*/
+
+edge [color=red]
+
+/*
+
+Clustering is useful when (a) local contexts matter, but  (b) we are not sure if reusing
 someone's prior definitions for "context" are appropriate. Under those conditions,
-we can run a clustering algorithm tofind informative groups within data.
+we must run a clustering algorithm to find informative groups within data.
 
 
-Clustering is also useful for pragmatic reasons:
+*/
+
+  cluster ->  context
+
+/*
+
+
+Clustering is also useful for pragmatic reasons.
 Some problems are too complex to run all together--
-in which case it can be useful to [explore several small sub-problems](REFS#majumder-2018)
+in which case better conclusions can be reached
+faster if we [explore several small sub-problems](REFS#majumder-2018)
 (found by clustering) rather
 then one super-large problem.
+That is
+
+   context -> effectiveness
+
+*/
+
+    context -> comp 
+
+/*
+
 
 Also, models complex enough to cover all the data can become succinct and easily
-understood when learned just  from local clusters.
+understood when learned just  from local clusters:
+
+
+    clustering -> explanation
+
+*/
+
+    cluster -> explain
+/*
 
 Further, by learning different models for each cluster, the performance of the per-cluster
-models can be better than those that seek to ocver all the data. For example,
-recursive clustering is an interesting way to implet multi-objective optimizers XXXsway
+models can be better than those that seek to cover all the data. For example,
+recursive clustering is [an interesting way to implement multi-objective optimizers](REFS#chen-2018a).
 
-Not only that, but clustering is useful for anomaly detection,
-compression, sharing, privacy, and repair.
 
-- Once data is clustered, we can [buidl an anomaly detector](REFS#peters-2015)
-by recording the avegaeg distance between rows in each cluster. New rows are anomalous if they  are unusually distant
-from the other rows in its nearest cluster
-- Another thing we can do with clusters is to compress the data by 
-[retaining only some rows from each cluster](REFS#nair-2018). 
-This makes
-  clustering a useful method for sharing data (do not share all the data, just a few samples
+Not only that, but clustering is useful for 
+_anomaly detection_,
+_compression_, _sharing_, _privacy_, and _repair_.
+Once data is clustered, we can [build an anomaly detector](REFS#peters-2015)
+by recording the average distance between rows in each cluster. New rows are anomalous
+ if they  are unusually distant
+from the other rows in its nearest cluster. That isL
+
+   cluster -> anomaly detection -> (reliability,  effectiveness)
+*/
+   cluster -> anomaly -> {safe;comp}
+/*
+Another thing we can do with clusters is to _compress_  the data by 
+[retaining only some rows from each cluster](REFS#nair-2018).  That isL
+
+   cluster -> compression
+
+*/
+
+   cluster -> compress
+
+/*
+Once data is compressed, it is easier to share
+  (i.e. do not share all the data, just a few samples
   from each cluster). 
-- Further, this can be basis of a privacy algorithm. If we are only sharing compressed data,
-then all the rows _not_s ahred are 100% private. As to the data that we do share, a 
-[little mutation of those rows](ROWS#peters-2015) can decrease the odds that these rows will reveal sensitive information.
-- Note also that clustering and compression enables
+Clustering and compression
+ can be basis of a privacy algorithm. If we are only sharing compressed data,
+then all the rows _Not_ shared are 100% private. As to the data that we do share, a 
+[little obsfication   of those rows](ROWS#peters-2015) can decrease the odds that these rows will reveal sensitive information[^obsfuct]. That is:
+   
+   compression -> sharing -> privacy
+*/
+anomaly  [label="anomaly\ndetection"shape=none]
+compress  [label="compression" shape=none]
+env  [label="certification\nenvelope" shape=none]
+
+obs [label=obsfication shape=none]
+   compress -> obs ->sharing -> priv
+/*
+Further, hierarchical  clustering[^huer] can be the basis of a generic repair
+mechanism. Once data is clustered hierarchically , performance statistics can be kept on each node.
+When models fail, it may just be one small sub-tree that needs revising.
+In that case, we need only  relearn from the examples in that sub-tree 
+and 
+[this is much faster](REFS:spears-2001)
+than relearning from all the data. That is:
+
+
+    cluster -> repair
+
+*/
+    cluster -> repair
+/*
+
+(For other kinds of generic repair methods, see _incremental labelling_, below).
+
+[^huer]: Where clusters are recursively   divided into smaller and smaller
+sub-clusters.
+
+Finally, it should be noted also that clustering and compression enables
 _certification envelopes_; i.e. oracles that can advise if you
 are asking the right model the right questions.  Certification envelopes let us check if
 new data is something the model is already familiar with (and if not, we can alert
-the user that the model may give misleading results for this new data). 
+the user that the model may give misleading results for this new data). That is:
 
-XXX incremetnal revpair
+   compression -> certification  envelopes -> reliability
+   
+*/
+   compress -> env -> safe
 
-Certication
+/*
+
+[^obsfuct:] Many algorithms try to make  data 
+more private by randomly mutating data values.  Such mutation tends to [decrease the performance of models learned from that data](REFS#brickell-2008).  [Fayola Peters](REFS#peters-2015) showed that better privacy (without damaging learner performance) can be achieved by understanding the boundaries between classes in the data. Her mutators changed value but up to but not over, the class boundary.
+
+
+
+Certification 
 envelope might have [saved the lives of the Columbia Space Shuttle crew](REFS#columbia-2003).
 At launch, Columbia was struck with a
-1200 cubic centimeter block of ice travelling 470mph (relative to
+1200 cubic centimeter block of ice travelling at 470mph (relative to
 the craft). A model called CRATER reported that that this ice struck
-would have neglible imapct on the craft.  But CRATER was trained in 3
+would have minimal  impact on the craft.  But CRATER was trained in 3
 cubic centimeter ice blocks travelling at less that 100 mph.  
 Since CRATER had no certification envelope, this
 mismatch between CRATER's area of expertise, and the question
 it was now being asked, was not detected. 
-When Columbia re-entered the atmospher,
+When Columbia re-entered the atmosphere,
 it
 spun out of control and disintegrated (killing the crew of eight)
 since the ice had punched a large hole in its airframe.
@@ -133,17 +286,9 @@ That is, the first thing we must say is that:
     Goals -> Competence
 
 */
-edge [color=red]
-anomaly  [label="anomaly\ndetection"shape=none]
-compress  [label="compress" shape=none]
-cluster -> context -> comp 
-{cluster; compress -> obs;} -> priv 
-cluster -> { fftree;} 
-cluster -> compress 
-compress ->  sharing 
-env  [label="certification\nenvelope" shape=none]
-compress -> env -> anomaly -> {comp; safe;}
-env -> safe
+
+#{cluster; compress -> obs;} -> priv 
+#compress -> env -> anomaly -> {comp; safe;}
 
 edge [color=blue]
 
@@ -220,7 +365,7 @@ But hyperparameter optimization can be very slow, unless large problems are divi
 Hence, for pragmatic reasons, it is useful to cluser the space of options before doing optimization.
 
 
-   Clustering -> Optimization
+    Clustering -> Optimization
 
 */
 
@@ -263,7 +408,7 @@ goals without using that kind of sensitive information) then it is at the least 
 to do so (and, at the very most, it can be illegal to do so; e.g. using gender information
 in decisions about not hiring a job candidate).
 
-  Goals and Optimization -> Fairness
+    Goals and Optimization -> Fairness
 
 */
 
@@ -390,61 +535,50 @@ That is:
 
 */
 
-   fftree  [shape=none label="rules.py"] 
+   fftree  [shape=ellipse label="rules.py"] 
    fftree -> stable 
+/*
+Note that rule-based recommendations simplify explanation, and hence system transparanecy
 
+
+    rules -> explain -> transparency
+   
+*/
+
+   fftree   -> explain  -> {trans;}
+
+edge [color=black]
 /*
 
-#### Clutering
+#### Streaming
+
+After clustering and goals, the final key component is streaming. 
+Instead of just running data through an AI tool once, it is important to watch
+over the data and recognize when the old model is now out-of-date. This is the task
+of data streaming; i.e. whenever more data comes to hand, pass it to the AI tool.
+
+Streaming is like clustering but instead of grouping the data according to its
+propoerties, streaming groups data according to when it is generated.
+
+One thing we can do with streamng is check that models elarend in the past sare stills table and useful in the present. That is, streaming is one way to assess the continued effectiveness of an AI tool.
+
+   streaming -> (monitoring, stability) -> effectiveness
 
 */
 
-edge [color=black]
+    stream -> stable
+    stream -> monitor -> comp 
+/*
 
-stream -> stable
-{rank=same; cluster; goals; stream;}
-{trans; fair; safe;} -> count
-fair -> trans [label=21]
-{safe;priv; count;} -> comp [label=20]
-{inc; priv; } -> data [label=19]
+*/
 alearn [label="incremental\nlabelling" shape=none]
-growth  [label="performance\ngrowth curves" shape=none]
-sharing  [shape=none]
-#transfer  [shape=none]
-context  [shape=none]
-explain  [shape=none]
-obs [label=obsfication shape=none]
+{stream; } -> alearn -> inc 
+alearn -> repair
 
-fftree  -> opt [label=20] 
-{safe; fair;} -> well [label=17]
-{safe; fair; priv; inc; } -> rite [label=16]
-stream -> anomaly -> monitor [label=15]
-stream -> monitor -> comp [label=14]
-
-{safe; fair;} -> nomiuse [label=12]
-{stream; repair;} -> alearn -> inc [label=10]
-
-{fftree;  } -> explain  -> {trans;} [label=9]
-sharing -> comp [label=6]
-
-stream -> repair -> comp [label=5]
-stream -> growth -> comp [label=3]
-trans [label="a.Transparency" shape=box style=filled fontcolor=white fillcolor=black]
-inc [label="c.Inclusiveness" shape=box style=filled fontcolor=white fillcolor=black]
-priv [label="e.Privacy\n&Security" shape=box style=filled fontcolor=white fillcolor=black]
-count [label="f.Accountability" shape=box style=filled fontcolor=white fillcolor=black]
-
-rite [label="1.Human\nRights" shape=box style=filled fillcolor=gray]
-well [label="2.Well\nBeing" shape=box style=filled fillcolor=gray]
-data [label="3.Data\nAgency" shape=box style=filled fillcolor=gray]
-trans1 [label="5.Transparency" shape=box style=filled fillcolor=gray]
-count1 [label="6.Accountability" shape=box style=filled fillcolor=gray]
-nomiuse [label="7.Aware of\nMisuse" shape=box style=filled fillcolor=gray]
-comp [label="8.Effectiveness" shape=box style=filled fillcolor=gray]
-
-
-trans-> trans1 
-count -> count1 
+stream -> anomaly -> monitor 
+stream -> repair -> comp 
+stream -> growth -> comp 
+sharing -> comp 
 
 
 /*
@@ -504,11 +638,12 @@ data set.
 
 */
 
+edge [color=black,style=dashed,penwidth=1]
 "col.py" -> {"num.py";"sym.py"} [arrowhead="diamond"]
+"rows.py" -> {cluster}
 
 
 {"num.py";"sym.py"; "row.py"} -> "rows.py" [arrowhead="none"]
-"rows.py" -> {stream;cluster}
 
 }
 
