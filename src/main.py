@@ -14,10 +14,6 @@
 This file is loaded by everything else. It creates a global `my`
 holding system-wide settings.
 
-Also controlled here is the random number seed[^seed]. The idiom
-`my =Defaults().reset()` will reset everything back to the defaults,
-including the seed.  If that is not desired, just use `my=Defaults()`.
-
 Note that, often, this code  read rows of data where the first row
 contains the names of the columns. Those names can contain magic
 symbols denoting special properties of the columns. For a list of
@@ -26,44 +22,40 @@ those properties, see `ignore, less, more, klass`, below.
 """
 import random
 
-class Defaults:
-  def __init__(i):
+def defaults():
+  class o:
+    def __init__(i,**kw): i.__dict__.update(kw)
+
+  return o(
     ## system settings (do not change)
-    # misc
-    i.inf     = 10**32
-    i.tiny    = 1/i.inf
-    i.private = "_"
+    inf     = 10**32,
+    tiny    = 10**-32,
+    private = "_",
+    seed    = 235324971,  # from random.org
     # characters in data,header
-    i.ignore = "?"   # column to ignore
-    i.less   = "<"   # a numeric goal, to be minimized
-    i.more   = ">"   # a numeric goal, to goal to maximize
-    i.klass  = "!"   # a symbolic class, to be predicted for
-
-    # other stuff
-    i.seed = 235324971  # from random.org
-    # hyper parameter settings
-    # sampling
-    i.keep   = 128
+    rows    = o(nums   = "$", # numeric independent variable
+                ignore = "?", # column to ignore
+                less   = "<", # a numeric goal, to be minimized
+                more   = ">", # a numeric goal, to goal to maximize
+                klass  = "!", # a symbolic class, to be predicted for
+                someDom= 64),
     # chops
-    i.cohen  = 0.3 # 0.5 0.4 0.3 0.2
-    i.ncohen = 1/7 # 2/9 2/8 1/7 1/6
-    i.bins   = 16
-    i.simplerBy = 0.01
+    chops   = o(cohen  = 0.3,  # 0.5 0.4 0.3 0.2
+                ncohen = 0.14,  # 2/9 2/8 1/7 1/6
+                bins   = 16,
+                simplerBy = 0.01),
     # read data in 'eras' of size i.era
-    i.era    = 512
-  def reset(i,seed=None):
-    random.seed(seed or i.seed)
-    return i
+    data    = o(ignore="?",
+                era=512))
 
-my= Defaults().reset()
-
+my= defaults()
 """
-
 
 ## How to Test
 
-Each file can be loaded and tested independently .
-To enable that,  each file begins with a set of `import` statements that describe all its dependencies.
+Each file can be loaded and tested independently .  To enable that,
+each file begins with a set of `import` statements that describe
+all its dependencies.
 
 Some files `X.py` have demo/test code in `okX.py` 
 
@@ -100,9 +92,6 @@ To document this code, add in Markdown comments within multi-line Python quotes.
 - To avoid clashes between documentation and code files, 
   the former have a dash in their name (e.g. _about-book.md_).
 - So to extend this code, do not write code files with dashes in the name.
-
-[^seed]: Computers don’t generate truly random numbers—they are deterministic, which means that they operate by a set of rules. You can mimic randomness by specifying a set of rules. For example, “take a number x, add 900 +x, then subtract 52.” In order for the process to start, you have to specify a starting number, x (the seed).
-
 ## Comprehension Questions:
 
 ```

@@ -36,3 +36,4 @@ def _sym1():
   assert c.has.mode == 'c'
 
 if __name__ == "__main__": ok()
+

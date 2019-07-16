@@ -1,12 +1,5 @@
 #!/usr/bin/env bash
 
-pathadd() {
-      if  [[ ":$PATH:" != *":$1:"* ]]; then
-          export PATH="${PATH:+"$PATH:"}$1"
-      fi
-}
-pathadd /usr/local/bin
-
 uname="$(uname -s)"
 #for i in sbcl clisp tmux htop; do
 #  case "${uname}" in

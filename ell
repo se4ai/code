@@ -1,5 +1,12 @@
 # usage: sh ell
 
+pathadd() {
+      if  [[ ":$PATH:" != *":$1:"* ]]; then
+          export PATH="${PATH:+"$PATH:"}$1"
+      fi
+}
+pathadd /usr/local/bin
+
 AFTER=true
 for c in python3 wget git tmux vim bash gawk; do
    if [ -z "$(which $c)" ]; then 

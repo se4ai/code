@@ -9,8 +9,8 @@ from data import data
 def albrecht(): return data(
   name = "albrecht", 
   rows = [
-    ["In","Out","Query","File","FpAdj", 
-     "RawFPcounts","?AdjFp","<Effort"]
+    ["$In","$Out","$Query","$File","$FpAdj", 
+     "$RawFPcounts","?AdjFp","<Effort"]
     ,[25, 150,	75,	60,	1,	1750,	  1750,	102.4]
     ,[193,	98,	70,	36,	1,  1902,	  1902,	105.2]
     ,[70,	27,	0,	12,	0.8,	535,	  428,	11.1]

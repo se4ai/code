@@ -24,6 +24,13 @@ open and pressing issue. As [Mark Harmon](REFS#harman-2007) says:
 - "In some software engineering applications, solution robustness may be as important as solution functionality. For example, it may be better to locate an area of the search space that is rich in fit solutions, rather than identifying an even better solution that is surrounded by a set of far less fit solutions.
 - "Hitherto, research has tended to focus on the production of the fittest possible results. However, many application areas require solutions in a search space that may be subject to change. This makes robustness a natural second order property to which the research community could and should turn its attention.”
 
+[^seed]: Computers don’t generate truly random numbers—they are deterministic, which means that they operate by a set of rules. You can mimic randomness by specifying a set of rules. For example, “take a number x, add 900 +x, then subtract 52.” In order for the process to start, you have to specify a starting number, x (the seed).
+
+Also controlled here is the random number seed[^seed]. The idiom
+`my =Defaults().reset()` will reset everything back to the defaults,
+including the seed.  If that is not desired, just use `my=Defaults()`.
+
+
 
 Many software engineering
 problems are over-constrained and no precise solution over all

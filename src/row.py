@@ -13,7 +13,8 @@ best goals.
 Rows will know how to mutate their cells, soon.
 
 """
-from memo import memos,fresh
+from main import my
+from memo import memo0, memos,fresh
 from lib  import Pretty
 
 @memos
@@ -25,14 +26,24 @@ class Row(Pretty):
   @fresh
   def __setitem__(i, k, v): i.cells[k] = v
   def __getitem__(i, k   ): return i.cells[k]
-  def doms0(i,rows):
-    n = my.someDom
+  @memo0
+  def doms(i,rows):
+    import random
+    print("test", random.choice([10,20,30,40]))
+    print("any", any(rows.all))
+    print("ast", rows.all[0])
+    #print("rows", rows)
+    n = my.rows.someDom
     return sum([ i.dominates( any(rows.all), rows)
                  for _ in range(n) 
-              ]) / n
+               ]) / n
   def dominates(i,j,rows):   
-    s1, s2, n = 0, 0, len(rows.goals()) 
-    for goal in rows.goals():
+    print("i",i)
+    print("j",j)
+    z = 0.00001
+    s1, s2, n = z,z,z+len(rows.goals) 
+    for goal in rows.goals:
+      print("G?",goal.pos)
       a,b = i[goal.pos], j[goal.pos]
       a,b = goal.norm(a), goal.norm(b)
       s1 += 10**(goal.w * (a-b)/n)
