@@ -642,8 +642,18 @@ edge [color=black,style=dashed,penwidth=1]
 "col.py" -> {"num.py";"sym.py"} [arrowhead="diamond"]
 "rows.py" -> {cluster}
 
-
-{"num.py";"sym.py"; "row.py"} -> "rows.py" [arrowhead="none"]
+subgraph cluster3 {
+  shape=none
+  "num.py"
+  "sym.py"
+  "row.py"
+}
+subgraph cluster4 {
+  shape=none
+  "rows.py"
+  "col.py"
+}
+{"col.py";"row.py"} -> "rows.py" [arrowhead="none"]
 
 }
 
