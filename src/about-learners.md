@@ -127,7 +127,7 @@ $$ (1-x')\; \mathcal{if}\; x'> 0.5\; \mathcal{else}\; x'$$
 
 - And, for numbers if both values are unknwon, then _diff_ returns 1.
  
-### Clustering
+### Clustering (Unsupervised Learning)
 
 The simplest (and sometimes slowest) learner is a clusterer.
 Clustering ignores any class or goal variables and group together similar rows using some distance function.
@@ -140,42 +140,109 @@ The famous K-means algorithm reduces that to $$O(kN)$$ as follows:
 4. Declares those new central points to be the new centroids
 5. Goto 1
 
+K-means terminates when the next set of centroids are similar to the last ones. There are several heuristics for determinging a good value for $$k$$:
+
+- One way is to always us $$k=$$; i.e. recursively apply $$k=$$ k-means to divide the data into 2, then 4, then 8.. clusters (stopping when you hit, say, $$\sqrt{N}$$ of the original data set size;
+- Another way is the _elbow_ test. 
+    - Define some measure of "goodness" for a cluster (e.g. median distance of members to the centroid). 
+    - Increase $$k$$ [looking for the "knee" in the curve](https://bl.ocks.org/rpgove/0060ff3b656618e9136b) after which more $$k$$ does not produce "good clusters" (e.g. those with lower distance members to the centroid)
+    - Use the $$k$$ at the "knee".
+
+Once you know your $$k$$, you've got to select $$k$$ centroids
+One way is to do it randomly (see the mini-batch k-means algorithm shown below), 
+Another way is to use k-means++, which always tries to select centroids that are far away from the existing centroids:
+
+
+- For $$z$$ in 1 to $$k$$ do
+    - Pick any row $$r_0$$ and make  set $$\mathit{center[z] = r_0$$.
+    - For every other row, $$r_i$$ (a) find the nearest center made so far; (b) find the distance $$d_i$$ between $$r_i$$ and that center
+    - Pick $$r_i$$ as the  next center at probability $$d_i^2$$  [^pick]
+
+[^picl]: to pick $$x_i\in X$$ at probability  $$p_i$$,  find  $$P=\sum p_i$$.  Sort $$x_i \in X$$ in descending order by $$p_i$$.
+Pick a random number $$0\le r \le 1$$ and run over sorted $X$. At each step, set $$r=r-  p_i/P$$. When $$r \le 0$$, return $$x_i$$.
+
 It is insightful to think of K-means as an example of _expectiation minimization_ algorithms.
 Such algorithms make guesses, then change something to minimize the errors associated with those gusess (in this case, move the centroids).
 
 [Mini-batch K-means](REFS#sculley-2015) is a more memory efficient  version of K-means.
 This variant never loads all the examples into main memory. Instead, it only loads _batches_ of rows of size  $$B$$. 
-The first $$k$$ rows seen become the first $$k$$ centroids. Rows arrive after that (in the same batch) add themselves to a cluster assocated with the nearest
+The first $$k$$ rows (picked at raond) become the first $$k$$ centroids. Rows arrive after that (in the same batch) add themselves to a cluster assocated with the nearest
 centroid. When the batch is done, each cluster adjust its centroids by reflecting over each row in the centroid:
 
 - For the first row, the centroid moves itself half way towards the row; 
 - For the second row, the centroid moves itself one-third of the way  towards the row; 
 - And so on such that for the nth row, the centroid moves itself $$1/(n+1)$$th  the way  towards the row; 
 
-The next batch of $$B$$ rows is read and the process repeats.
+The next batch of $$B$$ rows is read and the process repeats. Note that for this to work, we must have a way of moving some cluster $$c$$ towards
+row $$r$$. When processing the $$z$$-th item in a cluster:
+
+- For numeric column $$i$$, $$c_i = (1 - 1/z)*c_i + 1/z*r_i$$
+- For symbolic columns, at probablity $$1/z$$, $$c_i = r_i$$
 
 An even more effecient clustering algorithm uses random projections. The above clustering algorithms 
 are very sensitive to quirks in the distance function. One way to mitigate for those quirks
 is sort out the rows using multiple, randomly generated distance measures. Sure, a few may be less-than-perfect
 but the more often a random project says two rows are similar, then the more likely they are actually are similar.
 
-Here is FASTTREE random projection clustering.
+Here is the RP0 random projection clustering (there are many others, but this one is pretty simple):
 
 1. Let $$M,P=32,10$$ (say)
 2. Read the data. While  you have less  than $2M$ rows, add the rows into a local data cache.
 3. If you have more than  $2M$$ rows, then divide:
-    - $$P$$ times; pick any two rows $$x,y$$ in the batch and find the distance between them.
-    - Pick the pair $$x,y$$ with maximum distance. This will be the projection used to divide the data.
-    - Divide the according to whether or not they are closer to $$x$$ or $$y$$.
+    - $$P$$ times; pick any two _poles_ (the rows $$x,y$$) in the batch and find the distance between them.
+    - Pick the pair of poles with maximum distance.
+    - Divide the according to whether or not they are closer to one pole or the other.
     - For each division, goto 2
 
-There are many  interesting ways to modify  FASTREE. An _anomaly detector_ could report if the newly
+Note that RP0 is like a faster version of the recursive $$k=2$$-means algorithm described above.
+
+There are many  interesting ways to modify  RP0:
+- Do not sub-cluster all data. E.g. only divide on (say) X=50% of data selected (a) at random or (b) spread out between the poles.
+This way ensures that sub-trees get smaller and smaller.
+- Ignore (some) newly arrived data. In this aproach,   an _anomaly detector_ could report if the newly
 arriving data is anything like what has been seend before (if so, we can ignore it since it does not add anything
 to the model). For example,  in step2, as new data arrives, its distance could be compared to (say) $M$ other things already in the cluster.
-If that is less than the $$Y$$ times the median value of all the distances previously seen in the cluster, the new example is boring and might be ignore
+If that is less than the $$Y$$ times the median value of all the distances previously seen in the cluster, the new example is boring and might be ignored
 (For this approach, [Fayola Peters](REFS#peters-2015) suggests $Y=1$).
 In step2, once $$M$$ examples have been read  a classifier/regression algorithm could be executed on the examples in that cluster and executed on any newly arriving examples.
 
+## From Unsupervised to Supervised Learning
+
+- If all only some of the rows have class/goal values, do _active learning_, i.e.:
+   - Given a model built from the labels seen to date, fidn the wierdest as-yet-unlabelled example,
+   - Give it to an oracle to label add it to the model, repeat.
+   - then add the labelled example to the model.
+
+
+Often we have more rows than labels (a.k.a. classes) for that data (that is, most of our data is suitable only for unsupervised learning). This is a common situation.
+For example:
+
+- Suppsoe it takes 15 seconds to read a four line Github issue before you can say if that issue is 
+  "about a bug" or "otherwise".
+- Suppose further you have 10,000 such issues to read. Assume you can stand doing that for 20 hours in a standard 35 hour work week (which is actually a  bit of a stretch), and suppose that
+  you label issues ina  group of two (so that when labels disagree, you go ask the other person). That labelling task will take two people, four weeks to complete[^mt]-- and you many just
+  not have time for that.
+
+
+[^mt]: Some might comment that this four weeks could be done in an hour, via
+[crowdsourcing](https://www.youtube.com/watch?v=Pjm1uYbuyk4),  That's true BUT consider- when comissioning a crowdsourcing rig, you have to first certify the efficacy of that rig. That means
+you need some "ground truth" to check the conclusions. So now you are back to labelling some significant percentage of the data. 
+
+For another example:
+
+- Suppose you are doing effort estimation for software projects. It is relatively much harder to access financial details about a project (e.g. the salaries of the workers) than
+  the product details about that software.
+- This means that your data has many independent rows (the product details) but little or no dependent information.
+
+XXX active:
+ and suppose there are
+
+Divide the data,a t random, into 10 buckets.
+   - Build one model  rows have class/goal values:
+   - Also, when  humans are checking the class columns:
+   - Within each cluster, ten times, select 90\% of the data. Find the oddest item (the o
+
+g. Since the learner chooses the examples, the number of examples to learn a concept can often be much lower than the number required in normal supervised learning. 
 
 Of all the above algorithms, standard K-means might produce the best clusters (since it is always reasoning over all the data). On the other hand,
 the other variants might scale to larger data sets. 
