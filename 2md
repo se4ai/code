@@ -51,7 +51,6 @@ py2md() {
   END     { if (In) print "````"
             }'
 } 
-AFTER=true
 main() {
   com=$2
   arg=$1
@@ -62,28 +61,22 @@ main() {
     echo "# $(basename $arg) ==> $out"
     $com $1 $Url/$file > $out
     (cd $There; git add $out)
-    AFTER=finish
   fi
 }
 
-finish() {
-  cd $There
-  git commit -am as
-  git push
-}
 
 mkdir -p $There/img
 
-cd $Top
-for f in $(diff -q img $There/img | gawk '{print $(NF-1)}'); do
-  g=$(basename $f)
-  echo "adding $g"
-  cp img/$g $There/img/$g
-  (cd $There/img; git add $g)
-  AFTER=finish
-done 
+cp $Top/img/* $There/img
+(cd $There; git add $There/img/*)
 
 for f in src/*.py; do main $f py2md ; done
 for f in src/*.md; do main $f md2md ; done
 
-$AFTER
+cd $There
+git pull
+if [ $(git status | grep modified -c) -ne 0 ]
+then
+  git commit -am as
+  git push
+fi

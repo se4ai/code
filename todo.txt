@@ -1,3 +1,10 @@
+# Code
+
+# website.
+
+divide it up like aif360
+
+to descretize, use max-min from the parent
 
 # Introduction
 need a notation fo observables

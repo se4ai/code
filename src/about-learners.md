@@ -22,6 +22,147 @@ on data mining](REFS#witten-2016)
  but it does introduce much of the learning technology used
 later in this book.
 
+# Details
+Data can be symbolic or numeric. We will say that:
+
+- Numbers are things we can add together and sort. 
+- Symbols can only be compared using equals or not equals.
+
+
+Tables of data contain rows and rows have columns (also known as features or variables or  attributes).
+Some columns might be _goals_ (things we want to minimize or maximize) or
+_classes_ (which we want to predict) for.  Goals are always numeric columns and the others can be symbolic or numeric.
+Goals and classes are sometimes called the _dependent_ variables. Columns that are not dependent are _independent_.
+
+Some basic operations on rows are discretization, clustering, model building.
+
+Discretization. 
+  divides
+up columns of numbers into just a few ranges. For example,
+here is a continuous curve dived into 12 bins:
+
+![](https://www.cradle-cfd.com/images/tec/column01/fig5.1.jpg)
+
+Amazing how few you need. median chops
+
+Sctott knott is a deicretizer
+
+LSH is a discretizer
+
+ARGMOST
+
+
+
+Discretizaton can lose some numeric nuances.
+  On the other hand,  discretized columns are easier to explain (since they contain fewer values)
+and  
+  can be indexed easier. Another good thing about discretized numerics is that they lets report our models
+in terms of ranges, not point values. That is, before discretization, users can exppect rows
+with values like _loc=50_ and _experience=2years_. This is interesting, but it does not
+tell the user how much they can safely change things without changing effects inside the data.
+If the data is discretied, then they can inspect rows with values like $$\mathcal{30\le loc \le 70}$$
+and $$\mathcall{ 1 \le experience \le 3}$$. When reasoning about models
+ built from such discretized ranges, it is easier to work out how much things can safely change, without
+effecting  the overall results.
+
+Discretization can be _unsupervised_ or _supervised_.
+Unsupervised discretization
+  just looks at each column by itself. 
+Simple simplest unsupervised clustering strategies include:
+
+- When dividing, first sort the rows on the column you want to divide on. Then...
+   - Divide on $$\mathcal{(max-min)/10$$.
+   - Divide into bins of size $$\sqrt{N}$$ of the number of columns.
+- When consider a division of a column into some range $$a .. b$$, ensure that $$b > a+ \epsilon$$
+  where $$\epsilon$$ is some measure of ``too small to be interesting''. $$\epsilon$$ can be
+  set via domain knowledge or using some simple heuristics like 
+     - Find the 50-th and 64-th percentile in the sorted
+       columns of numbers and let  $$\espilon=p_{64}-p_{50}$$ (this is a range equal to 1/7th of the
+       numbers).
+     - If you are happy to assume your numbers have a  bell-shaped curve[^warn]
+       distribution,  then use Cohen's rule
+        i.e. $$\epsilon=30\%*\sigma$$ where $$\sigma$$ is the standard deviation (defined below).
+       The standard deviation of  a set of $$n$$ numbers is
+$$\sigma(Y,n) = \sqrt\frac{\sum_i (Y_i-Y')^2}{n-1}$$ where $$Y'$$ is the mean value for $Y$. Standard deviation is minimal (zero)
+when all the numbers are the same.
+Cohen's rule has the advantage that it can be calcuated without sorting (via incremental
+       calculation of the standard deviation)[^incsd]. 
+
+[^warn]: Warning: many distributions do not conform to this shape.
+[^incsd]: To incremental compute mean and standard deviation $$\mu,\sigma$$,
+start with $$n=\mu=m=\sigma=0$$. As every new number $x$ arrives, $$n++$$ and $$d=x-\mu$$ and $$\mu += d/n$$
+and m+=d*(x-\mu)$$ and, if $$n>1$$,  $$\sqrt{sigma=(m/(n - 1))}$.
+
+Supervised discretization, on the other hand, divide indepedent columns by looking at the
+assocaited dependent values. For example, consider a table of data about
+every Australian born since 1788. If that table has indepdent and dependent  columns _age_ and _alive?_,
+then it is
+tempting to split _age_ at least at 120 since above that point, everyone is _alive?=no_.
+
+A widely used method to learn a tree is,
+that we will call 
+_MIN_, divides the data using the split that most reduces the _variablity_
+of the dependent column. This split becomes a new node in the tree. Next, we add sub-trees by
+recursing  into each division. That is, one way to build a model is just recursively apply discretization.
+To implment _MIN_ we need someway to measure the variability (since  that is what we want
+to minimize).
+
+
+- If the dependent column is numeric, we measure _variability_ using _standard deviation_.
+When the [CART](REFS#brieman-1984) learner is building a regression tree, it uses standard deviation.
+(a regression tree is a tree whose leaves predict for numeric variables).
+- If the dependent column is symbolic, we measure _variability_ using _entropy_[^ent].
+The entropy of $n$ symbols occuring at frequency $$f_1,f_2,..$$ etc
+is $$=\sum_i p_i\log_2p_i$$ where $$p_i=f_i/n$$.
+Entropy  is minimal (zero)
+when all the symbols  are the same.
+When CART or [C4.5](REFS#quinlan-1986) (also known as J48) is building a classification tree, it uses entropy.
+- However we measure variability, if a column generates splits $n$ rows into $$n_1,n_2,n_3..$$ rows, each of which
+  has variability $$\Delta_1,\Delta_2,\Delta_3...$$ (where $$\Delta_i$$ is either entropy or standard deviation),
+  the expected value of  
+  of $$\Delta$$ after the split is $$E[\Delta]= \sum_i \frac{n_i}{n}\Delta_i$$. When _MIN_ finds the
+  best split, it is searching over all the columns looking for splits that most minimize
+  this expected value.
+
+
+[^ent]: According to [Wikiquotes](REFS#entropy-1949)
+this expression was named as follows.
+In 1949, Claude Shannon
+visited the mathematician John von
+Neumann, who asked him how he was getting on with his theory of
+missing information. Shannon replied that the theory was in excellent
+shape, except that he needed a good name for "missing information".
+"Why don’t you call it entropy", von Neumann suggested. "In the
+first place, a mathematical development very much like yours already
+exists in Boltzmann’s statistical mechanics, and in the second
+place, no one understands entropy very well, so in any discussion
+you will be in a position of advantage."
+
+Another  discretization method, which we call _MOST_,
+dv
+is to find split that most include some desired depenent variables. For example, after
+applying some unsupervised discretor
+
+, used in learners in FFtrees
+ it would
+be ts indepednent and depednet columns,
+ 
+ columns
+values to car about) but you can sometimes lose some of the numeric nuances.
+
+Clusterers divides rows into sets of similar groups (and each group is a clusterer). Clusterers usually ignore 
+learning is slicingls and dividing rows
+clusters- does not use class var
+naive bayes
+decision trees
+logisitic regression
+support vector machines (a favorite in text minig)
+ensele learning
+guesiann process models
+
+Fast supervised learning
+
+
 ----
 
 ## Columns and Rows
@@ -69,17 +210,10 @@ print(s,s.mode, s.ent)
 ==> ent = 1.38
 ```
 In the `Num`eric summaries, we see counts of how many `n` numbers seen, their minimum and maximum values (denoted `lo,hi`), 
-and their standard deviation `sd` which is a measure of the diversity of a set of numbers.
-The standard deviation of  a set of $$n$$ numbers is
-$$\sigma(Y,n) = \sqrt\frac{\sum_i (Y_i-Y')^2}{n-1}$$ where $$Y'$$ is the mean value for $Y$. Standard deviation is minimal (zero)
-when all the numbers are the same.
+and their standard deviation `sd`.
 
 In the `Sym`bolic summary, we see counts of how many `n` numbers were seen, their most common value (denoted`mode`),
-and their entropy `ent` (which is a measure of the diversity of a set of symbols.
-The entropy of $n$ symbols occuring at frequency $$f_1,f_2,..$$ etc
-is $$=\sum_i p_i\log_2p_i$$ where $$p_i=f_i/n$$.
-Entropy  is minimal (zero)
-when all the symbols  are the same.
+and their entropy `ent`.
 
 Supervised learners learn a model $$f$$ of the form $$Y=f(X)$$.
 Unsupervised learners ignore the dependent variable
@@ -111,7 +245,7 @@ is calulated as follows:
 $$\mathcal{diff}(r,i,a_i,b_i) = (r.col[i].norm(a_i) = r.col[i].b_i)^p$$
 
 where $$r.col.norm(x)$$ is a function that normalises $$x$$ to the range $$0..1$$ using $$\frac{x-lo}{hi - lo + 0.0000001}$$
-(i.e. using the smallest and largest value seen in column $$i$$) and                                          $$0.0000001$$
+(i.e. using the smallest and largest value seen in column $$i$$) and                  $$0.0000001$$
 is a small constant added to the denominator to avoid divide-by-zero errors. 
 
 For symbols, a usual $$diff$$ is 
@@ -137,6 +271,8 @@ The famous K-means algorithm reduces that to $$O(kN)$$ as follows:
 1. Declare that  $$K$$ rows (picked at random) are the _centroids_;
 2. Marks each example with the id of its nearest centroid;
 3. Finds the central point of all the rows marked with the same centroid.
+h
+
 4. Declares those new central points to be the new centroids
 5. Goto 1
 
@@ -199,12 +335,15 @@ Note that RP0 is like a faster version of the recursive $$k=2$$-means algorithm 
 There are many  interesting ways to modify  RP0:
 - Do not sub-cluster all data. E.g. only divide on (say) X=50% of data selected (a) at random or (b) spread out between the poles.
 This way ensures that sub-trees get smaller and smaller.
+- If you only build intra-cluster models, only do that on non-root clusters. Then you can use statistics collected in the parent to inform your decisions in the child.
+  Also, the top 2-3 clusters in RP0 are   good to avoid- (since that will be most approxaimate, most error prone).
 - Ignore (some) newly arrived data. In this aproach,   an _anomaly detector_ could report if the newly
 arriving data is anything like what has been seend before (if so, we can ignore it since it does not add anything
 to the model). For example,  in step2, as new data arrives, its distance could be compared to (say) $M$ other things already in the cluster.
 If that is less than the $$Y$$ times the median value of all the distances previously seen in the cluster, the new example is boring and might be ignored
 (For this approach, [Fayola Peters](REFS#peters-2015) suggests $Y=1$).
 In step2, once $$M$$ examples have been read  a classifier/regression algorithm could be executed on the examples in that cluster and executed on any newly arriving examples.
+
 
 ## From Unsupervised to Supervised Learning
 
@@ -267,19 +406,6 @@ Here are some important details about the above process:
 
 
 ## Supervised Learning
-
-desciretiaon is slicing and dividing columns
-
-learning is slicing and dividing rows
-clusters- does not use class var
-naive bayes
-decision trees
-logisitic regression
-support vector machines (a favorite in text minig)
-ensele learning
-guesiann process models
-
-Fast supervised learning
 
 
 Dont traing on  examples , use some sunset (selected at random, or selected froma  cluserr)

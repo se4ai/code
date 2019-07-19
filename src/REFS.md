@@ -22,6 +22,10 @@ https://freevariable.com/slides/semla-2019.pdf
 
 J. Brickell and V. Shmatikov, “The cost of privacy: destruction of data- mining utility in anonymized data publishing,” in Proceeding of the 14th ACM SIGKDD international conference on Knowledge discovery and data mining. New York, NY, USA: ACM, 2008, pp. 70–78.
 
+### Breiman 1984
+
+Breiman, Leo; Friedman, J. H.; Olshen, R. A.; Stone, C. J. (1984). Classification and regression trees. Monterey, CA: Wadsworth & Brooks/Cole Advanced Books & Software. ISBN 978-0-412-04841-8.
+
 ### Brun 2018
 
 Y. Brun and A. Meliou, “Software fairness,” ser. ESEC/FSE 18. NY, USA: ACM, pp. 754–759.
@@ -64,6 +68,13 @@ Hoa Khanh Dam, Truyen Tran, and Aditya Ghose. 2018.
 
 Richard O. Duda, Peter E. Hart, and David G. Stork. 2000. 
 "Pattern Classification" (2nd Edition). Wiley-Interscience, New York, NY, USA.
+
+## E
+
+### Entropy 1949
+
+von Neumann, Shannon, and Entropy:
+http://bit.ly/2Y1yBQh
 
 ## F
 
@@ -229,6 +240,10 @@ Nathaniel D Phillips, Hansjoerg Neth, Jan K Woike, and Wolfgang
 Gaissmaier. 2017. FFTrees: A toolbox to create, visualize, and
 evaluate fast-and-frugal decision trees. Judgment and Decision
 Making 12, 4 (2017), 344–368.
+
+### Quinlan 1986
+
+Quinlan, J. R. (1986). "Induction of decision trees" (PDF). Machine Learning. 1: 81–106. doi:10.1007/BF00116251
 
 ## R
 

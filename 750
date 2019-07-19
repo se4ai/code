@@ -16,12 +16,15 @@ if [ -n "$1" ] ; then
   git add $Top/etc/log
 fi
 
+delta() {
+  gawk 'BEGIN {x='$1'; y='$2'; z = x - y; print z<0? 0 : z}'
+}
 while [ 1 ]; do  # dsad asd as das
   what=$(gawk '{print $1}' $b4)
   when=$(gawk '{print $2}' $b4)
 
   now=$(wc -w $what | gawk '{print $1}')
-  delta=$(echo $((now - when)))
+  delta=$(delta $now $when)
   clear
   figlet -w 70 "$delta"  
   echo "new words"
