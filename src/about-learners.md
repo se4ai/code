@@ -1,5 +1,7 @@
 # todo
 
+power pruning b^2/(b+r)
+
 goal clistering aggregation, best rest
 
 pollutokn marker
