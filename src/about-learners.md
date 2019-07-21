@@ -1,3 +1,11 @@
+# todo
+
+goal clistering aggregation, best rest
+
+pollutokn marker
+
+raom procjection clsutering
+
 # About Learners
 
 Learners divide old data  into (say):
@@ -22,7 +30,73 @@ on data mining](REFS#witten-2016)
  but it does introduce much of the learning technology used
 later in this book.
 
-# Details
+In summary,
+
+- Tables have rows and columns of data. When data does not come in a nice neat table[^usually], then the
+  first task of the data scientist is to wrangle the data into such a format.
+- Discretization divide large ranges of things into just a few ranges. Discretization is usually applied just to one column, or a pair of columns, 
+ But as we shall see, we can also "discretize" other things (and multi-dimensional "discretization" is called _clustering_).
+- Clusters  divide the table  into groups of similar rows (and each group is a cluster). Usually, 
+  clustering  ignores the goal/class columns (but it is possible and sometimes useful to cluster on the  goals/class).
+- If  new thing is not similar to any existing cluster, then it is anomaly and (a) we need only extend our clusters to handle the anomalies;
+  (b) one way to track anomalies is when new clusters start forming.
+- If new thing is not  an anomaly, and we have enough old things, then there is case for just ignoring the new thing. This can save space/time
+  in the AI tools.
+- Recursive clustering lets us divide large problems into smaller ones.
+- If we only build models for the smaller clusters, then model construction is much faster.
+- There are many ways to build models, most of which involve [dividing the data](https://i.stack.imgur.com/v4IfD.png).
+For example: 
+     - Some learners divide the data using straight lines, parallel to the data axis (e.g. decision trees) while others
+       allow curvier shapes (neural networks, support vector machines).
+     - Naive Bayes classifiers divde the data on the class value, then keeps summaries on the values seen in each division.
+       When new data arrives, we check how similar it is to the summaries fron each class (and the new data is assigned the
+       class that it is most similar).
+     - Tree learners divide the data according using the split most reduces the diversity of each split.
+     - Ensemble learners randomly divide the data, build one model per division, then make conclsions by voting across
+       the ensemble. For example:
+          - Random forests are (say) 100 decision trees, each built using (say) $$\log_2$$ of the
+            attributes (picked at random) and some random subset of the rows (not more than can fit  into main memory).
+     - Logistic regression sorts data according to [an S-shaped curve](https://www.wolframalpha.com/input/?i=1%2F(1%2Be%5E(-x))+from+-10+to+10) ranging from $$0 \le y \le 1$$.  On that slope, we strongly
+       believe in $$\neg x$$ or $$x$$ at $$y=0,1$$ (respectively)
+     - Support vector machines invent new dimensions that let us  [better seperate the data](https://pubs.rsc.org/image/article/2018/MO/c8mo00111a/c8mo00111a-f5_hi-res.gif). To do this, they use a _kernel function_ and different kernels invent
+       different dimensions (e.g. here's [one that uses](http://omega.albany.edu:8008/machine-learning-dir/notes-dir/ker1/phiplot.gif)  $$\sqrt{2}x_1x_2}$$). Note that  some kernels are
+       are [most suited to the current data](https://images.squarespace-cdn.com/content/54856bade4b0c4cdfb17e3c0/1418555379610-JJN6XJ9SG8TEABIB55R1/?content-type=image%2Fpng).
+     - Usually the divisions are pre-computed and cached (and those divisions are called the _model_). Buy _lazy learners_
+       work out the divisions at runtime on a case-by-case basis (e.g. nearest neighbor methods that use a division
+       consisting of $$k$$ nearest neighbors). Note that lazy learners can be much slower than otherwise since nothing is
+       pre-computed and cached from training time (so all the 
+       work hapens at test time).
+- The less things divide, and the more than fall into the gaps between the divisions, the more we doubt those conclusions.
+  For example:
+     - In a two-class Bayes classifier, of the probaility of $$a,b$$ is $$0.9,0.1$$ then we strong believe in $$a$$. But
+       when those probabilities are $$0.55,0.45$$, we are less certain of our classification.
+     - In logistic regression, when the output is around $$y=0,5$$ then we should be a little skeptical of the conclusions.
+- The other place we need to doubt conclusions is when they fall outside of everything that has been seen before. 
+  If a new example
+  arrives, and it is anomalous, then we should doubt that our AI tool can cope with that data.
+
+[^usually]: Which is, in fact, the usual case.
+
+Here is how the following influences ethical design:
+
+- Explanation and transparent:
+      - Discretization divides many values into just a few, which makes explanation and  transparency easier, since there is less to explain.
+- Privacy:
+   - If clusters only keep samples, not all, of the data, then the non-sampled data is 100\% private.
+- Reliability
+    - Once data is divided into small clusters, we can quickly check for stability and  (and here reliability)
+    - Incremental clustering lets us stream over the data and recognize when new data is outside the _certification envelope_
+      of what has been seen before.     This also informs reliability.
+- Effectiveness
+    - In the happy case where anomalies are localized to particular clusters, then this simplies repair or pollution marking (since it
+      localizes the regions we need to fix, or avoid). 
+- Inclusiveness:
+    - If a human has to check the conclusions of an AI tool that uses clustering,  then they 
+      need only show them representative samples of the data (i.e. just some
+       per cluster). 
+
+
+# Discretization
 Data can be symbolic or numeric. We will say that:
 
 - Numbers are things we can add together and sort. 
@@ -149,18 +223,6 @@ be ts indepednent and depednet columns,
  
  columns
 values to car about) but you can sometimes lose some of the numeric nuances.
-
-Clusterers divides rows into sets of similar groups (and each group is a clusterer). Clusterers usually ignore 
-learning is slicingls and dividing rows
-clusters- does not use class var
-naive bayes
-decision trees
-logisitic regression
-support vector machines (a favorite in text minig)
-ensele learning
-guesiann process models
-
-Fast supervised learning
 
 
 ----
