@@ -8,7 +8,7 @@ from data import data
 def weather2(): return data(
   name = "albrecht", 
   rows = [
-    ["outlook", "$temp", "$temperature",
+    ["outlook", "$temp", 
       "?$humid", "wind", ">play"],
     ["sunny",85,85, "FALSE",1],
     ["sunny",80,90,"TRUE",1],

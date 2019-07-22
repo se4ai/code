@@ -24,5 +24,10 @@ class Fred(Pretty):
     i.e=100
     i._has=i
 
+print(''.join(sorted([any('abcde') for _ in range(50)])))
+
 print(Fred())
+print(s2m(""" a,b,3,2,g
+  d,e,3,4,f
+  k,l,100,200,f"""))
 if __name__ == "__main__": ok()

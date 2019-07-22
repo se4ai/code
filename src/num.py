@@ -36,7 +36,7 @@ class Num(Pretty):
       i.mu -= d/i.n
       i.m2 -= d*(x - i.mu)
   def norm(i,x):
-    return (x - i.lo) / (i.hi - i.lo - my.tiny)
+    return  (x - i.lo) / (i.hi - i.lo - my.tiny)
 """
 
 Note that there is a numerical methods

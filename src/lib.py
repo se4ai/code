@@ -4,7 +4,7 @@
 
 
 """
-import random
+import random,re
 from main import my
 from collections.abc import Iterable   
 
@@ -18,7 +18,7 @@ from collections.abc import Iterable
 """
 
 r = random.random
-any = random.choice
+one = random.choice
 
 """
 
@@ -47,6 +47,13 @@ def iterp(x) : return not isinstance(x,str) \
 def nump(x)  : return isinstance(x,(float,int))
 
 def stringp(x): return isinstance(x,str)
+
+def token(x):
+  try: return int(x)
+  except:
+    try: return float(x)
+    except:return x
+   
 """
 
 ## Math
@@ -54,6 +61,18 @@ def stringp(x): return isinstance(x,str)
 """
 
 def close(x,y,near=0.01): return y*(1-near) <=x<= y*(1+near)
+
+"""
+
+## Strings
+
+"""
+
+def s2m(s):
+  return [
+    [token(cell) for cell in 
+       re.sub(r'[ \t]*',"", line).split(",")] 
+    for line in s.splitlines()]
 
 """
 

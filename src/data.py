@@ -11,7 +11,8 @@ def cols(src):
 
 def data(name="",  rows=[]):
   out = None
-  for row in cols(rows):
+  for n,row in enumerate(cols(rows)):
+    print(n,row)
     if out: out + row
     else  : out = Rows(name, row)
   return out 

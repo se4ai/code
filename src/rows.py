@@ -8,6 +8,7 @@ from row  import Row
 from col  import Col
 from memo import memos
 from lib  import Pretty
+import sys
 
 @memos
 class Rows(Pretty):
@@ -22,7 +23,8 @@ class Rows(Pretty):
     for col in i.more: col.w =  1
   def __add__(i,cells):
     "add a row, update the column headers"
-    [col + cell for col,cell in zip(i.cols,cells)]
+    for col in i.cols:
+      col + cells[col.pos]
     row = Row(cells)
     i.all += [row]
     return row

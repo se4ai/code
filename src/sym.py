@@ -15,6 +15,7 @@ class Sym(Pretty):
     [i + x for x in inits]
   def delta(i) : return i.ent()
   def expect(i): return i.mode
+  def norm(i,x): return x
   @fresh
   def __add__(i,x):
     i.n += 1
