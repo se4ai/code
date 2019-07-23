@@ -3,14 +3,12 @@
 # auto.py
 
 """
-from data import data
 
-def auto(): return data(
-  name = "auto", 
-  rows = [
-    ["cylinders","$displacement","$horsepower","<weight",
-     ">acceleration","$model","origin",">mpg"],
-    [8,304,193,4732,18.5,70,1,10],
+def auto(): return dict(
+  about = "auto", 
+  names=  ["cylinders","displacement","horsepower","<weight",
+            ">acceleration","$model","?origin",">mpg"],
+  rows=[  [8,304,193,4732,18.5,70,1,10],
     [8,360,215,4615,14,70,1,10],
     [8,307,200,4376,15,70,1,10],
     [8,318,210,4382,13.5,70,1,10],
