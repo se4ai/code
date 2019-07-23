@@ -29,7 +29,7 @@ class Thing(object):
 
 from functools import wraps
 
-def memo0(f):
+def memo(f):
   "Memo index does NOT includes first argument"
   name = f.__name__
   @wraps(f)
@@ -39,7 +39,7 @@ def memo0(f):
    return i._memo[name]
   return g
 
-def memos(k, what='0', decorator=memo0):
+def memos(k, what='0', decorator=memo):
   "Turn  methods ending with 'what' into a memoed property"
   for f in dir(k):
     if callable(getattr(k, f)):

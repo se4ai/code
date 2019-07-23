@@ -19,7 +19,7 @@ my = o(
        num= o(small= 0.38, #<0.38=small, <1=medium 
               conf = 95,
               bins = 10),
-       row= o(doms=100)
+       row= o(doms=64)
       )
 
 ###########################################################
@@ -92,19 +92,19 @@ class Num(Thing):
     z = (x - i.mu)/i.sd
     p = interpolate(abs(z),Num.z)
     return int((1-p if z < 0 else p) / my.nums.bins)
-  def same(i,j):
-    return i.hedges(j) or i.ttest(j)
+  def different(i,j):
+    return i.hedges(j) and i.ttest(j)
   def ttest(i,j):
     df = min(i.n - 1, j.n - 1) 
-    t= interpolate(df,t95 if my.num.conf==95 else t99)
-    return abs(i.mu - j.mu)/(i.sd/i.n + j.sd/j.n)**0.5 < t
+    t= interpolate(df,Num.t95 if my.num.conf==95 else Num.t99)
+    return abs(i.mu - j.mu)/(i.sd/i.n + j.sd/j.n)**0.5 >= t
   def hedges(i,j):
     num   = (i.n - 1)*i.sd**2 + (j.n - 1)*j.sd**2
     denom = (i.n - 1) + (j.n - 1)
-    sp    = ( num / denom )**0.5
+    sp    = (num / denom )**0.5
     delta = abs(i.mu - j.mu) / sp  
     c     = 1 - 3.0 / (4*(i.n + j.n - 2) - 1)
-    return delta * c < my.num.small
+    return delta * c >= my.num.small
 
 class Int(Num):
   def prep(i,x): return int(x)
@@ -117,6 +117,20 @@ def _num1():
   assert close(n.sd,3.0608)
   assert n.mu == 7
 
+@cols
+def _num2():
+  seed(1)
+  c=1
+  while c<1.4:
+    c+=0.025
+    a= [r()**0.5 for _ in range(100)]
+    b= [x*c for x in a]
+    a= Float(a)
+    b= Float(b)
+    print("%5.3f %5.3f %5.3f %5.3f %5.3f " % (c,a.mu,b.mu, a.sd,b.sd),
+          "hedges %5s ttest %5s both %5s" %(a.hedges(b), a.ttest(b), a.different(b)))
+
+
 ###########################################################
 
 class Row(Thing):
@@ -126,7 +140,7 @@ class Row(Thing):
     i.cells = cells
     i.id = Row.id = Row.id+1
   def __getitem__(i,k):  return i.cells[k]
-  @memo0
+  @memo
   def dominates(i,history):
     n     = my.row.doms
     goals = history.goals()
@@ -149,6 +163,9 @@ class History(Thing):
     i.seen = [None] * len(names)
     i.rows = []
     i.keep = keep
+  def goals(i):
+    return [x for x in i.seen if 
+            my.char.less in x.name or my.char.more in x.name]
   def __call__(i,row):
     for n,(cell,name) in enumerate(zip(row,i.names)): 
       if cell !=my.char.ignore: 
@@ -159,17 +176,13 @@ class History(Thing):
       i.rows += [row]
     return row
   def seeing(i,n,x,name):
-    try       : x=int(x);   what=Int
+    try       : x=int(x); what=Int
     except    : 
       try     : x=float(x); what=Float
-      except  :             what=Sym
+      except  : what=Sym
     return what(name=name,pos=n,
                 w= -1 if my.char.less in name else 1)
-
-  def goals(i):
-    return [x for x in i.seen if 
-            my.char.less in x.name or my.char.more in x.name]
-    
+   
 def shuffled(src):
   cache=[]
   for x in cols(src):
