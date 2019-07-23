@@ -64,6 +64,11 @@ Mark W Craven and Jude W Shavlik. 2014. Learning symbolic rules using artificial
 Hoa Khanh Dam, Truyen Tran, and Aditya Ghose. 2018. 
 "Explainable Software Analytics.". ICSE, NIER, 2018,  arXiv preprint arXiv:1802.00603 (2018).
 
+### Dougherty 1995
+
+James Dougherty, Ron Kohavi, and Mehran Sahami. 1995. Supervised and unsupervised discretization of continuous features. In Proceedings of the Twelfth International Conference on International Conference on Machine Learning (ICML'95), Armand Prieditis and Stuart J. Russell (Eds.). Morgan Kaufmann Publishers Inc., San Francisco, CA, USA, 194-202.
+http://robotics.stanford.edu/users/sahami/papers-dir/disc.pdf
+
 ### Duda 2000
 
 Richard O. Duda, Peter E. Hart, and David G. Stork. 2000. 
@@ -206,6 +211,11 @@ Microsoft AI principles. 2019. https://www.microsoft.com/en-us/ai/our-approach-t
 ### Nair 2018
 
 Nair, V., Menzies, T., Siegmund, N., & Apel, S. (2018). Faster discovery of faster system configurations with spectral learning. Automated Software Engineering, 25(2), 247-277.
+
+### Nam 2016
+
+J. Nam and S. Kim, "CLAMI: Defect Prediction on Unlabeled Datasets (T)," 2015 30th IEEE/ACM International Conference on Automated Software Engineering (ASE), Lincoln, NE, 2015, pp. 452-463.
+http://people.csail.mit.edu/hunkim/papers/nam-HDP-fse2015.pdf
 
 ### Norvig 2009
 
