@@ -18,12 +18,16 @@ my = o(
                more  = ">"),
        num= o(small= 0.38, #<0.38=small, <1=medium 
               conf = 95,
+              p    = 2,
               bins = 10),
-       row= o(doms=64)
+       row= o(doms=64),
+       cluster= o(m=64, 
+                  strange=1 # set to 0 to disable anomaly detection
+                  )
       )
 
-###########################################################
-class Sym(Thing):
+#----------------------------------------------------------
+  class Sym(Thing):
   def __init__(i,inits=[], name="",w=1,pos=0): 
     i.w=w; i.pos=pos; i.name=name
     i.n=0; i.d={}; i.most=0;i.mode=None
@@ -43,6 +47,10 @@ class Sym(Thing):
       p  = v/i.n
       e -= p * log(p,2)
     return e
+  def dist(i,x,y):
+    no = my.char.ignore
+    if x==no or y ==no: return 1
+    return 0 if x == y else 1
 
 class cols(ok):pass
 
@@ -52,7 +60,7 @@ def _sym1():
   assert close(s.variety(),1.3787836)
   assert s.mode == 'c'
 
-###########################################################
+#----------------------------------------------------------
 class Num(Thing):
   # some stats thresholds
   z=  ((0,.5),(.25,.5987),(0.5,.6915),(0.75,.7734), (1,.8413),
@@ -88,8 +96,22 @@ class Num(Thing):
       i.sd = (i.m2/(i.n - 0.99999))**0.5
   def norm(i,x):
     return  (x - i.lo) / (i.hi - i.lo +0.00000001)
+  def dist(i,x,y):
+    no = my.char.ignore
+    if x==no and y ==no: return 1
+    if x=="?":
+      y = i.norm(y)
+      x = 0 if y>0.5 else 1
+    elif y=="?":
+      x = i.norm(x)
+      y = 0 if x>0.5 else 1
+    else:
+      x,y=i.norm(x),i.norm(y)
+    return (x-y)**my.num.p
+  def z(i,x):
+    return  (x - i.mu)/i.sd
   def zbin(i,x):
-    z = (x - i.mu)/i.sd
+    z = i.z(x)
     p = interpolate(abs(z),Num.z)
     return int((1-p if z < 0 else p) / my.nums.bins)
   def different(i,j):
@@ -130,9 +152,7 @@ def _num2():
     print("%5.3f %5.3f %5.3f %5.3f %5.3f " % (c,a.mu,b.mu, a.sd,b.sd),
           "hedges %5s ttest %5s both %5s" %(a.hedges(b), a.ttest(b), a.different(b)))
 
-
-###########################################################
-
+#----------------------------------------------------------
 class Row(Thing):
   id=0
   def __init__(i,cells) : 
@@ -155,8 +175,41 @@ class Row(Thing):
       s1 -= 10**(goal.w * (a-b)/n)
       s2 -= 10**(goal.w * (b-a)/n)
     return s1/n < s2/n
+  def dist(i,j,history):
+    n,d,ps = =0.00000001,0,1/my.num.p
+    for x,y,h in zip(i.cells,j.cells,history.seen):
+      n += 1
+      d += h.dist(x,y)
+    return d**p/n**p
+#----------------------------------------------------------
+class cluster(Pretty):
+  def __init__(i,history): 
+    i.rows,i.m = [], my.cluster.m
+    i.easts,i.wests={},{}
+    i.dnum=Num()
+    i.history,i.east,i.west =  history,None,None
+  def __add__(i,row):
+    if   i.left  is None: i.left=row
+    elif i.right is None: 
+      i.right=row; c=right.dist(left,i.history)
+    else:
+      if len(rows) <= i.m
+        i.rows += [row]
+      if len(rows) == i.m:
+        a = i.east.dist(row)
+        b = i.west.dist(row)
+        i.dnum + d
+XXX which history to use? parents?
 
-###########################################################
+      abs(i.dnum.z(d) > my.cluster.strange): 
+        d = (a**2 + b**2 - i.c**2)/2*i.c
+        if a < b:
+          i.easts += [row]
+          i.wests += [row]
+      if len(rows)> 2*.i.m: 
+         subs
+# todo XXX 
+#----------------------------------------------------------
 class History(Thing):
   def __init__(i,names=[],keep=True): 
     i.names = names
