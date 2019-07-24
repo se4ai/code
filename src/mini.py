@@ -17,7 +17,7 @@ my = o(
                less  = "<",
                more  = ">"),
        num= o(small= 0.38, #<0.38=small, <1=medium 
-              conf = 95,
+              conf = 99,
               p    = 2,
               bins = 10),
        row= o(doms=64),
@@ -27,7 +27,7 @@ my = o(
       )
 
 #----------------------------------------------------------
-  class Sym(Thing):
+class Sym(Thing):
   def __init__(i,inits=[], name="",w=1,pos=0): 
     i.w=w; i.pos=pos; i.name=name
     i.n=0; i.d={}; i.most=0;i.mode=None
@@ -109,13 +109,13 @@ class Num(Thing):
       x,y=i.norm(x),i.norm(y)
     return (x-y)**my.num.p
   def z(i,x):
-    return  (x - i.mu)/i.sd
+    return  (x - i.mu)/(i.sd + 0.000000001)
   def zbin(i,x):
     z = i.z(x)
     p = interpolate(abs(z),Num.z)
     return int((1-p if z < 0 else p) / my.nums.bins)
   def different(i,j):
-    return i.hedges(j) and i.ttest(j)
+    return i.hedges(j) or i.ttest(j)
   def ttest(i,j):
     df = min(i.n - 1, j.n - 1) 
     t= interpolate(df,Num.t95 if my.num.conf==95 else Num.t99)
@@ -141,7 +141,6 @@ def _num1():
 
 @cols
 def _num2():
-  seed(1)
   c=1
   while c<1.4:
     c+=0.025
@@ -155,17 +154,17 @@ def _num2():
 #----------------------------------------------------------
 class Row(Thing):
   id=0
-  def __init__(i,cells,history) : 
+  def __init__(i,cells) : 
     i._memo={}
-    i.history=history
     i.cells = cells
     i.id = Row.id = Row.id+1
   def __getitem__(i,k):  return i.cells[k]
+  def __setitem__(i,k,v): i.cells[k] =v ; return v
   @memo
-  def dominates(i):
+  def dominates(i, history):
     n     = my.row.doms
-    goals = i.history.goals()
-    return sum([i.dominate(one(i.history.rows),goals)
+    goals = history.goals()
+    return sum([i.dominate(one(history.rows),goals)
                 for _ in range(n)])  / n
   def dominate(i,j,goals):   
     z = 0.00001
@@ -176,17 +175,27 @@ class Row(Thing):
       s1 -= 10**(goal.w * (a-b)/n)
       s2 -= 10**(goal.w * (b-a)/n)
     return s1/n < s2/n
-  def dist(i,j):
-    n,d,ps = =0.00000001,0,1/my.num.p
-    for x,y,h in zip(i.cells,j.cells,i.history.seen):
+  def dist(i,j,history):
+    n,d,p = 0.00000001,0,1/my.num.p
+    for x,y,h in zip(i.cells,j.cells,history.seen):
       n += 1
       d += h.dist(x,y)
     return d**p/n**p
+  def closest(i,rows,history,best=10**32,better=lt):
+    out = None
+    for j in rows:
+      d = i.dist(j,history)
+      if better(d, best):
+        best,out=d,j
+    return out 
+  def furthest(i,rows,history):
+    return i.closest(rows,history,best=-1,better=gt)
+
 #----------------------------------------------------------
-class Cluster(Pretty):
-  def __init__(i, inits=[],history): 
+class Cluster(Thing):
+  def __init__(i, inits=[]): 
     i.rows  = []
-    i.dnum=Num()
+    i.dnum=Float()
     i.east,i.west = None,None
     i.left, i.right = None,None
     i.history = history
@@ -235,7 +244,7 @@ class History(Thing):
     for n,(cell,name) in enumerate(zip(row.cells,i.names)): 
       if cell !=my.char.ignore: 
         watcher = i.seen[n] = i.seen[n] or i.seeing(n,cell,name)
-        row[n]  = watcher + cell
+        row[n]  =  watcher + cell
     row = Row(row)
     if i.keep:
       i.rows += [row]
@@ -247,39 +256,62 @@ class History(Thing):
       except  : what=Sym
     return what(name=name,pos=n,
                 w= -1 if my.char.less in name else 1)
-   
-def shuffled(src, b4):
-  cache   = []
-  history = b4.clone()
-  for x in src:
-    cache += [x]
-    if len(cache) > my.era:
-      random.shuffle(cache)
-      for y in cache: 
-        yield history + y, history
-      cache = []
-  if cache:
-    random.shuffle(cache)
-    for y in cache: 
-      yield history + y, history
+  
+class Place:
+  def __init__(i, names):
+    i.history= History(names)
+    i.c = i.north = i.south = None
+    i.distances = Float() 
+  def add(i,row,rows):
+    if not i.north or not i.south: 
+       anything = one(rows)
+       i.north  = anything.furthest(rows, i.history)
+       i.south  = i.north.furthest(rows,  i.history)
+       i.c      = i.south.dist(i.north,   i.history)
+    a = i.north.dist(row,i.history)
+    b = i.south.dist(row, i.history)
+    d = (a**2 + i.c**2 - b**2)/2*i.c
+    i.distances + d
+    return o(row=row, northern=a<b, weird=abs(i.distances.z(d)) > 1)
+  def adds(i,src):
+    cache=[]
+    for x in src:
+      i.history + x
+      cache += [x]
+      if len(cache) > my.era:
+        for row in shuffle(cache):
+          yield i.add(row,cache)
+        cache = []
+    if cache:
+      for row in shuffle(cache): 
+        yield i.add(row,cache)
 
 def data(rows=[], names=[], about=''):
   use  = [n for n,x in enumerate(names) if not my.char.ignore in x]
   cols = lambda lst: [lst[n] for n in use]
-  return shuffled([Row(cols(row)) for row in rows], 
-                  History(cols(names)))
+  here = Place(cols(names))
+  rows = [Row(cols(row)) for row in rows]
+  for x in here.adds(rows): 
+     tag=""
+     if   x.weird and     x.northern:tag="N"
+     elif x.weird and not x.northern:tag="S"
+     elif not x.weird and x.northern:tag=" "
+     else: tag="s"
+     print(tag,end="")
 
 class stories(ok): pass
 
 @stories
 def _auto():
   from auto import auto
-  for row,history in data(**auto()):
-    print(row.cells)
-  lst = sorted(history.rows,
-               key=lambda z:z.dominates(history))
-  for row in lst[:5]+lst[-5:]:
-    print(row)
+  from weather2 import weather2
+  data(**auto())
+#  for row,history in data(**auto()):
+#    print(row.cells)
+#  lst = sorted(history.rows,
+#               key=lambda z:z.dominates(history))
+#  for row in lst[:5]+lst[-5:]:
+#    print(row)
 ###########################################################
 
 if __name__ == "__main__":

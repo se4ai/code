@@ -4,10 +4,10 @@ r=random.random
 seed=random.seed
 one=random.choice
 
-def close(x,y,near=0.01): return y*(1-near) <=x<= y*(1+near)
+def lt(x,y): return x < y
+def gt(x,y): return x > y
 
-class o:
-  def __init__(i,**kw): i.__dict__.update(kw)
+def close(x,y,near=0.01): return y*(1-near) <=x<= y*(1+near)
 
 def interpolate(x, xy):
   x1, y1 = xy[0]
@@ -21,11 +21,14 @@ def interpolate(x, xy):
 class Thing(object):
   def __repr__(i):
     pairs = sorted([(k,v) for k,v in i.__dict__.items()
-                    if k[0] != "-"])
+                    if k[0] != "_"])
     pre = i.__class__.__name__ + '{'
     q=lambda z: "'%s'" % z if isinstance(z,str)  else str(z)
     return pre + ", ".join(['%s=%s' % (k,q(v)) 
                           for k,v in pairs]) + '}'
+class o(Thing):
+  def __init__(i,**kw): i.__dict__.update(kw)
+
 
 from functools import wraps
 

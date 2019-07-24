@@ -5,11 +5,11 @@
 """
 from data import data
 
-def weather2(): return data(
-  name = "albrecht", 
-  rows = [
-    ["outlook", "$temp", 
+def weather2(): return dict(
+  about = "albrecht", 
+  names = ["outlook", "$temp", 
       "?$humid", "wind", ">play"],
+  rows=[
     ["sunny",85,85, "FALSE",1],
     ["sunny",80,90,"TRUE",1],
     ["overcast",83,86,"FALSE",2],
