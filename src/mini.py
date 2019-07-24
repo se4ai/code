@@ -272,7 +272,9 @@ class Place:
     b = i.south.dist(row, i.history)
     d = (a**2 + i.c**2 - b**2)/2*i.c
     i.distances + d
-    return o(row=row, northern=a<b, weird=abs(i.distances.z(d)) > 1)
+    return o(row=row, 
+             northern=a<b,
+             weird=abs(i.distances.z(d)) > 1)
   def adds(i,src):
     cache=[]
     for x in src:
