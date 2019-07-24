@@ -256,7 +256,7 @@ class History(Thing):
       except  : what=Sym
     return what(name=name,pos=n,
                 w= -1 if my.char.less in name else 1)
-  
+ 
 class Place:
   def __init__(i, names):
     i.history= History(names)
