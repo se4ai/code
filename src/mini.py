@@ -155,16 +155,17 @@ def _num2():
 #----------------------------------------------------------
 class Row(Thing):
   id=0
-  def __init__(i,cells) : 
+  def __init__(i,cells,history) : 
     i._memo={}
+    i.history=history
     i.cells = cells
     i.id = Row.id = Row.id+1
   def __getitem__(i,k):  return i.cells[k]
   @memo
-  def dominates(i,history):
+  def dominates(i):
     n     = my.row.doms
-    goals = history.goals()
-    return sum([i.dominate(one(history.rows),goals)
+    goals = i.history.goals()
+    return sum([i.dominate(one(i.history.rows),goals)
                 for _ in range(n)])  / n
   def dominate(i,j,goals):   
     z = 0.00001
@@ -175,52 +176,63 @@ class Row(Thing):
       s1 -= 10**(goal.w * (a-b)/n)
       s2 -= 10**(goal.w * (b-a)/n)
     return s1/n < s2/n
-  def dist(i,j,history):
+  def dist(i,j):
     n,d,ps = =0.00000001,0,1/my.num.p
-    for x,y,h in zip(i.cells,j.cells,history.seen):
+    for x,y,h in zip(i.cells,j.cells,i.history.seen):
       n += 1
       d += h.dist(x,y)
     return d**p/n**p
 #----------------------------------------------------------
-class cluster(Pretty):
-  def __init__(i,history): 
-    i.rows,i.m = [], my.cluster.m
-    i.easts,i.wests={},{}
+class Cluster(Pretty):
+  def __init__(i, inits=[],history): 
+    i.rows  = []
     i.dnum=Num()
-    i.history,i.east,i.west =  history,None,None
+    i.east,i.west = None,None
+    i.left, i.right = None,None
+    i.history = history
+    i.where
+    [i + x for x in inits]
+  def clone(i):
+   return Cluster(i.history)
   def __add__(i,row):
-    if   i.left  is None: i.left=row
-    elif i.right is None: 
-      i.right=row; c=right.dist(left,i.history)
+    if   i.west  is None: 
+      i.west=row
+    elif i.east is None: 
+      i.east=row; c=i.west.dist(i.east)
     else:
-      if len(rows) <= i.m
+      a = i.east.dist(row)
+      b = i.west.dist(row)
+      d = i.where[row.id] = (a**2 + b**2 - i.c**2)/2*i.c
+      i.dnum + d
+      if abs(i.dnum.z(d)) > my.cluster.strange: 
         i.rows += [row]
-      if len(rows) == i.m:
-        a = i.east.dist(row)
-        b = i.west.dist(row)
-        i.dnum + d
-XXX which history to use? parents?
-
-      abs(i.dnum.z(d) > my.cluster.strange): 
-        d = (a**2 + b**2 - i.c**2)/2*i.c
-        if a < b:
-          i.easts += [row]
-          i.wests += [row]
-      if len(rows)> 2*.i.m: 
-         subs
-# todo XXX 
+        if len(i.rows) > 2*my.cluster.era:
+          i.left  = i.left  or clone()
+          i.right = i.right or clone()
+          if a < b:
+            i.left.add(row)
+          else:
+            i.right.add(row)
+            ## rows are different e in each luster
+            ## history is global at the top, pased down
+            ## rows dont have history built in
+            ## two histoies, global and local
+## only shuffle once at top
+## must remember to add when we start
 #----------------------------------------------------------
 class History(Thing):
   def __init__(i,names=[],keep=True): 
+    i.rows  = []
+    i.keep  = keep
     i.names = names
-    i.seen = [None] * len(names)
-    i.rows = []
-    i.keep = keep
+    i.seen  = [None] * len(names)
+  def clone(i):
+    return History([x.name for x in i.seen])
   def goals(i):
     return [x for x in i.seen if 
             my.char.less in x.name or my.char.more in x.name]
-  def __call__(i,row):
-    for n,(cell,name) in enumerate(zip(row,i.names)): 
+  def __add__(i,row):
+    for n,(cell,name) in enumerate(zip(row.cells,i.names)): 
       if cell !=my.char.ignore: 
         watcher = i.seen[n] = i.seen[n] or i.seeing(n,cell,name)
         row[n]  = watcher + cell
@@ -236,22 +248,26 @@ class History(Thing):
     return what(name=name,pos=n,
                 w= -1 if my.char.less in name else 1)
    
-def shuffled(src):
-  cache=[]
-  for x in cols(src):
+def shuffled(src, b4):
+  cache   = []
+  history = b4.clone()
+  for x in src:
     cache += [x]
     if len(cache) > my.era:
-      for y in shuffle(cache): yield y
-      cache=[]
+      random.shuffle(cache)
+      for y in cache: 
+        yield history + y, history
+      cache = []
   if cache:
-    for y in shuffle(cache): yield y
+    random.shuffle(cache)
+    for y in cache: 
+      yield history + y, history
 
-def data(rows=[],names=[], about=''):
-  no      = my.char.ignore
-  use     = [n for n,x in enumerate(names) if not no in x]
-  history = History([names[n] for n in use])
-  for row in shuffle(rows):
-    yield history([row[n] for n in use]), history
+def data(rows=[], names=[], about=''):
+  use  = [n for n,x in enumerate(names) if not my.char.ignore in x]
+  cols = lambda lst: [lst[n] for n in use]
+  return shuffled([Row(cols(row)) for row in rows], 
+                  History(cols(names)))
 
 class stories(ok): pass
 
