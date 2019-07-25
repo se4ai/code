@@ -14,9 +14,23 @@ or (for time-series data) on the y-axis.
 
 <img align=right width=400 src="img/ngram.png">
 Discretizaton can lose some numeric nuances.
-  On the other hand,  discretized columns are easier to index
-as well as explain (since they contain fewer values)
-Hence, discretization is very useful for reducing the complexity of the reasoning. For example,
+  On the other hand:
+
+- Explanations based over a   few bins is much simpler explain (since they contain fewer values);
+- A search over a few bins can run much faster than a search over a large number of numbers;
+- Discretized columns are easier to index
+
+Note only is explanation over ranges, it also is more general (in the sense that it covers more examples).
+That is, before discretization, users can expect rows
+with point values like _loc=50_ and _experience=2years_. While that is interesting, it does not
+tell the user how much they can safely change things without changing effects inside the data.
+If the data is discretized, then they can inspect rows with bins like $$\mathcal{30\le loc \le 70}$$
+and $$\mathcal{ 1 \le experience \le 3}$$. When reasoning about models
+ built from such discretized ranges, it is easier to work out how much things can safely change, without
+effecting  the overall results.
+
+
+Hence, discretization is very useful. For example,
 having discretized a time series, [NASA would watch its rockets](https://www.cs.ucr.edu/~eamonn/HOT%20SAX%20%20long-ver.pdf) looking for unusual sequences
 of time steps. To that end they build a n-gram model that used the last n letters to predict
 the n+1 letter. This can be displayed in a simple tree where the width of each branch shows how
@@ -26,16 +40,8 @@ _aaa_ then we might get worried
 (since that is something new and rare).
 
 
-Another good thing about discretized numerics is that they let us report our models
-in terms of ranges, not point values. That is, before discretization, users can expect rows
-with values like _loc=50_ and _experience=2years_. While that is interesting, it does not
-tell the user how much they can safely change things without changing effects inside the data.
-If the data is discretized, then they can inspect rows with values like $$\mathcal{30\le loc \le 70}$$
-and $$\mathcal{ 1 \le experience \le 3}$$. When reasoning about models
- built from such discretized ranges, it is easier to work out how much things can safely change, without
-effecting  the overall results.
+It is surprising how few discretized ranges are enough to capture domain semantics.
 
-Its surprising how few discretized ranges are enough to capture domain semantics.
 - In software engineering, [Jaechang Nam and Sunghun Kim](REFS#nam-2015)
 report that they can predict software defects
 using data 
@@ -60,7 +66,7 @@ that the things found together are actually very close together.
 average and most frequent common value, respectively. The mean of $$n$ numbers is $$i(\sum_in_i)/n$$.
 To find the median, sort the numbers then find the middle value (or, if the list is
 en even number of items long, report the average between the two middle values).
-When finding the median, if sorting the numbers is inconvenient, just keep a small random sample
+When finding the median, if sorting all the numbers is inconvenient, just keep a small random sample
 of the numbers.
 
 ## Unsupervised Discretiztion
@@ -68,7 +74,7 @@ of the numbers.
 Discretization can be _unsupervised_ or _supervised_.
 Unsupervised discretization
   just looks at each column by itself. 
-Simple simplest unsupervised clustering strategies include:
+Simple unsupervised clustering strategies include:
 
 - When dividing, first sort the rows on the column you want to divide on. Then...
    - Divide on (say) $$\mathcal{(max-min)/10$$.
@@ -95,26 +101,36 @@ and m+=d*(x-\mu)$$ and, if $$n>1$$,  $$\sqrt{sigma=(m/(n - 1))}$.
 
 ## Supervised Discretization
 
-Another way to divide up numbers is to consider how those divisions select for the goals or classes.
-After dividing the data on that split, we can learn trees, where each level of the tree shows
-the effect of one division.
+Another way to divide up numbers is to split column1 according to how much that changes column2. In this approach,
+column2 is said to _supervise_ the splitting of columns1.
 
-
-Technical aside: traditionally, discretization is applied recursively just to divide a single
+Traditionally, discretization is applied recursively just to divide a single
 column of numbers. Here, we note that if the discretizer is allowed to swich attributes
 at each level of dividing the data, then the "discretizer" becomes a tree learners.
-The lesson here is that by the time you ahve a discretizer working, you are more than half
+The lesson here is that by the time you have a discretizer working, you are more than half
 way to having a fully fledged learner.
 
-A widely used method to learn a tree is,
-that we will call 
-_MIN_, divides the data using the split that most reduces the _variety_
-of the dependent column. This split becomes a new node in the tree. Next, we add sub-trees by
+One  discretization method, which we might call _ARGBEST_ 
+finds split that most include some desired dependent variables. For example, 
+suppose the we  want to find ways to maximize
+some numeric class variable
+ $$y_i$$. Consider a  split $$x_i$$  that divides a 
+column into $n_1,n_2,n_3$ rows with mean $$y_i$$ scores of $$mu_1, mu_2, mu_3$$.
+Let us say that $$n_0$$ denotes the split with worst $$mu$$$ value (which we will call $$\mu_0$$).
+The best split would be the one with the most number of values greater than those in $$n_0$$. That is,
+we would seek to maximize:
+we would seek splits that maximize
+$$n_1*\mu_1/\mu_0$$.
+
+
+Another method, 
+that we might call 
+_ARGMIN, divides the data using the split that most reduces the _variety_
+of the dependent column. Next, we add sub-trees by
 recursing  into each division. That is, one way to build a model is just recursively apply discretization.
-To implment _MIN_ we need someway to measure variability variety
+To implment _ARGMIN_ we need someway to measure variability variety
 (since  that is what we want
 to minimize).
-
 
 - If the dependent column is numeric, we measure _vareity_ using _standard deviation_ (defined above)
 When the [CART](REFS#brieman-1984) learner is building a regression tree, it uses standard deviation.
@@ -125,21 +141,24 @@ is $$=\sum_i p_i\log_2p_i$$ where $$p_i=f_i/n$$.
 Entropy  is minimal (zero)
 when all the symbols  are the same.
 When CART or [C4.5](REFS#quinlan-1986) (also known as J48) is building a classification tree, it uses entropy.
-- However we measure variability, if a column generates splits $n$ rows into $$n_1,n_2,n_3..$$ rows, each of which
+- However we measure variety, if a column splits $n$ rows into $$n_1,n_2,n_3..$$ rows, each of which
   has variety  $$V_1,V_2,V_3...$$ (where $$V_i$$ is either entropy or standard deviation),
   the expected value of  
-  of thevariety after the split is $$E[V]= \sum_i \frac{n_i}{n}V_i$$. 
-- For _MIN_ to work, it has to explore all possible splits of all numeric attributes. 
+  of the variety after the split is $$E[V]= \sum_i \frac{n_i}{n}V_i$$. 
+     - For example, if a split on __age>100_ divides our data into 50 and 100 and 200 rows with standard
+       deviations of 0.3 and 0.2 and 0.1 respectively, the $$E[V]]= \frac{50}{350}*0.3 + \frac{100}{350}*0.2 + \frac{200}{350}*0.1=0.18$$. 
+- For _ARGMIN_  to work, it has to explore all possible splits of all numeric attributes. 
   To speed that up:
        - Implement some $$V$$ collector class that can incremetnally add (or subtract) values
-         from a standard deviation or entropy calculation.
+         from the  standard deviation or entropy of a set of numbers..
        - To divide the column $$X$$ using some class column $$Y$$, then create pairs
          of $$(x1,y1),(x2,y2), etc)$$. 
-       - Sort on $$X$$ then create two collections $$V_0$$ and $$V_1$$.
+       - Sort on $$x_i$$ then create two collectors $$V_0$$ and $$V_1$$.
          Initialize $$V_0$$ to be empty and $$V_1$$ to hold the variety of all $$y_i$$ values.
-       - Working from min to max along that list take each $$y_i$$ and add it to $$V_0$$ and
-         remove it from $$V_1$$. Now $$E[V]$$ for a split at the current position can be computed
-         straight away from $$V_0,V_1$$.
+       - Working from min to max along that sorted list:  (a)take each $$y_i$$ and (b)add it to $$V_0$$ and
+         (c) remove it from $$V_1$$. Now $$E[V]$$ for a split at the current position can be computed
+         straight away from $$V_0,V_1$$. 
+       - This approach requires only one sort and two pass of the data.
 
 [^ent]: According to [Wikiquotes](REFS#entropy-1949)
 this expression was named as follows.
@@ -154,47 +173,90 @@ exists in Boltzmann’s statistical mechanics, and in the second
 place, no one understands entropy very well, so in any discussion
 you will be in a position of advantage."
 
-Another  discretization method, which we call _MOST_,
-is to find split that most include some desired dependent variables. For example, 
-suppose we want to find ways to maximize
-some numeric class variable
- $$y_i$$. Consider a  split $$x_i$$ 
-the column into $n_1,n_2$ rows hold all rows with values larger that $$x_i$$ or otherwise.
-Those two splits would 
-hold $$Y$ scores in the two bins of $$\mu_1, \mn_2$$
-The best split contains the most $y_i$ values
-that are greater than in the other split. That is,
-we would seek splits that maximize
-$$n_1*\mu_1/\mu_2$$.
 
-power pruning b^2/(b+r)
+## Other Applications of Discretization
 
-active elarning
+We said above that once a discretizer works, then we are more than
+halfway to have a learning system.  Four  illustrations of this are
+[STAR](REFS#menzies-2007), [FFTtrees](REFS#chen-2018),
+[CART](REFS#brieman-1994) and [C4.5](REFS#quinlan-1996) discussed
+in the next chapter.
 
-goal custering
+Another applciation of "discretizaton" is actually a statistical
+clustering method called the _Scott-Knot_ procedure. In this methods,
+various _treatments_ are applied to collect a bag of score values
+for each treatment. For example, a standard evalatuon rig in data
+mining is an M-times-N cross validation where:
 
-fft trees
+- $$M$$ times, the data is sorted randomly. This is top _order effects_ where the scores are
+  artificially low or high due to some fortuitous (but unlikely) ordering of the input data[^example]
+- Then, for each ordering, the data is divided into $$N$$ bins. Each bin $$1 \le b \le N$$
+  is then set aside as a test set while a model is learned on the remaining $$N-1$$ bins.
+- Assuming $$M=N=5$$ [^crossval],  then this will generate 25 scores per treatment.
 
-https://en.wikipedia.org/wiki/Logistic_regression#/media/File:Exam_pass_logistic_curve.jpeg
-w
-
-Amazing how few you need. median chops
-
-Sctott knott is a deicretizer
-
-LSH is a discretizer
-
-ARGMOST
+The Scott-Knot procedure "discretizes" these treatments into sets of similar values as follows.
+The thing to note here is that, with very few changes, this procedure is the same _ARGMIN_
+discussed above.
 
 
-For more on discretizatin, see after
-applying some unsupervised discritizer, find 
+[^example]: E.g. Consider a data set from a hospital where all the female patients are listed last.
+In such a data set, attempting to learn risk factors for pregnancy using the first part of
+the data will fail (since that part contains no female examples).
 
-, used in learners in FFtrees
- it would
-be ts indepednent and depednet columns,
- 
- columns
-values to car about) but you can sometimes lose some of the numeric nuances.
+[^crossval]: The standard values are $$M=N=10$$ but the empirical evidence for the need for
+so many cross-validations is not strong. Using $$M=N=5$$ reduces the over all number
+of trainings by a factor of four (from 10\*10=100 to 5\*5=25) while still returning
+a large enough sample to be statistically interesting.
 
+
+Scott-Knot
+sorts a list of $$l$$ treatments with $$ls$$ measurements by their median
+score. It then
+splits $$l$$ into sub-lists $$m,n$$ in order to maximize the expected value of
+ differences  in the observed performances
+before and after the splits. For example, we could sort $$\mathit{ls}=4$$ 
+methods based on their median score,
+then splits them into three sub-lists of of size $$\mathit{ms},\mathit{ns} \in \{(1,3), (2,2), (3,1)\}$$.
+Scott-Knot would declare one of these divisions
+to be _best_,  as follows.
+For lists $$l,m,n$$ of size $$\mathit{ls},\mathit{ms},\mathit{ns}$$ where $$l=m\cup n$$, the "best" division maximizes 
+the difference in the expected mean value
+before and after the split: 
+
+$$
+E(\Delta)=\frac{ms}{ls}abs(m.\mu - l.\mu)^2 + \frac{ns}{ls}abs(n.\mu - l.\mu)^2
+$$
+
+Scott-Knot then checks if that
+_best_ division is actually useful (using some statistical procedure[^stats].
+To implement that check, Scott-Knot would
+apply some statistical hypothesis test $H$ to check
+if $$m,n$$ are significantly different. If so, Scott-Knot then recurs on each half of the ``best'' division.
+
+[^stats]: Statistics are discussed later in this book.
+
+For example, consider
+$$l=5$$ treatments:
+
+```python
+        rx1 = [0.34, 0.49, 0.51, 0.6]
+        rx2 = [0.6,  0.7,  0.8,  0.9]
+        rx3 = [0.15, 0.25, 0.4,  0.35]
+        rx4=  [0.6,  0.7,  0.8,  0.9]
+        rx5=  [0.1,  0.2,  0.3,  0.4]
+```
+After sorting and splitting, Scott-Knott declares:
+
+- Ranked #1 is rx5 with median= 0.25
+- Ranked #1 is rx3 with median= 0.3
+- Ranked #2 is rx1 with median= 0.5
+- Ranked #3 is rx2 with median= 0.75
+- Ranked #3 is rx4 with median= 0.75
+
+Note that Scott-Knott found  little
+difference between rx5 and rx3. Hence,
+they have the same rank, even though their medians differ. This is to say that there is no
+real difference in the performance of rx3 and rx5 (and, indeed, rx2 and rx4).
+This is the essence of discretization-- ignoring trivial differerences and grouping together similar 
+values into a few, easy to browser, sets.
 

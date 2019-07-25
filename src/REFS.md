@@ -202,9 +202,18 @@ European Conference on. IEEE, 107–116.
 
 Tim Menzies, Oussama El-Rawas, Jairus Hihn, and Barry Boehm. 2009. Can we build software faster and better and cheaper?. In Proceedings of the 5th International Conference on Predictor Models in Software Engineering (PROMISE '09). ACM, New York, NY, USA, , Article 2 , 9 pages. DOI=http://dx.doi.org/10.1145/1540438.1540442
 
+### Menzies 2007
+
+Tim Menzies, Oussama Elrawas, Jairus Hihn, Martin Feather, Ray Madachy, and Barry Boehm. 2007. The business case for automated software engineering. ASE'07.
+http://doi.org/10.1145/1321631.1321676
+
 ### MicroAi 2019
 
 Microsoft AI principles. 2019. https://www.microsoft.com/en-us/ai/our-approach-to-ai
+
+### Mittas 2013
+
+Mittas  N,  Angelis  L  (2013)  Ranking  and  clustering  software  cost  estimationmodels through a multiple comparisons algorithm. IEEE Trans SE 39(4):537–551, DOI 10.1109/TSE.2012.45
 
 ## N
 
@@ -274,6 +283,8 @@ Robert Sawyer. 2013. Bias Impact on Analyses and Decision Making
 Depends on the Development of Less Complex Applications. In Principles
 and Applications of Business Intelligence Research. IGI Global,
 83–95.
+
+### Scott-Knot 
 
 ### Sculley 2015
 
