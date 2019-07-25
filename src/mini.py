@@ -158,6 +158,8 @@ class Row(Thing):
     i._memo={}
     i.cells = cells
     i.id = Row.id = Row.id+1
+  def clone(i):
+    return Row(i.cells[:])
   def __getitem__(i,k):  return i.cells[k]
   def __setitem__(i,k,v): i.cells[k] =v ; return v
   @memo
@@ -268,16 +270,17 @@ class Place:
        i.north  = anything.furthest(rows, i.history)
        i.south  = i.north.furthest(rows,  i.history)
        i.c      = i.south.dist(i.north,   i.history)
-    a = i.north.dist(row,i.history)
+    a = i.north.dist(row, i.history)
     b = i.south.dist(row, i.history)
     d = (a**2 + i.c**2 - b**2)/2*i.c
     i.distances + d
-    return o(row=row, 
-             northern=a<b,
-             weird=abs(i.distances.z(d)) > 1)
+    return o(row     = row,
+             northern= a<b,
+             weird   = abs(i.distances.z(d)) > 1)
   def adds(i,src):
     cache=[]
     for x in src:
+      x = x.clone()
       i.history + x
       cache += [x]
       if len(cache) > my.era:
