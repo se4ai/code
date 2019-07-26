@@ -1,5 +1,12 @@
 # Home
 
+more that what is, whats inside, how to tinker, refactor, improve
+
+more to AI tools that just data mining. It turns out that optimization and data mining are closely linked and can be usefully mixed and match.
+
+more to using AI software that just building that software. Software is sued, but people. Hence it has ethical implications that must be managed.
+
+
 Suppose you are a software engineer involved in AI software.
 Suppose further you believe that you
 have ethical duties  to society as a whole, and not just the current organization where you work.

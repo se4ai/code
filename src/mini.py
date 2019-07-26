@@ -258,6 +258,24 @@ class History(Thing):
       except  : what=Sym
     return what(name=name,pos=n,
                 w= -1 if my.char.less in name else 1)
+
+def shuffleAndFindPoles(rows):
+  hi=len(rows)
+  b=c=x=None
+  seen=[] 
+  for x in range(hi-1,0,-1):
+    y=random.randint(0,x)
+    if b is None: b = rows[y]; print(rows[y],rows[y])
+    else: print(b,rows[y])
+    if x==y: continue
+    rows[x],rows[y]=rows[y],rows[x]
+  print(b,rows[0])
+  return rows
+
+for _ in range(20):
+  rows=list('abcdef')
+  print(''.join(shuffleAndFindPoles(rows)))
+sys.exit()
  
 class Place:
   def __init__(i, names):

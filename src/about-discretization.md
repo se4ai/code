@@ -97,7 +97,7 @@ Cohen's rule has the advantage that it can be calcuated without sorting (via inc
 [^warn]: Warning: many distributions do not conform to this shape.
 [^incsd]: To incremental compute mean and standard deviation $$\mu,\sigma$$,
 start with $$n=\mu=m=\sigma=0$$. As every new number $x$ arrives, $$n++$$ and $$d=x-\mu$$ and $$\mu += d/n$$
-and m+=d*(x-\mu)$$ and, if $$n>1$$,  $$\sqrt{sigma=(m/(n - 1))}$.
+and $$m+=d*(x-\mu)$$ and, if $$n>1$$,  $$\sqrt{sigma=(m/(n - 1))}$$.
 
 ## Supervised Discretization
 
@@ -119,8 +119,7 @@ column into $n_1,n_2,n_3$ rows with mean $$y_i$$ scores of $$mu_1, mu_2, mu_3$$.
 Let us say that $$n_0$$ denotes the split with worst $$mu$$$ value (which we will call $$\mu_0$$).
 The best split would be the one with the most number of values greater than those in $$n_0$$. That is,
 we would seek to maximize:
-we would seek splits that maximize
-$$n_1*\mu_1/\mu_0$$.
+we would seek splits that maximize $$n_1*\mu_1/\mu_0$$.
 
 
 Another method, 
@@ -147,18 +146,6 @@ When CART or [C4.5](REFS#quinlan-1986) (also known as J48) is building a classif
   of the variety after the split is $$E[V]= \sum_i \frac{n_i}{n}V_i$$. 
      - For example, if a split on __age>100_ divides our data into 50 and 100 and 200 rows with standard
        deviations of 0.3 and 0.2 and 0.1 respectively, the $$E[V]]= \frac{50}{350}*0.3 + \frac{100}{350}*0.2 + \frac{200}{350}*0.1=0.18$$. 
-- For _ARGMIN_  to work, it has to explore all possible splits of all numeric attributes. 
-  To speed that up:
-       - Implement some $$V$$ collector class that can incremetnally add (or subtract) values
-         from the  standard deviation or entropy of a set of numbers..
-       - To divide the column $$X$$ using some class column $$Y$$, then create pairs
-         of $$(x1,y1),(x2,y2), etc)$$. 
-       - Sort on $$x_i$$ then create two collectors $$V_0$$ and $$V_1$$.
-         Initialize $$V_0$$ to be empty and $$V_1$$ to hold the variety of all $$y_i$$ values.
-       - Working from min to max along that sorted list:  (a)take each $$y_i$$ and (b)add it to $$V_0$$ and
-         (c) remove it from $$V_1$$. Now $$E[V]$$ for a split at the current position can be computed
-         straight away from $$V_0,V_1$$. 
-       - This approach requires only one sort and two pass of the data.
 
 [^ent]: According to [Wikiquotes](REFS#entropy-1949)
 this expression was named as follows.
@@ -172,6 +159,81 @@ first place, a mathematical development very much like yours already
 exists in Boltzmann’s statistical mechanics, and in the second
 place, no one understands entropy very well, so in any discussion
 you will be in a position of advantage."
+
+
+For example, suppose we say data like this and we wanted to use supervised discretization to divide the _age_ column
+(supervised by the _fare_ column):
+
+```
+age fare   E[V of y]
+--- ----  
+35  53
+22   7.25
+40  84
+26   7.9
+38  71.2
+35   8.05
+```
+
+First we compute the baseline variety score for _fare_. This column has a standard deviation of 35.2.
+
+Second, we sort on _age_ then look at the effects on the variety of _fare_ for different splits on _age_.
+If we  split at _age &ge; 38_, this would produce two regions where the 
+standard deviations of the 
+_fare_s are 
+22.6
+and 9.1, respectively (with an exected value of 4/6*22.6 + 2/6*9.1=18.1.
+
+
+```
+age fare   standard deviation
+--- ------ ------------------
+22   7.25  22.6
+26   7.9
+35   8.05
+35  53
+---------- ------------------
+38  71.2   9.1
+40  84
+```
+
+_Age &ge; 38_ is a useful split since it reduces the overall variety
+from 35.2 to 18.1. But we can better. If we recurs into the first split,
+then split again at _age &ge; 35_, we get three splits:
+
+```
+age fare   standard deviation
+--- ------ ------------------
+22   7.25   0.5
+26   7.9
+--- ------ ------------------
+35   8.05  31.8
+35  53
+---------- ------------------
+38  71.2   9.1
+40  84
+```
+
+which yields an expected value of 13.8. Once again, we see the split has successfully reduced
+the variety of the _fare_ variable.
+
+(Technical aside: in practice, we would not split down to just two rows per split.
+A more common stopping criteria is to split no less than $$\sqrt{N}$$ of the number
+or rows or no less than $$N=20$$ rows.)
+
+For _ARGMIN_  to work, it has to explore all possible splits of all numeric attributes. 
+To speed that up:
+
+-  Implement some $$V$$ collector class that can incremetnally add (or subtract) values
+         from the  standard deviation or entropy of a set of numbers..
+- To divide the column $$X$$ using some class column $$Y$$, then create pairs
+       of $$(x1,y1),(x2,y2), etc)$$. 
+- Sort on $$x_i$$ then create two collectors $$V_0$$ and $$V_1$$.
+         Initialize $$V_0$$ to be empty and $$V_1$$ to hold the variety of all $$y_i$$ values.
+- Working from min to max along that sorted list:  (a)take each $$y_i$$ and (b)add it to $$V_0$$ and
+         (c) remove it from $$V_1$$. Now $$E[V]$$ for a split at the current position can be computed
+         straight away from $$V_0,V_1$$. 
+- Note that this approach requires only one sort and two pass of the data.
 
 
 ## Other Applications of Discretization

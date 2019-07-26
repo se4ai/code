@@ -110,6 +110,15 @@ Wei Fu and Tim Menzies. 2017. Easy over hard: a case study on deep learning. In 
 
 ## G
 
+### Gay 2010
+
+Gregory Gay, Tim Menzies, Omid Jalali, Gregory Mundy, Beau Gilkerson, Martin Feather.
+2010.
+Finding robust solutions in requirements models
+Automated Software Engineering
+March.
+http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.650.3238&rep=rep1&type=pdf
+
 ### Grus 2019
 
 Joel Grus. 2019. 
@@ -284,6 +293,10 @@ Depends on the Development of Less Complex Applications. In Principles
 and Applications of Business Intelligence Research. IGI Global,
 83–95.
 
+### Sayyad 2013
+
+Sayyad, A. S., Menzies, T., & Ammar, H. (2013, May). On the value of user preferences in search-based software engineering: a case study in software product lines. In Proceedings of the 2013 International Conference on Software Engineering (pp. 492-501). IEEE Press.
+
 ### Scott-Knot 
 
 ### Sculley 2015
@@ -335,3 +348,9 @@ Ian H. Witten, Eibe Frank, Mark A. Hall, and Christopher J. Pal.
 Tools and Techniques" (4th ed.). Morgan Kaufmann Publishers Inc.,
 San Francisco, CA, USA.
 
+## Z
+
+### Zitler 2004
+
+Zitzler, Eckart & Künzli, Simon. (2004). Indicator-Based Selection in Multiobjective Search. Conference on Parallel Problem Solving from Nature (PPSN VIII). 832-842. 10.1007/978-3-540-30217-9_84. 
+http://www.simonkuenzli.ch/docs/ZK04.pdf
