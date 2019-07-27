@@ -341,6 +341,12 @@ Tantithamthavorn, C., McIntosh, S., Hassan, A. E., & Matsumoto, K. (2016, May). 
 
 ## W
 
+### Wolpert 2013
+
+iD. Wolpert. (2013(. Ubiquity symposium: Evolutionary computation and the processes of life: what the no free lunch theorems really mean: how to improve search algorithms. Ubitquity.
+Volume 2013, Number December (2013), Pages 1-15.
+https://ubiquity.acm.org/article.cfm?id=2555237
+
 ### Witten 2016
 
 Ian H. Witten, Eibe Frank, Mark A. Hall, and Christopher J. Pal.

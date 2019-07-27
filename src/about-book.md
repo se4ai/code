@@ -1,5 +1,6 @@
 # About this book
 
+![](img/discuss.png)
 This book is about using better software engineering to build better AI software. Most of our case studies come from our experience in applying AI to software engineering-- which means that **this book is about  SE for AI for SE**.
 
  AI is a very broad topic, discussed in
@@ -7,11 +8,11 @@ This book is about using better software engineering to build better AI software
  [very](REFS.md#grus--2019)
  [many](REFS.md#duda-2000)
  [other](REFS.md#witten-2016)
- books. What make this book different is trhee things. Firstly,  we look
+ books. What make this book different is three things. Firstly,  we look
  at 
  AI tools with recent   impact on software
  engineering. Specifically, we will talk a lot about data mining algorithms;
- some about optimizers; and a little about theorem provers
+ some about optimizers; and a little about theorem provers.
  (and we say more about  all these, [below](#3tools)).
 
  Secondly, the authors of this book have spent decades applying many data mining methods (primarily for software engineering applications). We share some of that case study experience in this book.
@@ -63,8 +64,8 @@ This book is about using better software engineering to build better AI software
 |part|hrs/week<br>(mean, approx)|bar chart|
 |------------|---|-----------------------------------------------------|
 |requirements|4.4|          <img height=20 width=88  src=img/black.png>|
-|colllection |4.7|          <img height=20 width=94  src=img/black.png>|
-|clearning   |4.5|          <img height=20 width=90  src=img/black.png>|
+|collection |4.7|          <img height=20 width=94  src=img/black.png>|
+|cleaning   |4.5|          <img height=20 width=90  src=img/black.png>|
 |labelling   |2.9|          <img height=20 width=58  src=img/black.png>|
 |feature engineering | 4.6| <img height=20 width=92  src=img/black.png>|
 |training    |5.4|          <img height=20 width=108 src=img/black.png>|

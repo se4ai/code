@@ -261,20 +261,41 @@ class History(Thing):
 
 def shuffleAndFindPoles(rows):
   hi=len(rows)
-  b=c=x=None
-  seen=[] 
+  south=b=None
+  bx={} 
+  c=0
+  def update(b,x,south,c):
+    tmp = bx[x] = abs(b-x)
+    if tmp > c: c,south = tmp,x
+    return south,c
+  # find south and furthest from south
   for x in range(hi-1,0,-1):
     y=random.randint(0,x)
-    if b is None: b = rows[y]; print(rows[y],rows[y])
-    else: print(b,rows[y])
+    if south is None: 
+       south = south = rows[y]
+       c = bx[south] = 0
+    else: 
+       south,c=update(south,rows[y],south,c)
     if x==y: continue
     rows[x],rows[y]=rows[y],rows[x]
-  print(b,rows[0])
-  return rows
+  south,c=update(south, rows[0],south,c)
+  c1= c
+  north = south
+  for x,b2x in bx.items():
+    if c >= 2*b2x:
+       tmp= abs(x-north)
+       if tmp > c1:
+         print(".")
+         c1,north = tmp,x
+  return c1, c, north,south
+       
 
-for _ in range(20):
-  rows=list('abcdef')
-  print(''.join(shuffleAndFindPoles(rows)))
+[print(y) for y in  
+  sorted(
+    [shuffleAndFindPoles(shuffle([0,100]+ [int(r()*100) for _ in range(1000)])) 
+     for _ in range(20)])]
+
+
 sys.exit()
  
 class Place:

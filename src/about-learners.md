@@ -20,6 +20,8 @@ on data mining](REFS#witten-2016)
  but it does introduce much of the learning technology used
 later in this book.
 
+## But which learner is best?
+
 ## Data Miners work on Data
 
 1. Tables have rows and columns of data. 
