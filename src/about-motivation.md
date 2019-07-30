@@ -30,7 +30,7 @@ Secondly,  we look
  engineering. Specifically, we will talk much about data mining
  algorithms; some about optimizers; and a little about theorem
  provers.  (and we will say more about  all these,
- [below](#tools-and-data)).
+ [below](#tools)).
 
  
 Thirdly, the authors of this book have spent decades applying many
@@ -129,7 +129,7 @@ Since good SE can lead to better AI, we devoted many  chapters of this book to i
 One interesting feature about the above histogram is that 
 **most "data mining" is not about mining the data**.  We say this since, in  a 35 hour work week, only half a day (5.4.hours) was spent in _training_. This is interesting since most data mining textbooks _only_ talk about training. Hence, if we are going to talk SE for AI, there is a pressing need to discuss all the work that fills up the other four days of the week.  
 
-##   Tools and Data
+##   Tools 
 
 We cannot leave this chapter without some introductory notes on the AI tools we study.  
 More experienced readers might decide to skip this section.
