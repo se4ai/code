@@ -6,11 +6,13 @@ generate a produce of adequate quality, given the available constraints.
 What does that mean for AI-enhanced software?
 
 Within AI toolkits
-we might  find hundreds of classifiers, regression tools, neural nets, support
-vector machines, evolutionary algorithms, ant-colony optimizers, etc etc, etc.
+we find hundreds of classifiers, regression tools, neural nets, support
+vector machines, evolutionary algorithms, ant-colony optimizers, etc etc, etc[^wskj].
 These primitives can be combined in millions of ways, then tuned in quadrillions of ways  (see the very active research literature
 on all these methods). 
 So given a new problem, which learner/optimizer should we apply? 
+
+[^wskj]:
 
 This is a very hard problem. [Wolpert](REFS:wolpert-2013)
 reports in his famous No Free Lunch
