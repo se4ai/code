@@ -241,6 +241,16 @@ Stuart Russell and Peter Norvig. 2009. Artificial Intelligence: A
 Modern Approach (3rd ed.). Prentice Hall Press, Upper Saddle River,
 NJ, USA. http://aima.cs.berkeley.edu
 
+## O
+
+### Osman 2017
+
+
+
+  H. Osman, M. Ghafari, Mohammad and 0. Nierstrasz. (2017).
+  Hyperparameter optimization to improve bug prediction accuracy.
+  MaLTeSQuE,17. IEEE Press.,
+
 ## P
 
 
@@ -353,6 +363,14 @@ Ian H. Witten, Eibe Frank, Mark A. Hall, and Christopher J. Pal.
 2016.  "Data Mining, Fourth Edition: Practical Machine Learning
 Tools and Techniques" (4th ed.). Morgan Kaufmann Publishers Inc.,
 San Francisco, CA, USA.
+
+## X
+
+### Xia 2018
+
+  T. Xia, R.Krishna, J.Chen and G.Mathew and X.Shen and T. Menzies. (2018).
+  Hyperparameter Optimization for Effort Estimation,
+https://arxiv.org/pdf/1805.00336.pdf.
 
 ## Z
 

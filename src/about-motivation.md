@@ -1,4 +1,4 @@
-# About this book
+# Motivation
 
 ![](/img/discuss.jpg){: .imgright}
 
@@ -37,10 +37,10 @@ Thirdly, the authors of this book have spent decades applying many
 AI tools ( mostly  for software engineering applications). We share
 some of that case study experience in this book.
  
-## But is "SE for AI" that important?
+## Is "SE for AI" all that important?
 
-  It is timely to talk about SE for AI since  **AI software is still
-  software**. All  software
+  It is timely to talk about SE for AI. **AI software is still
+  software** and   all  software
    (be it AI software, or otherwise) needs installation, configuration,
    maintenance, interfacing to other software, testing, certification,
    user support, usability additions, and packaging (for distribution).
@@ -52,9 +52,7 @@ some of that case study experience in this book.
    developer. That is, **AI software needs care and feeding by
    software engineersi**.
 
-<p align="center">
-  <img  src="/img/benton19.png">
-</p>
+  ![](/img/benton19.png"){: .image800}
 
 Another reason to explore SE for AI is that **most "AI software"
    is not about AI**.   David Sculley  [offers the following
@@ -63,9 +61,7 @@ Another reason to explore SE for AI is that **most "AI software"
    (shown in black), buried away in the middle of all the other
    software.
 
-<p align="center">
-  <img  src="/img/googleloc.png">
-</p>
+  ![](/img/googleloc.png){: .image800}
 
 
 
@@ -112,15 +108,15 @@ the good news is that
 
 Since good SE can lead to better AI, we devoted many  chapters of this book to industrial data mining pipelines.   Recently we reversed engineering a nine step pipeline for industrial machine learning.  For simplicity's sake, we draw it as steps that run left to right (but in reality, **AI is an agile process** where we jump around these steps, as required):
 
-<p align="center">
-  <img  src="/img/9steps.png">
-</p>
+  ![](/img/9steps.png){: .image800}
 
    We also surveyed many industrial data scientists to understand how much time they spend on different parts of this pipeline:
 
+![](/img/black.png){:height="20px" width="94px"}
+
 |part|hrs/week<br>(mean, approx)|bar chart|
 |------------|---|-----------------------------------------------------|
-|requirements|4.4|          ![](img/black.png){:height="20px" width="94ps"} |
+|requirements|4.4|          ![](/img/black.png){:height="20px" width="94px"} |
 |collection |4.7|          <img height=20 width=94  src=img/black.png>|
 |cleaning   |4.5|          <img height=20 width=90  src=img/black.png>|
 |labelling   |2.9|          <img height=20 width=58  src=img/black.png>|
@@ -143,7 +139,7 @@ More experienced readers might decide to skip this section.
 
 **_Optimizers_ tell us "what to do"**. Optimizers look  at models and tell us how changes in something effects something else. Ideally, optimizers also tell us the _least_ we need to do to _most_ improve something. For example, an optimizer might report that defects can are most reduced   using   developers with two years of experience. They might also report that improving experience to three, four, five years (and above) offers little extra reduction in observed defects. Example optimizers include genetic algorithms like NSGA-II, MOEA/D and differential evolution;   sequential model-based optimization methods like FLASH and SMAC; and other approaches such as particle swam optimization, tabu search; and many more besides
 
-_Theorem provers_ are very specialized tools for finding settings to variables that satisfy the logical constraints of a model. Such a theorem prover might report that  A=true and B=false satisfies the constraint (A and not B).   For example, the constraints of the kernel of the Linux operating system can be expressed as hundreds of thousands of constraints.  When optimizing the design of some new version of Linux (e.g. to try and avoid  modules  with a track record of problems) we can use theorem provers to (a) generate a population of valid designs; and (b) check the validity of a new design. Example theorem provers include  maxWalkSat, pycoSAT, MathSAT, vZ, Z3,  and many more besides.
+**Theorem provers** are very specialized tools for finding settings to variables that satisfy the logical constraints of a model. Such a theorem prover might report that  A=true and B=false satisfies the constraint (A and not B).   For example, the constraints of the kernel of the Linux operating system can be expressed as hundreds of thousands of constraints.  When optimizing the design of some new version of Linux (e.g. to try and avoid  modules  with a track record of problems) we can use theorem provers to (a) generate a population of valid designs; and (b) check the validity of a new design. Example theorem provers include  maxWalkSat, pycoSAT, MathSAT, vZ, Z3,  and many more besides.
 
 Note that **optimizers are model-based** and **data miners are data-based**. 
 
@@ -176,7 +172,7 @@ papers.
 
 Method2:
 
-- For TERM in TERMS, go to Goolge Scholar Advanced Search
+- For TERM in TERMS, go to Google Scholar Advanced Search
     - For VENUE in ICSE FSE ASE "transactions software engineering" "Journal of Systems and Software" "Information Software Technologies" do
          - Set "Return articles published in" to VENUE
          - Set "with all of the words" to TERM 
