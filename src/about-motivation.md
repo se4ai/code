@@ -137,8 +137,6 @@ One interesting feature about the above histogram is that
 We cannot leave this chapter without some introductory notes on the AI tools we study.  
 More experienced readers might decide to skip this section.
 
-###  <a name=3tools>Data miners, optimizers, theorem provers </a>
-
 **_Data mining algorithms_ tell us "what is" in the datai**. Data miners extract models   from data. For example, from columns of numbers and _programmer experience_, _development language_, and   _number of observed defects_, then a data miner might learn that defects are  more dependent on the experience of the programmer than the language that they use.  Example  data mining algorithms
     are  nearest neighbor algorithms like kNN; clustering algorithms like k-Means and EM; statistical learners like Naive Bayes; equation learners like linear or logistic regression; decision tree learners like C4.5,   and CART; meta-learners like AdaBoost; and many other as well including  Apriori,, PageRank,  neural networks (and deep learners); etc.
 
@@ -166,7 +164,7 @@ Note also that optimizers and data miners are tightly inter-connected:
 ## Quiz
 
 
-In this papge,  find two technical terms; e.g. the CART data miner, e.g. the NSGA-II optimier
+In this page,  find two technical terms; e.g. the CART data miner, e.g. the NSGA-II optimier
 or e.g. the Z3 theorem prover.
 
 Find papers in the recent SE literature that have used that term.
