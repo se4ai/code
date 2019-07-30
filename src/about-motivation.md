@@ -11,8 +11,8 @@ This book is about using better software engineering to build better AI software
  books. Sp what makes this book so different?
 
 Firstly, in this book, **ethics is a primary design principle**.
-We assert that the design goals for SE-for-AI must be _ethically-aligned
-design_ to prioritize human well-being.
+We assert that the design goals for SE-for-AI must be _ethically-aligned_
+to prioritize human well-being.
 It is ethical to improve
 the profits of your company since that money becomes wages which
 becomes groceries which becomes dinner so everyone and their kids
@@ -24,18 +24,19 @@ groups characterized by age, race, or gender).
 We suggest to you that when you start a new AI project,
 your  first question should not be  be  "what data miners should I apply to this data?".
 Rather, it should be  "what are the ethical requirements of this development? And how can we best support those requirements?".
- 
-Secondly, the authors of this book have spent decades applying many
-AI tools ( mostly  for software engineering applications). We share
-some of that case study experience in this book.
- 
-Thirdly,  we look
+
+Secondly,  we look
  at AI tools which,  recently, have had a major   impact on software
  engineering. Specifically, we will talk much about data mining
  algorithms; some about optimizers; and a little about theorem
  provers.  (and we will say more about  all these,
  [below](#tools-and-data)).
 
+ 
+Thirdly, the authors of this book have spent decades applying many
+AI tools ( mostly  for software engineering applications). We share
+some of that case study experience in this book.
+ 
 ## But is "SE for AI" that important?
 
   It is timely to talk about SE for AI since  **AI software is still
