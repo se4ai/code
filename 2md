@@ -57,11 +57,11 @@ main() {
   file=$(basename $arg)
   stem="${file%%.*}"
   out=$There/${stem}.md
-  if [ "$1" -nt "$out" ]; then
+  #if [ "$1" -nt "$out" ]; then
     echo "# $(basename $arg) ==> $out"
     $com $1 $Url/$file > $out
     (cd $There; git add $out)
-  fi
+  #fi
 }
 
 
