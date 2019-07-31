@@ -35,58 +35,9 @@ Thirdly,  we look
  at AI tools which,  recently, have had a major   impact on software
  engineering. Specifically, we will talk much about data mining
  algorithms; some about optimizers; and a little about theorem
- provers.  (and we will say more about  all these,
- [below](#tools)).
+ provers (and for more on these, see the [next chapter](about-tools) 
 
- <table class="pure-table">
- <thead>
- <tr>
- <th>Data miners</th>
- <th>Optimizers</th>
- <th>Theorem provers</th>
- </tr>
- </thead>
- <tbody>
- <tr class="pure-table-odd">
- <td>
- Data mining algorithms tell us "what is" in the data. Data miners extract models   from data. For example, from columns of numbers and <em>programmer experience</em>, <em>development language</em>, and   <em>number of observed defects</em>, then a data miner might learn that defects are  more dependent on the experience of the programmer than the language that they use.  
- </td>
- <td>
- <em>_Optimizers</em> tell us "what to do". Optimizers look  at models and tell us how changes in something effects something else. Ideally, optimizers also tell us the <em>least_</em>we need to do to <em>most</em> improve something. For example, an optimizer might report that defects can are most reduced   using   developers with two years of experience. They might also report that improving experience to three, four, five years (and above) offers little extra reduction in observed defects. 
- <td>
- Theorem provers are very specialized tools for finding settings to variables that satisfy the logical constraints of a model. Such a theorem prover might report that  A=true and B=false satisfies the constraint (A and not B).   For example, the constraints of the kernel of the Linux operating system can be expressed as hundreds of thousands of constraints.  When optimizing the design of some new version of Linux (e.g. to try and avoid  modules  with a track record of problems) we can use theorem provers to (a) generate a population of valid designs; and (b) check the validity of a new design. 
- </td>
- </tr>
- <tr class="pure-table-odd">
- <td>
- Example  data mining algorithms
- are  nearest neighbor algorithms like kNN; clustering algorithms like k-Means and EM; statistical learners like Naive Bayes; equation learners like linear or logistic regression; decision tree learners like C4.5,   and CART; meta-learners like AdaBoost; and many other as well including  Apriori,, PageRank,  neural networks (and deep learners); etc.
- </td>
- <td>
- Example optimizers include genetic algorithms like NSGA-II, MOEA/D and differential evolution;   sequential model-based optimization methods like FLASH and SMAC; and other approaches such as particle swam optimization, tabu search; and many more besides
- <td>
- Example theorem provers include  maxWalkSat, pycoSAT, MathSAT, vZ, Z3,  and many more besides.
- </td>
- </tr>
- <tr>
- <td colspan=3
-<p> Note that <b>ptimizers are model-based</b> and <b>data miners are data-based</b>. 
- Data miners explore whatever data is available.
- Models, on the other hand, can be used to build more data whenever they want, just by running the model some more. 
-
- <p>This means that:
- data miners explore a fixed data space
- while optimizers explore a more fluid data set (since they can  zoom into little cracks in the data, expanding that part of the data as they go).
-
-i<p>Note also that optimizers and data miners are tightly inter-connected:
- Data miners can learn a model which [can be used by optimizers](REFS.md#feather-2002).  
- Optimizers can [adjust the control parameters of a data miner](REFS.md#fu-2016) such that those data miners learn better models (technical note: this is called [search-based software engineering](REFS.md#harman-2012)).
- </td>
- </tr>
- </tbody>
- </table>
-
- 
+  
 
 ## Is "SE for AI" all that important?
 
