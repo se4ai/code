@@ -20,15 +20,15 @@ Unfortunately, some of  AI tools are  known to exhibit “group
 discrimination”; i.e. their decisions are inappropriately affected
 attributes like race, gender, age, etc:
 
-[^ladd-1998]:    /REFS.md#ladd-1998
-[^burrell-2016]: /REFS.md#burrell-2016
-[^corbett-2018]: /REFS.md#corbett-2018
-[^galindo-2000]: /REFS.md#galindo-2000
-[^yan-2013]:     /REFS.md#yan-2013
-[^chalfin-2016]: /REFS.md#chalfin-2016
-[^ajit-2016]:    /REFS.md#ajit-2016
-[^berk-2015]:    /REFS.md#berk-2015
-[^berk-2016]:    /REFS.md#berk-2016
+[^ladd-1998]:    [Ladd'98](/REFS#ladd-1998)
+[^burrell-2016]: [Burrell'16](/REFS#burrell-2016)
+[^corbett-2018]: [Corbett'18](/REFS#corbett-2018)
+[^galindo-2000]: [Galindo'00](/REFS#galindo-2000)
+[^yan-2013]:     [Yan'13](/REFS#yan-2013)
+[^chalfin-2016]: [Chalfin'16](/REFS#chalfin-2016)
+[^ajit-2016]:    [Ajit'16](/REFS#ajit-2016)
+[^berk-2015]:    [Berk'15](/REFS#berk-2015)
+[^berk-2016]:    [Berk'16](/REFS#berk-2016)
 
 
 - One older version of a [sentiment analyzer from Google](/REFS.md#Google-2017) gave negative score to sentences like I am a Jew and I am homosexual.
@@ -65,8 +65,7 @@ software engineers in their day-to-day work:
 
 - _Privacy_: Handling, storing, sharing user data only under the circumstances and for the purposes that the user sets
 - _Sustainability_: Energy consumption of the software artifact, caring about energy throughout the SE process and in the documentation
-- _Transparency_: Transparent decision-making procedures of intelligent systems, publicly available ethics policies by software development o
-rganizations
+- _Transparency_: Transparent decision-making procedures of intelligent systems, publicly available ethics policies by software development organizations
 - _Diversity_: Gender, race, and age distribution of professionals in a development team
 - _Work ethics_: Decisions on which bugs to fix and how quickly, ensuring quality of the code before release
 - _Business ethics_: Informing users of a changed business model, including revenue models
@@ -90,7 +89,7 @@ the person maintaining that software (i.e.  a software engineer) to fix that pro
 For example _Hyperparameter  optimization_ 
 is now widely applied in SE (see [Xia'18](/REFS#xia-2018) and [Osman'17](/REFS#osman-2017)),
 That kind of optimizers
-selects the model we want from the large space of poossible models.
+selects the model we want from the large space of possible models.
 That is, methods that have matured within the SE community (by SE researchers and practitioners),
 can now be applied to other problems (e.g.  as discussed later in this book, how to  mitigate unfair software).
 
@@ -103,10 +102,14 @@ the quality of a software team[^foot].  This test was widely influential in the 
 [^foot]: (1) Do you use source control?; (2) Can you make a build in one step?; (3) Do you make daily builds?; (4) Do you have a bug database?; (5) Do you fix bugs before writing new code?; (6) Do you have an up-to-date schedule?; (7) Do you have a spec?; (8) Do programmers have quiet working conditions?; (9)  Do you use the best tools money can buy?; (10) Do you have testers?; (11) Do new candidates write code during their interview?; (12) Do you do hallway usability testing?
 
 Now, two decades later, we demand more of our software (particularly of our AI software). Here are some other questions
-we now want to ask about our software.  Include below are some ways that AI tols can be used to address these questions. Before
-moving to those, we must stress that the AI tools are just **one way**, and not **the only way**, to 
-implement  ethically-aligned design.
- 
+we now want to ask about our software.  Include below are some methods could be used to address these questions
+(and it is an open research issue if there are other, better, ways to address these concerns). 
+If you AI tools can't or won't answer "yes"
+to the most of the above then:
+
+- Industrial practitioners should use different tools; and 
+- Researchers should accept  a new  research challenge (how how to enable that kinds of ethics in that kind of AI tool).
+
 
 <em>1. How stable are the  conclusions from  your AI tool ?</em>
 
@@ -181,12 +184,6 @@ as apposed to some other parts of the data. At those times,
 <em>14. Are your AI  your tools private and secure?</em>
 
 - The less private and the less secure the system, the greater the odds of misuse.
-
-If you AI tools can't or won't answer "yes"
-to the most of the above then:
-
-- Industrial practitioners should use different tools; and 
-- Researchers should accept  a new  research challenge (how how to enable that kinds of ethics in that kind of AI tool).
 
 
 ## Notes

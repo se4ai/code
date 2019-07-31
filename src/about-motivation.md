@@ -8,15 +8,17 @@ This book is about using better software engineering to build better AI software
  [very](REFS.md#grus--2019)
  [many](REFS.md#duda-2000)
  [other](REFS.md#witten-2016)
- books. Sp what makes this book so different?
+ books. So what makes this book so different?
 
-Firstly, in this book, **ethics is a primary design principle**.
-We assert that the design goals for SE-for-AI must be _ethically-aligned_
-to prioritize human well-being.
+Firstly,   by "better" AI software, 
+we mean "ethically-aligned".
+We assert that the design goals for SE-for-AI must be 
+prioritize for human well-being.
 It is ethical to improve
 the profits of your company since that money becomes wages which
 becomes groceries which becomes dinner so everyone and their kids
-can sleep content at night
+can sleep better at night.
+
 It is also ethical to change the design
 of AI software in order to ensure   that (say) the software is not
 unduly discriminatory towards a particular social group (e.g. some
@@ -25,18 +27,67 @@ We suggest to you that when you start a new AI project,
 your  first question should not be  be  "what data miners should I apply to this data?".
 Rather, it should be  "what are the ethical requirements of this development? And how can we best support those requirements?".
 
-Secondly,  we look
+Secondly, the authors of this book have spent decades applying many
+AI tools ( mostly  for software engineering applications). We share
+some of that case study experience in this book.
+
+Thirdly,  we look
  at AI tools which,  recently, have had a major   impact on software
  engineering. Specifically, we will talk much about data mining
  algorithms; some about optimizers; and a little about theorem
  provers.  (and we will say more about  all these,
  [below](#tools)).
 
+ <table class="pure-table">
+ <thead>
+ <tr>
+ <th>Data miners</th>
+ <th>Optimizers</th>
+ <th>Theorem provers</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr class="pure-table-odd">
+ <td>
+ Data mining algorithms tell us "what is" in the data. Data miners extract models   from data. For example, from columns of numbers and <em>programmer experience</em>, <em>development language</em>, and   <em>number of observed defects</em>, then a data miner might learn that defects are  more dependent on the experience of the programmer than the language that they use.  
+ </td>
+ <td>
+ <em>_Optimizers</em> tell us "what to do". Optimizers look  at models and tell us how changes in something effects something else. Ideally, optimizers also tell us the <em>least_</em>we need to do to <em>most</em> improve something. For example, an optimizer might report that defects can are most reduced   using   developers with two years of experience. They might also report that improving experience to three, four, five years (and above) offers little extra reduction in observed defects. 
+ <td>
+ Theorem provers are very specialized tools for finding settings to variables that satisfy the logical constraints of a model. Such a theorem prover might report that  A=true and B=false satisfies the constraint (A and not B).   For example, the constraints of the kernel of the Linux operating system can be expressed as hundreds of thousands of constraints.  When optimizing the design of some new version of Linux (e.g. to try and avoid  modules  with a track record of problems) we can use theorem provers to (a) generate a population of valid designs; and (b) check the validity of a new design. 
+ </td>
+ </tr>
+ <tr class="pure-table-odd">
+ <td>
+ Example  data mining algorithms
+ are  nearest neighbor algorithms like kNN; clustering algorithms like k-Means and EM; statistical learners like Naive Bayes; equation learners like linear or logistic regression; decision tree learners like C4.5,   and CART; meta-learners like AdaBoost; and many other as well including  Apriori,, PageRank,  neural networks (and deep learners); etc.
+ </td>
+ <td>
+ Example optimizers include genetic algorithms like NSGA-II, MOEA/D and differential evolution;   sequential model-based optimization methods like FLASH and SMAC; and other approaches such as particle swam optimization, tabu search; and many more besides
+ <td>
+ Example theorem provers include  maxWalkSat, pycoSAT, MathSAT, vZ, Z3,  and many more besides.
+ </td>
+ </tr>
+ <tr>
+ <td colspan=3
+<p> Note that <b>ptimizers are model-based</b> and <b>data miners are data-based</b>. 
+ Data miners explore whatever data is available.
+ Models, on the other hand, can be used to build more data whenever they want, just by running the model some more. 
+
+ <p>This means that:
+ data miners explore a fixed data space
+ while optimizers explore a more fluid data set (since they can  zoom into little cracks in the data, expanding that part of the data as they go).
+
+i<p>Note also that optimizers and data miners are tightly inter-connected:
+ Data miners can learn a model which [can be used by optimizers](REFS.md#feather-2002).  
+ Optimizers can [adjust the control parameters of a data miner](REFS.md#fu-2016) such that those data miners learn better models (technical note: this is called [search-based software engineering](REFS.md#harman-2012)).
+ </td>
+ </tr>
+ </tbody>
+ </table>
+
  
-Thirdly, the authors of this book have spent decades applying many
-AI tools ( mostly  for software engineering applications). We share
-some of that case study experience in this book.
- 
+
 ## Is "SE for AI" all that important?
 
   It is timely to talk about SE for AI. **AI software is still
@@ -50,9 +101,9 @@ some of that case study experience in this book.
    overlap between the activities of data scientists and   more
    traditional activities  like data engineer and application
    developer. That is, **AI software needs care and feeding by
-   software engineersi**.
+   software engineers**.
 
-  ![](/img/benton19.png"){: .image800}
+  ![](/img/benton19.png){: .image600}
 
 Another reason to explore SE for AI is that **most "AI software"
    is not about AI**.   David Sculley  [offers the following
@@ -61,7 +112,7 @@ Another reason to explore SE for AI is that **most "AI software"
    (shown in black), buried away in the middle of all the other
    software.
 
-  ![](/img/googleloc.png){: .image800}
+  ![](/img/googleloc.png){: .image600}
 
 
 
@@ -83,9 +134,7 @@ Since AI software is still software, it follows that **poor
    to the data, and only connect to the least features that were
    most influential.
 
-<p align="center">
-  <img  src="img/couple.png">
-</p>
+![](img/couple.png){: .image600}
 
 
 While poor software engineering can lead to problems with the AI,
@@ -106,56 +155,32 @@ the good news is that
    methods (continuous integration, cloud-based testing with Travis
    CI, git, github, etc etc).
 
-Since good SE can lead to better AI, we devoted many  chapters of this book to industrial data mining pipelines.   Recently we reversed engineering a nine step pipeline for industrial machine learning.  For simplicity's sake, we draw it as steps that run left to right (but in reality, **AI is an agile process** where we jump around these steps, as required):
+Since good SE can lead to better AI, we devoted many  chapters of
+this book to industrial data mining pipelines.   Recently we 
+[reversed engineered](#REFS#amershi-2019) a nine-step pipeline for industrial machine learning.
+For simplicity's sake, we draw it as steps that run left to right
+(but in reality, **AI is an agile process** where we jump around
+these steps, as required):
 
   ![](/img/9steps.png){: .image800}
 
    We also surveyed many industrial data scientists to understand how much time they spend on different parts of this pipeline:
 
-![](/img/black.png){:height="20px" width="94px"}
 
-|part|hrs/week<br>(mean, approx)|bar chart|
-|------------|---|-----------------------------------------------------|
+||hrs/week<br>(mean,<br>approx)||
+|-----------:|---|-----------------------------------------------------|
 |requirements|4.4|          ![](/img/black.png){:height="20px" width="94px"} |
-|collection |4.7|          <img height=20 width=94  src=img/black.png>|
-|cleaning   |4.5|          <img height=20 width=90  src=img/black.png>|
-|labelling   |2.9|          <img height=20 width=58  src=img/black.png>|
-|feature engineering | 4.6| <img height=20 width=92  src=img/black.png>|
-|training    |5.4|          <img height=20 width=108 src=img/black.png>|
-|evaluation  |3.8|          <img height=20 width=76  src=img/black.png>|
-|deployment  |5.1|          <img height=20 width=102 src=img/black.png>|
-|monitoring  |2.6|          <img height=20 width=52  src=img/black.png>|
+|collection |4.7|           ![](/img/black.png){:height="20px" width="94px"} |
+|cleaning   |4.5|           ![](/img/black.png){:height="20px" width="90px"} |
+|labelling   |2.9|            ![](/img/black.png){:height="20px" width="58px"}|
+|feature engineering | 4.6|   ![](/img/black.png){:height="20px" width="92px"}|
+|model training    |5.4|            ![](/img/black.png){:height="20px" width="108px"}|
+|evaluation  |3.8|            ![](/img/black.png){:height="20px" width="76px"} |
+|deployment  |5.1|            ![](/img/black.png){:height="20px" width="102px"}|
+|monitoring  |2.6|            ![](/img/black.png){:height="20px" width="52px"}|
 
 One interesting feature about the above histogram is that 
 **most "data mining" is not about mining the data**.  We say this since, in  a 35 hour work week, only half a day (5.4.hours) was spent in _training_. This is interesting since most data mining textbooks _only_ talk about training. Hence, if we are going to talk SE for AI, there is a pressing need to discuss all the work that fills up the other four days of the week.  
-
-##   Tools 
-
-We cannot leave this chapter without some introductory notes on the AI tools we study.  
-More experienced readers might decide to skip this section.
-
-**_Data mining algorithms_ tell us "what is" in the datai**. Data miners extract models   from data. For example, from columns of numbers and _programmer experience_, _development language_, and   _number of observed defects_, then a data miner might learn that defects are  more dependent on the experience of the programmer than the language that they use.  Example  data mining algorithms
-    are  nearest neighbor algorithms like kNN; clustering algorithms like k-Means and EM; statistical learners like Naive Bayes; equation learners like linear or logistic regression; decision tree learners like C4.5,   and CART; meta-learners like AdaBoost; and many other as well including  Apriori,, PageRank,  neural networks (and deep learners); etc.
-
-**_Optimizers_ tell us "what to do"**. Optimizers look  at models and tell us how changes in something effects something else. Ideally, optimizers also tell us the _least_ we need to do to _most_ improve something. For example, an optimizer might report that defects can are most reduced   using   developers with two years of experience. They might also report that improving experience to three, four, five years (and above) offers little extra reduction in observed defects. Example optimizers include genetic algorithms like NSGA-II, MOEA/D and differential evolution;   sequential model-based optimization methods like FLASH and SMAC; and other approaches such as particle swam optimization, tabu search; and many more besides
-
-**Theorem provers** are very specialized tools for finding settings to variables that satisfy the logical constraints of a model. Such a theorem prover might report that  A=true and B=false satisfies the constraint (A and not B).   For example, the constraints of the kernel of the Linux operating system can be expressed as hundreds of thousands of constraints.  When optimizing the design of some new version of Linux (e.g. to try and avoid  modules  with a track record of problems) we can use theorem provers to (a) generate a population of valid designs; and (b) check the validity of a new design. Example theorem provers include  maxWalkSat, pycoSAT, MathSAT, vZ, Z3,  and many more besides.
-
-Note that **optimizers are model-based** and **data miners are data-based**. 
-
-- Data miners explore whatever data is available.
--  Models, on the other hand, can be used to build more data whenever they want, just by running the model some more. 
-
-This means that:
-
--  Data miners explore a fixed data space;
--  While optimizers explore a more fluid data set by zooming into little cracks in the data, expanding that part of the data as they go.
-
-Note also that optimizers and data miners are tightly inter-connected:
-
-- Data miners can learn a model which [can be used by optimizers](REFS.md#feather-2002).  
-- Optimizers can [adjust the control parameters of a data miner](REFS.md#fu-2016) such that those data miners learn better models (technical note: this is called [search-based software engineering](REFS.md#harman-2012)).
-     
 
 
 ## Quiz

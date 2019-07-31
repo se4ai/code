@@ -10,6 +10,13 @@ Behnoush Abdollahi and Olfa Nasraoui. 2016. Explainable restricted Boltzmann mac
 
 Agrawal, Amritanshu, Wei Fu, and Tim Menzies. "What is wrong with topic modeling? And how to fix it using search-based software engineering." Information and Software Technology 98 (2018): 74-88.
 
+### Amershi 2019 
+
+Saleema Amershi, Andrew Begel, Christian Bird, Rob DeLine, Harald Gall, Ece Kamar, Nachiappan Nagappan, Besmira Nushi, Thomas Zimmerman.
+(2019)
+Software Engineering for Machine Learning: A Case Study,
+ICSE SEIP.
+
 ## B
 
 ### Benton 2019
