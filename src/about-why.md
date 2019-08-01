@@ -31,7 +31,9 @@ attributes like race, gender, age, etc:
 [^berk-2016]:    [Berk'16](/REFS#berk-2016)
 
 
-- One older version of a [sentiment analyzer from Google](/REFS.md#Google-2017) gave negative score to sentences like I am a Jew and I am homosexual.
+- One older version of a [sentiment analyzer from Google](/REFS.md#Google-2017) gave negative (and wildly
+inappropriate) scores to sentences like 
+"I am a Jew" and "I am homosexual".
 - A popular photo tagging app assigned [animal category labels](/REFS.md#Google_Photo) to dark skinned people.
 - Recidivism assessment models predict who might commit crimes, in the future. Some such models used by the criminal justice system are more likely to
 [falsely label black defendants as future criminals](/REFS.md#Machine_Bias) (at twice the rate as white defendants).
@@ -42,14 +44,14 @@ attributes like race, gender, age, etc:
 
 
 We say that, to some degree, the ethical impact of AI tools can be controlled by the developers
-building that software. We stress "to some degree" since the best intentions
+building that software. We stress "to some degree" since the best ethical intentions
 of any developer can be defeated by  malevolent forces, or even by just dumb luck.
 So it is wrong to say that if our guileless are followed that the result AI tool will always adhere to 
 socially-accepted ethical standards.
 
 But it also wrong to say that just because some ethical goals are not always reached, that we should not strive towards
 those goals.
-Developers will always try to adhere to ethicals standards.
+Developers will always try to adhere to ethical standards.
 Or, at the very least, they should monitor their AI tools and report unethical usage or consequences.
 
 Many industrial practitioners and researchers agree that
@@ -115,33 +117,47 @@ to the most of the above then:
 
 - The conclusions from an AI tools should be succinct enough to inspect and understand. Stability should
 be tested across multiple random samples of the training data as well as over time (as new data arrives).
+- Tools that help here are rule-based learners and well as any AI tool that can quickly and easily and incrementally modify its knowledge
+  (where "easy" means using only limited system resources and without complex pipelines).
 
 <em>2. Have you compared the effectiveness of your AI tools against other options?</em>
 
 - When commissioning an AI tool for   a new domain, some experimentation is required to match the right tool to the current data.
+- Tools that help here are kits containing many algorithms, each of which is easy to install, fast to configure, and fast to run.
+- Some statistical tools are required here as well (to simplify the statistical analysis and to produce succinct reports; e.g
+  Scott-Knot).
 
 <em>3. Can you report the dx/dy of your AI tool (i.e. if we change inputs _X_,
    how does that effect the outputs _Y_)?</em>
 
 - We need to know the envelope within which important conclusions stay the same.
 - We also need to know how to change things that are undesirable.
+- Tools that help here are Monte Carlo rigs that can perturb  inputs across known ranges (or theorem provers
+  that can generate a wide range of valid inputs). Also useful here  are data miners
+  that can summarize how different independent variables (the inputs) lead to what dependent variables (the outputs).
 
 <em>4. Using that dx/dy knowledge, can you optimize your software to ensure most effectiveness?</em>
 
-- AI tools include an optimizer that can intelligently explore the state space of your AI tool?
+- Tools that help here are optimizers that intelligently probe the _dx_ space to learn how to change _dy_
+  (and which do so without exorbitantly  long run times).
 
 <em>5. Using that optimizer, can your AI tools chase a wide range of business goals?</em>
 
 - Optimizers/data miners should not be hard-wired to specific goals. Rather, they should accept as input
   the specific goals that the local business people want to achieve.
+- Tools that help here are optimizers that can accept a wide range of goals (as part of their inputs). Also useful
+  are multi-objective optimizers that can explore trade offs between multiple goals.
 
 <em>6. Do you have a continuous monitoring process in place to ensure AI tool effectiveness?</em>
 
 - We need to know when AI tools are going off the rails (performing poorly).
+- Tools that are useful here are streaming AI tools (that incrementally modify themselves as new data arrives).
 
 <em>7. Do you have a continuous repair process in place to mitigate for poor performance?</em>
 
 - We need some kind of mitigation strategy that can manage less-than-desired AI tool performance.
+- Tools that help here are multi-objective optimizers or contrast set learners that can report
+  what differences in the independent variables  change the dependent variables.
 
 <em>8. Does your AI tools  run
   fast enough, not use excessive minimal system resources, to enable such comparisons, stability
@@ -149,12 +165,17 @@ tests, optimization
   monitoring, and repair?</em>
 
 - All the above should be achievable within the system constraints of the local environment.
+- Tools that help here are fast clustering algorithms (that divide large problems into many smaller ones)
+  and stochastic sampling methods that look at general patterns in subsets of the data.
 
 <em>9. Do your AI tools ship with a "certification envelope" (so that its users
    know when not to trust it)?</em>
 
 - AI tools should broadcast when they can be trusted, and when they should be suspected.
+- Tools that help here are prototype learners  (so we only have to share representative examples of all the data),
+  and data mutators (that help to  anonymize the shared data).
 
+  co
 <em>10. Are you testing if your AI tools are  being unfair to different social groups?</em>
 
 - Fairness can be seen in the different  responses of your AI tools to
