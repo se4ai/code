@@ -137,10 +137,11 @@ One interesting feature about the above histogram is that
 ## Quiz
 
 
-In this page,  find two technical terms; e.g. the CART data miner, e.g. the NSGA-II optimier
-or e.g. the Z3 theorem prover.
+Find papers in the recent SE literature that use:
 
-Find papers in the recent SE literature that have used that term.
+- TERMS=  "software engineering and data mining"
+- TERMS=  "software engineering and optimization"
+- TERMS=  "software engineering and prover"
 
 
 Method1: see if you can find your term in  [this paper](https://arxiv.org/pdf/1812.01550.pdf). If so, use references from this 
@@ -149,17 +150,20 @@ papers.
 Method2:
 
 - For TERM in TERMS, go to Google Scholar Advanced Search
-    - For VENUE in ICSE FSE ASE "transactions software engineering" "Journal of Systems and Software" "Information Software Technologies" do
+    - For VENUE in one of {ICSE, FSE, ASE, "transactions software engineering", "Empirical Software Engineering", "Journal of Systems and Software", "Information Software Technologies"} do
          - Set "Return articles published in" to VENUE
-         - Set "with all of the words" to TERM 
+         - Set "with all at least one the words" to TERM 
+         - Set "with the exact phrase" set to "software engineering" to TERM 
          - Set "Return articles dated between" to the last ten years
          - Find a  paper that uses TERM in an interesting way. 
            Hint: only read paper with "enough" citations citations (for the last two years, "enough"=0; for anything
-           before that, "enough"=10 cites/year)
+           before that, then "enough" for data mining =12 cites/year, "enough" for optimization is 6 cites/year, and for prover, 10 cites ever )
          - Sumamrize the paper under the following headings (usually, 2-3 lines each).
 
+![](/img/googlesearch.png)
+
 Note that most of the time for this exercise will be spent
-finding cool papers.
+reading N dull papers before you find one you can read, and that your like.
 
 Headings:
 

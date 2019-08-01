@@ -6,9 +6,19 @@
 
 Behnoush Abdollahi and Olfa Nasraoui. 2016. Explainable restricted Boltzmann machines for collaborative filtering. arXiv preprint arXiv:1606.07129 (2016).
 
+### Abdessalem 2018
+
+Abdessalem, R.B., Nejati, S., Briand, L.C., Stifter, T.: Testing vision-based control systems using learnable evolutionary algorithms. In: Proceedings of the 40th International Conference on Software Engineering, ICSE ’18, pp. 1016–1026. ACM, New York, NY, USA (2018). DOI 10.1145/3180155. 3180160
+
 ### Agrawal 2018
 
 Agrawal, Amritanshu, Wei Fu, and Tim Menzies. "What is wrong with topic modeling? And how to fix it using search-based software engineering." Information and Software Technology 98 (2018): 74-88.
+
+
+### Agrawal 2018a
+
+Agrawal,A.,Menzies,T.:Is better data better than better dat aminers?: on the benefits of tuning SMOTE for defect prediction. In: Proceedings of the 40th International Conference on Software Engineering, pp. 1050–1061. ACM (2018)
+
 
 ### Amershi 2019 
 
@@ -52,6 +62,13 @@ Di Chen, Wei Fu, Rahul Krishna, and Tim Menzies. 2018. Applications of psycholog
 ### Chen 2018a
 
 Chen, J., Nair, V., Krishna, R., & Menzies, T. (2018). " Sampling" as a Baseline Optimizer for Search-based Software Engineering. IEEE Transactions on Software Engineering
+
+### Chen 2019
+
+Jianfeng Chen. (2019)
+On the Value of Sampling and Pruning for Search-Based Software Engineering.
+Ph.D. thesis. NC State, USa.
+https://www.youtube.com/watch?v=jU9w6w8LwqM
 
 ### Columbia 2003
 
@@ -213,6 +230,12 @@ Suvodeep Majumder, Nikhila Balaji, Katie Brey, Wei Fu, and Tim Menzies. 2018. 50
 Thilo Mende and Rainer Koschke. 2010. Effort-aware defect prediction
 models. In Software Maintenance and Reengineering (CSMR), 2010 14th
 European Conference on. IEEE, 107–116.
+
+### Mendonca 2009
+
+Marcilio Mendonca, Andrzej Wąsowski, and Krzysztof Czarnecki. 2009. SAT-based analysis of feature models is easy. In Proceedings of the 13th International Software Product Line Conference (SPLC '09). Carnegie Mellon University, Pittsburgh, PA, USA, 231-240.
+
+[download]
 
 ### Menzies 2009a
 
