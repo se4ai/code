@@ -1,4 +1,4 @@
-# Tools
+# 3. Tools
 
 Before going on, we digress to introduce some of  the technology
 explored in this book. Taken together, these tools are a  vast array
@@ -138,10 +138,49 @@ Optimizers use this data to find a set of changes (also know as "mutations")  wh
 - Some optimizers just reason about the best rows;
 - While others reason about the delta between the  best and worse rows.
 
-In either case, the goal is to find  minimal changes to the model inputs which will generate better cars. Once those
-changes are applied, the whole process can repeat for many _generations_ (and within each generation, we generate more data, look for good changes, then apply those changes).
+In either case, the goal is to find  minimal changes to the model
+inputs which will generate better cars. Once those changes are
+applied, the whole process can repeat for many _generations_ (and
+within each generation, we generate more data, look for good changes,
+then apply those changes).
 
 
+Before going on, one fun thing to note is that 
+all optimizers could use data mining but all 
+miners use optimization. XXX suvodeppConsider:
+
+- Suppose we have a rule, which we will call r1, that says "everyone is German". This rule will find all the Germans but
+  it will also have high false alarms (in fact, in a world population of 7.7 billion,
+  this rule will get it wrong  over 7.6 billion times).
+- Now consider another rule, which we call r2, that "no one is German". This rule will never make a mistake since it will
+  never declare a non-German to be German. However, it will also never correctly tag as German
+  anyone from Germany.
+
+Clearly, neither of these two rules are ideal and the best rule is
+some trade-off between the two.  In AI, that trade-off can be
+expressed in terms of a "ROC curve" (receiver operator characteristics).
+that plots different rules according to how many positive and
+negative examples they cover. On tat cur
+
+```
+                               pareto
+                              frontier
+                                 |
+                                 | 
+                                 |
+       heaven----->  *           v
+                     |           .------- R1        
+                  80 +   R3   .--
+                     |     ..-     
+    millions         |    .          R4
+          of      40 +   .        
+     Germans         |  .        R5
+                     | R2
+                   0 .-----|-----|-----|----| --> 
+          
+                           2     4     6    8
+                        Billions of non-Germans
+```
 
 ## Theorem Provers
 
@@ -202,27 +241,4 @@ show that their recursive descent bi-clustering algorithm (which is a data minin
 [Majumder et al.](majumder-2018) use k-means clustering to divide up a complex text mining problem, then apply optimizers within each cluster. They report that this method speeds up their processing by up to three orders of magnitude.
 
 
-## Quiz
 
-
-Skim [this paper](https://arxiv.org/pdf/1812.01550.pdf).
-Write a very brief report on one of the  papers explored in paper. Headings:
-
-- Your name():
-- Term:
-- Write a ten line summary of what this does? Input? Output? Processing? Indications for when to use it? Not use it?
-- Paper Title:
-- Year:
-- Venue:
-- Authors:
-- URL for download (if you can find it):
-- How does this paper use its technology? Explain (half a page):
-    - Theorem provers as data generators 
-    - Optimizers to improve theorem provers 
-    - Mash-ups of data miners and optimizers 
-    - Data miners acting as optimizers 
-    - Optimizers control the data  miners 
-    - Data miners control the optimizers
-    - Other
-
-## Notes

@@ -309,6 +309,11 @@ Gaissmaier. 2017. FFTrees: A toolbox to create, visualize, and
 evaluate fast-and-frugal decision trees. Judgment and Decision
 Making 12, 4 (2017), 344–368.
 
+### Popper 1963
+
+Karl Popper. (1963). 
+Conjectures and Refutations: The Growth of Scientific Knowledge, ISBN 0-415-04318-2
+
 ### Quinlan 1986
 
 Quinlan, J. R. (1986). "Induction of decision trees" (PDF). Machine Learning. 1: 81–106. doi:10.1007/BF00116251

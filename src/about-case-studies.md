@@ -1,12 +1,16 @@
-# Case Studies
+# 4. Ethics : how
 
-There are three things to note about the following exmapels:
+The premise of this book is that
+AI tools contain many choices and, taken all together,
+those,
+choices
+offer a rich tapestry of tools that software engineers can weave
+ together to achieve a variety of goals. The good thing about that
+is that as our tools offer us more
+choices, they also offer us more ethical choices.
 
-- They combine data minigna nd optimization and (in the case of Chen's work), theorem proving
-- They all show that ethical goals can be achieved using AI tools.
-- In the case of some of them, the trick was there are many possible models that fit that data,
-  and many ways for those models to achieve many goals. By carefully selecting how the models
-  are generated, we can select better models that achieve the goals we desire.
+To show examples of that, first we need a working definition of "ethics:
+
 
 Well being & Awareness of Misue    
 - Fairness : 
