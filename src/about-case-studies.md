@@ -9,8 +9,52 @@ offer a rich tapestry of tools that software engineers can weave
 is that as our tools offer us more
 choices, they also offer us more ethical choices.
 
-To show examples of that, first we need a working definition of "ethics:
+To show examples of that, first we need a working definition of "ethics".
 
+
+## Working Definitions of Ethics
+
+The  [Institute for Electronics and Electrical Engineers](/REFS#IEEEethics-2019) (IEEE)
+have   discussed general principles for implementing autonomous and intelligent systems (A/IS).
+They propose that the design of such A/IS systems
+satisfy certain criteria:
+
+1. _Human Rights:_ A/IS shall be created and operated to respect, promote, and protect internationally recognized human rights.
+2. _Well-being:_ A/IS creators shall adopt increased human well-being as a primary success criterion for development.
+3. _Data Agency:_ A/IS creators shall empower individuals with the ability to access
+   and securely share their data, to maintain people’s capacity to have control over their identity.
+4. _Effectiveness:_ A/IS creators and operators shall provide evidence of the effectiveness and fitness for purpose of A/IS.
+5. _Transparency:_ The basis of a particular A/IS decision should always be discoverable.
+6. _Accountability:_ A/IS shall be created and operated to provide
+   an unambiguous rationale for all decisions made.
+7. _Awareness of Misuse:_ A/IS creators shall guard against all potential misuses and risks of A/IS in operation.
+8. _Competence:_ A/IS creators shall specify and operators shall adhere to the knowledge and
+   skill required for safe and effective operation.
+
+Other  organizations, like [Microsoft](/REFS.md#microai-2019)
+offer their own principles for AI:
+
+- _Transparency_ AI systems should be understandable
+- _Fairness_: AI systems should treat all people fairly
+- _Inclusiveness_  AI systems should empower everyone and engage people
+- _Reliability &amp; Safety_ AI systems should perform reliably and safely
+- _Privacy & Security_: AI systems should be secure and respect privacy
+- _Accountability_: AI systems should have algorithmic accountability
+
+The rest of this chapter shows how different algorithm choices let us
+weave together the IEEE and Microsoft concerns. Before showing that, the obvious point
+to make is that ethics is a rapidly evolving concept so the following "weaving" is somewhat
+subjective. But to misquote George Box, all ideas are wrong; but some are useful. 
+The reader might disagree with the following. You might believe that
+we have missed, or 
+missed out, or misrepresented,
+some vital ethical concern.
+In that case, the following is still useful since
+at least our ideas have gotten you thinking abut ethics. In fact,
+the best thing that could happen below is that you say "that is wrong; a better way to do that
+would be..."
+
+## From Ethics to Algorithms
 
 Well being & Awareness of Misue    
 - Fairness : 
