@@ -144,23 +144,30 @@ applied, the whole process can repeat for many _generations_ (and
 within each generation, we generate more data, look for good changes,
 then apply those changes).
 
+Before going on, one fun thing to note is that all optimizers could
+use data mining.  When optimization  gets too slow, one way to speed
+it up is to cluster large problems into numerous smaller ones.  For
+example, [Majumder et al.](majumder-2018) used k-means clustering
+to divide up a complex text mining problem, then apply optimizers
+within each cluster. They report that this method speeds up their
+processing by up to three orders of magnitude.
 
-Before going on, one fun thing to note is that 
-all optimizers could use data mining but all 
-miners use optimization. XXX suvodeppConsider:
+Note only that, but i a very real sense,e very dat miner uses optimization
+(if not overtly, then woven into its core framework).
+To see that, consider three rules R1,R2,R3:
 
-- Suppose we have a rule, which we will call r1, that says "everyone is German". This rule will find all the Germans but
+- R1 is a rule  that says "everyone is German". This rule will find all Germans but
   it will also have high false alarms (in fact, in a world population of 7.7 billion,
   this rule will get it wrong  over 7.6 billion times).
-- Now consider another rule, which we call r2, that "no one is German". This rule will never make a mistake since it will
+- R2 is another rule  that says "no one is German". This rule will never make a mistake in that
+   it will
   never declare a non-German to be German. However, it will also never correctly tag as German
   anyone from Germany.
-
-Clearly, neither of these two rules are ideal and the best rule is
-some trade-off between the two.  In AI, that trade-off can be
-expressed in terms of a "ROC curve" (receiver operator characteristics).
-that plots different rules according to how many positive and
-negative examples they cover. On tat cur
+-  Clearly, neither of these two rules are ideal and the best rule is
+   some trade-off between the two. The following diagram shows R1 and R2 as well as a
+   compromise rule called R3 (which might test things like what language do you speak
+   at home; or what was the longitude  of your birth place). Sure, R3 does not find all the Germans,
+   but it does not have all the performance drawbacks of R1 or R1.
 
 ```
                                pareto
@@ -181,6 +188,22 @@ negative examples they cover. On tat cur
                            2     4     6    8
                         Billions of non-Germans
 ```
+The above diagram shows our rules in a trade-off diagram called a  
+   "ROC curve" (receiver operator characteristics). ROC curves show
+   how much a rule covers all the positive and negative examples. On that curve, the "heaven"
+point is top-left where we cover all the positive examples and none of the negative ones. Note
+that if we generated a million rules at random then some of them like R4,R5 would be "buried" 
+behind other, better rules. On that diagram, the Pareto frontier are all the rules with nothing
+between them and heaven. This frontier holds
+all the rules that are not clearly worse than something else.
+
+The point of this example is that when exploring different models, all learners are optimizers
+that "surf" this
+ROC curve, trying to "flow" their knowledge towards the Pareto frontier 
+(where that knowledge is clearly better than
+than anything else). Some learners use this ROC curve explicitly, others use various
+very fast heuristics which, experience has shown, drive the knowledge towards the frontier.
+
 
 ## Theorem Provers
 
