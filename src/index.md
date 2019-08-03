@@ -25,9 +25,17 @@ of AI software in order to ensure   that (say) the software is not
 unduly discriminatory towards a particular social group (e.g. some
 groups characterized by age, race, or gender). 
 
-Secondly, the authors of this book have spent decades applying many
-AI tools ( mostly  for software engineering applications). We share
-some of that case study experience in this book.
+So we suggest to you that when you start a new AI project:
+
+- Your  first question should **not** be (e.g.) "what data miners should I apply to this data?".
+- Rather, it should be  "what are the ethical requirements of this development? And how can we best support those requirements?".
+
+
+The second way this book is unique is that
+the authors of this book have spent decades applying many
+AI tools (mostly  for software engineering applications). We share
+some of that case study experience in this book (see the third part of this book, called
+_process_).
 
 Thirdly,  we look
  at AI tools which,  recently, have had a major   impact on software
@@ -66,10 +74,13 @@ offer a rich tapestry of tools that software engineers can weave
 that our
 our tools can offer us more
 choices. Which means, in turn, that  they are also offer us more ethical choices.
-So we suggest to you that when you start a new AI project:
 
-- Your  first question should **not** be (e.g.) "what data miners should I apply to this data?".
-- Rather, it should be  "what are the ethical requirements of this development? And how can we best support those requirements?".
+Better yet, not only does AI give us more choices, it also gives us methods
+for automatically exploring a very large space of choices. That is (and this is the main point of
+this book):
+
+- <em> AI lets us be more ethical than ever before.</em>
+
 
 Please enjoy this book. If you are teaching this material at
  the graduate level, note that in our table of

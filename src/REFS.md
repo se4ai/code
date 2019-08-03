@@ -407,6 +407,12 @@ San Francisco, CA, USA.
   Hyperparameter Optimization for Effort Estimation,
 https://arxiv.org/pdf/1805.00336.pdf.
 
+### Xu 2015
+
+Tianyin Xu, Long Jin, Xuepeng Fan, Yuanyuan Zhou, Shankar Pasupathy, and Rukma Talwadker. 2015. Hey, you have given me too many knobs!: understanding and dealing with over-designed configuration in system software. In Proceedings of the 2015 10th Joint Meeting on Foundations of Software Engineering (ESEC/FSE 2015). ACM, New York, NY, USA, 307-319. DOI: https://doi.org/10.1145/2786805.2786852
+
+[download]
+
 ## Z
 
 ### Zitler 2004
