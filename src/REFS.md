@@ -143,6 +143,14 @@ Automated Software Engineering
 March.
 http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.650.3238&rep=rep1&type=pdf
 
+
+###  Gigerenzer 2008
+
+G. Gigerenzer. (2008).
+Why Heuristics Work.
+Perspect Psychol Sci. 2008 Jan;3(1):20-9. doi: 10.1111/j.1745-6916.2008.00058.x.
+
+
 ### Grus 2019
 
 Joel Grus. 2019. 

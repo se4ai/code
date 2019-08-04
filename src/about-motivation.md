@@ -1,4 +1,4 @@
-# But Why SE for AI?
+# But Why Study SE for AI?
 
 
   It is timely to talk about SE for AI. **AI software is still
