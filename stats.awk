@@ -1,4 +1,4 @@
-#!/usr/bin/env ./zzz
+#!/usr/bin/env zzz
 
 # -----------------------------------
 # macros: camel case
@@ -17,6 +17,7 @@ BEGIN  {
   SKIPCOLUMN= "\\?"
   IGNORE = SKIP
   NUMCOLUMN = "\\$"
+print 1
 }
 # -----------------------------------
 # Main
