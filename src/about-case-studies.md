@@ -12,45 +12,57 @@ Our point will be that,
 in the 21st century, the wise software engineering
 knows how  different AI tools offer different services, and how some of those services
 can achieve certain ethical goals.
+We offer fair warning to the reader versed in the standard texts on, say, data mining.
+The technologies discussed below roam far away from standard discussion of (say)
+classification vs regression vs whatever else. Once we introduce ethical goals like inclusiveness or fairness
+then the technology choices become very different.
 
-The following algorithms will be mentioned briefly (and for
+The following methods are discussed above, very briefly
+(and for
 more details, see later in this book):
 
+- Cognitive pyschology; specifically, "frugral trees";
 - Data pre-processors like feature selection;
 - Classifiers like Naive Bayes and KNN (kth-nearest neighbor);
 - Neural net methods like deep learning;
 - Theorem provers like picoSAT; XXX
 - Meta-learning schemes like active learning.
 - Optimizers like sequential model-based optimization (a kind of active learning);
+- Multi-goal optimizers that can explore the trade-off between multiple goals.
 - Hyperparameter optimizers (again, like sequential model-based optimization);
-- Explanation algorithms like LIME or FFtrees;
+- Explanation algorithms like LIME or frugal trees;
+- Genetic algorithms;
 - Certification envelope technology such as prototype discovery and anomaly detection
-- Repair algorithms, which can include contrast set learners;
+- Repair algorithms, which can include contrast set learners and tabu-planners;
 - Clustering algorithms, and hierarchical clustering using recurisve random projections;
 - Incremental learning that updates its models after seeing each new example.
 
-For the reader uninterested  in ethics, this list will be very dull indeed.
-Such readers will (most probably) return to using a single learner/optimizer/whatever over all their future AI
-applications.
 
 For the industrial practitioner who wishes to distinguish themselves within the currently
-crowded AI market, the above list might be a marketting opportunity. Spefically,
-by augmenting their current toolkit with some of the above, they might be able
+crowded AI market, the above list might be a marketing opportunity. 
+By augmenting their current toolkit with some of the above, industrial practitioners might be able
 to offer services that is absent amongst their  rivals.
 
 For the researcher who is an advocated of a particular AI tool,
-the above list might inspire a research challenge.
-First, they might seek ways  to extend their preferred AI tool
+the above list might inspire a research challenge:
+
+- First, they might seek ways  to extend their preferred AI tool
 such that it covers the more of the above services.
-Secondly, they might scoff at this list, saying "I can do better than that". If they then went on
+- Secondly, they might scoff at this list, saying "I can do better than that". If they then went on
 to implement and evaluate their alternative, then that would be a very good thing
 (since that would give us more material for version two of this book).
 
+For us, this list is like a specification for an ideal "ethics machine". 
+Later in this book we offer a version 0.1  implementation of that ethics machine.
+As will be seen, that implementation requires much extension  and improvement.
+Nevertheless, it does show that a surprisingly large portion of the above
+can be created in a relatively simple manner. It is hoped that that implementation
+seeds a research community devoted to exploring algorithms with ethical effects.
+
 ## Current Ethical Concerns
 
-Before doing anything else, we need a list of potential ethical goals for AI
-tiools.  The  [Institute for Electronics and Electrical
-Engineers](/REFS#IEEEethics-2019) (IEEE) has   discussed general principles for
+The  [Institute for Electronics and Electrical
+Engineers](/REFS#IEEEethics-2019) (IEEE) has   recently discussed general principles for
 implementing autonomous and intelligent systems (A/IS).  They propose that the
 design of such A/IS systems satisfy certain criteria:
 
@@ -84,7 +96,7 @@ sets of ethical concerns. Note that:
 
 - "accountability" and "transparency"  appear in both the IEEE and Microsoft lists. Clearly these
   are concerns shared by many people.
-- Also missing from the Microsoft list is "effectiveness" but
+- Missing from the Microsoft list is "effectiveness" but
   we would argue that what IEEE calls "effectiveness" can be expressed
   in terms of other Microsoft terms (see below).
 - Assessed in terms of the Microsoft terminology, the IEEE goals or "well-being" and "awareness of misuse"
@@ -123,7 +135,9 @@ In any case, what the above table does demonstrate is that:
 The above table maps between ethical concerns  from different organizations.
 The rest of this chapter discusses how different algorithm choices enable these
 ethical goals.  
+
 ### Effectiveness
+
 
 
 It is unethical to deliver an AI tool that is performing poorly,
@@ -140,6 +154,7 @@ tools for automatically finding tunings that can greatly improve effectiveness.
 For examples of this, see [Fu et al.](REFS#fu-2016) and [Agrawal et
 al.](REFS#agrawal-2018a). One way to implement such hyperparameter optimization
 is via active learning (see below). 
+
 
 The faster the algorithm,
 the easier it is to fiddle with. So measured in terms of
@@ -160,12 +175,13 @@ new test instance.
 - Just as an aside, clustering can be made very fast using tricks
 like 
 recursive random projections (RRP).
-After a few random samples, it is possible to find two moderately distant points "_east,west_"
-Data closest to "_east_" or "_west_" can clustered into two groups.
-Repeating this recursively "_N"_ times generates a tree of clusters of depth "_N_",
+After a few random samples, it is possible to find two moderately distant points "_east_" and "_west_"
+Data can be clustered into two groups, depending or if they are closest
+to "_east_" or "_west_".
+Repeating this recursively "_D"_ times generates a tree of clusters of depth "_D_",
 the leaves of which holds
 data that is 
-similar according  to "_N_" random projections  over "_east,west_" pairs.
+similar according  to "_D_" random projections  over "_east,west_" pairs.
 
 It is important to stress that the  commissioning   effort cannot be the only way we assess
 an AI tool.  For high dimensional image data, deep learning] has
@@ -181,31 +197,72 @@ better or worse. Rather, our goal is to  map the trade-offs associated
 with  AI tool such that the best one can be selected from the next
 problem.
 
+
 ### Inclusiveness
 
-Inclusiveness is helped
-by AI tools that generate succinct human-readable models 
-since  
-humans can read and understand  such models.
-Rule-based learners like  FFTrees are useful in the regard:
+AI tools that include humans in their reasoning process must do several  things:
+
+1. The humans must be be able to understand  why an AI tool has made a conclusion.  
+    - For this purpose, explanation algorithms are useful.
+2. Humans must be able to adjust that conclusion. 
+    - For this purpose, active learning is useful.
+3. Further, to better support the above, AI tools must understand and respect the goals of the humans involved in this process. 
+    - For this purpose, multi-goal reasoning is useful.
+
+ 
+#### Explanation
+
+Inclusiveness is helped by AI tools that generate succinct human-readable
+models since  humans can read and understand  such models.  Rule-based learners
+like  contrast set learners and FFTrees are useful for generating such succinct
+models:
 
 ![](/img/fft.png){: .imgright}
 
--   [FFtreess](REFS#phillips-2017) are a heuristic methods  to test  different learning biases using  problem-specific goals.
-    FFtrees ranks different divisions of data columns according the goal of the learning (e.g. for each division, how
-   many positive/negative examples does in cover).
-   At every level of its tree building, FFtrees fork two sub-trees for
-   two different biases (the subsets of the data that do/do not match the worst/best division). 
-    In this way, dividing "_N_" levels produces $$2^N$$ different
-   trees. The tree that performs best (on the training data) is then selected to apply to the test data. 
-- In practice, FFTrees generate very small binary trees of depth four or less. Humans can quickly glance at such
-  trees, [then critique or apply them](REFS#gigerenzer-2008). Desipte their small size, they can be [remarkably effective](REFS#chen-2018).
+- According  to [George Kelly](REFS#kelly-1955), humans reason about the world
+via lists of differences between things (as apposed to list of things abut each
+object). This is an interesting since the list of obvious difference between
+things can be [much shorter than a description of the
+things](REFS#menzies-2003) (e.g. the difference between clouds and oceans is
+that one you have to look up to see one of them).  Contrast set learners can
+generate very short rules describing a domain by reporting the difference
+between things, weighted by the frequency of each of difference. 
+-   According to  [Gerd Gigerenzer](REFS@gigerenzer-2008), humans reason in a
+"frugal manner"; that is, they ignore much of the available information to find
+good-enough solutions[^simon].
+      - A [frugal tree generator](REFS#phillips-2017) 
+        ranks different divisions of data columns according the goal of the learning (e.g. for each division, how
+   many positive/negative examples does in cover).  
+      - Next, various   learning
+biases are tested.  At every level of its tree building, FFtrees fork sub-trees
+for
+   two biases (the subsets of the data that do/do not match the worst/best division). 
+       In this way, dividing "_N_" levels produces $$2^N$$ different
+      trees.   The tree that performs best (on the training data) is then selected to apply to the test data. 
+      - In practice, frugal trees  are binary trees of depth four or less. Humans can quickly glance at such
+  trees, [then critique or apply them](REFS#gigerenzer-2008). Despite their small size, they can be [remarkably effective](REFS#chen-2018).
 
-AI tools that enable human-in-the-loop reasoning abllow 
-ee Hu'18 and anything that does human-in-the-loop reaasoning
-During commissioning, there is usually an audit process where some "ground truth" is established against which we 
-(a) train the AI tool(s) or (b) evaluate the performance of  the tool(s). In many domains, creating that
-ground truth requires an incremental exploration of many examples. For that process, active learning is very useful.
+[^simon]: Gigerenzer's thinking was  influenced by the Nobel-Prize winning economist and AI pioneer Herbert Simon.  [Simon argued](REFS#simon-1956) that humans do make optimizer decisions, since such optimality assumes complete knowledge about a situation.  Rather, says Simon, humans reason via "satisficing" ( a portmanteau of satisfy and suffice) in which they seek solutions good enough for the current context.
+
+![](/img/lime.png){: .imgright}
+
+Another interesting approach  to explanation is to use locality reasoning.
+The  [LIME explanation algorithm](REFS#riberio-2016) 
+ builds some model $$M_1$$ using examples near the
+example of interest (LIME does not specify which model is used). 
+Next, LIMES builds a local regression mode $$M_2$$ using the predictions from $$M_1$$. The coefficients of $$M_2$$
+are then informative as to what factors are most influential.
+For example, in  the diagram at right, the example of interest is marked with a red cross and the $$M_2$$ coefficients
+would reveal why this example is labeled (say) ref, not blue).
+
+
+For a discussion of other explanation algorithms, see  [Gosiekska and Biecek](REFS#gos-2019).
+
+#### Active Learning
+
+Once a system can explain itself, then most probably humans will want to change some part of it.
+Active learning is a general framework within which humans and AI can learn from each other, in
+the context of specific examples.
 
 - Active learners  incrementally build models using the minimum number of queries
   to some oracle (e.g. some human). 
@@ -227,13 +284,104 @@ ground truth requires an incremental exploration of many examples. For that proc
   might be the one that is guessed to [achieve the highest predicted  score](REFS#nair-2018).
 
 
-see explanation work [Feather'02]  [Menzies'07] [Gay'12] [Matheer'16]
+#### Multi-goal Reasoning
 
-active learning
+One of the lessons of research into requirements engineering is that the stakeholders for software
+have many competing goals. 
+Simple AI tools know how to chase a single goals (e.g. a classifier might try to maximize the accuracy
+of its predictions).  Better AI tools now how to trade off between the multiple competing
+goals of different  stakeholders.
+
+![](/img/pareto1.png){: .imgright}
+
+One way to trade-off between competing goals are multi-goal reasoners. 
+Pareto frontiers were introduced in [Chapter 3](/about-tools#optimizers) in the section discussing
+how data miners use optimizers. Recall that, given many solutions floating in a space of multiple goals,
+the "Pareto frontier" are those solutions that are not demonstrably worse that anything else. In the figure at right,
+if we wish to maximize both the quantities, then "heaven" is top right so "_K,N_" are not on the frontier
+(since there are other items between them and heaven). On the other hand, 
+ "A,B,C,D,E,F,G,H" are on the frontier since they have a clear line of sight to heaven.
+
+There are many methods for finding the Pareto frontier including
+genetic algorithms
+and sequential model-based optimization and the three data mining methods described below.
+Once the frontier is found, the reasoning can stop. Alternatively, in multi-generational reasoning,
+this frontier becomes the seed for a new round of reasoning.
+
+#### Multi-goal Reasoning via Data Mining
+
+One of the lessons of this book is that building ethical systems is not hard. If developers really
+understand how their AI tools work, it is possible to refactor them and produce simpler 
+systems that can better achieve the desired goals. For example, in this section, we offer
+three very simple data mining methods that implement multi-goal optimization.  
+
+One way to use data mining method to implement multi-goal reasoning
+is via recursive random projections. [Krall et al.](REFS#krall-2015) 
+and [Chen et al.](REFS#chen-2019)
+ applied RPP to randomly generated candidates. Instead of evaluating all $$N$$  candidates,
+Krall and Chen just evaluated the $$O(log_2(N))$$ "_east_,_west_" pairs. There approach achieved
+similar (and sometimes better) results than
+standard optimizers while running much faster (for one large model, RRP terminated in minutes, not the hours required
+for standard optimizers).
+Chen et al. improved on Krall's work by showing that if the initial candidate size was large (say $$10^4$$)
+then (a) multi-generational reasoning was not required while at the same time leading to (b) results
+competitive with other methods.
+
+
+A second  way to use data mining to implement multi-goal reasoning is via frugal trees.
+Recall from the above that a
+frugal tree generator
+        ranks different divisions of data columns according the goal of the learning.
+[Chen et al.](REFS#chen-2018) out-performed the prior state of the art (in one are)
+by ranking their divisions using a pair of two-dimensional goals:
+
+- Goal1: minimize false alarms, maximize recall
+- Goal2: maximize for most program defects seen in the minimal  number of lines of code.
+
+
+A third way to use data mining to implement multi-goal reasoning is to use
+contrast set learning and the 
+[Zitler and Künnzli](REFS#zitler-2004) indicator measure $$I$$
+In the following equation,
+$$x_i$$ and $$y_i$$ are the i-th goal of row $$x,y$$  and
+ $$x_i'$$ and $$y_i'$$ are those goals normalized 0..1 for min..max. 
+Each of the "_N_" goals is weighted $$w_i=-1,1$$ depending on whether or not we seek to minimize or maximze  it.
+
+$$
+I(x,y)=\frac{-1}{N}\sum_i^N 10^{w_i(x_i'-y_i')/N}
+$$
+
+Row $$x$$ is better than row $$y$$ if we "lose more"
+  going $$x$$ to $$y$$ than going  $$y$$ to $$x$$; i.e.  $$I(x,y) < I(y,x)$$.
+Rows can be   sorted according to  how many times they are better than
+  (say) $$M=100$$ other rows (selected at random). 
+Contrast set learning can then be applied
+  to discover what selects for the (say) 20% top scoring rows (while avoiding the rest).
+Note that, in practice, we have seen
+  this indicator measure [work well for up to 5 goals](REFS#sayyad-2013).
+
+These three examples demonstrate the value of understanding AI tools. 
+All the above refactor existing AI tools (RRP, frugal trees, contrast set learning) to achieve
+better systems: 
+
+- In the case of RRP, the multi-goal reasoning ran much faster. 
+- In the case of frugal trees, the resulting system out-performed the state of art. Also, it generated
+  tiny models that could be readily read and understood.
+- In the case of contrast set learner and the Zilter indicator, the resulting system is
+  very easy to build.
+
+This three points are an excellent demonstrator of the main point of this book: AI tools give
+software developers more choices in how  to implement a system. 
+Developers can use those chocides they can use to great benefit, including ethical benefits).
 
 ### Fairness
 
-- See [Charaborty, 2019](REFS#chakrabory-2019).
+  Machine learning software, by its nature, is always a  form  of  statistical  discrimination.   This  discrimination becomes objectionable when it places certain social groups  (e.g. those characteretized by age, sex, gender, nationality) at  a  systematic  advantage or  disadvantage
+
+s. How can we do this in a fair and defensible way, while still maintaining adequate performance? It turns out that algorithmic discrimination can be automatically recognized and repaired. The  first step is to identify “protected attributes” (e.g. race, age, gender, etc). Next, we use all attributes (privileged and otherwise) to build a classifier.  Thirdly, we measure discrimation using  IBM’s AI Fairness software suite(https://github.com/IBM/AIF360). For example,  EOD  is the delta of true positive rates in unprivileged & privileged groups and  AOD is the average delta in false positive rates and true positive rates between privileged and unprivileged groups.   Fourthly, we mitigate unfairness using hyperparameter optimization,. Hyperparameter optimizers explore a learner’s control parameters to find settings that produce models which better satisfy particular goals.  Recent result shows that such tuning can find fairer models (where “fair”  measured by EOD and AOD). The trick here is that such optimization must strive for fairness AND performance (precision, recall etc) since our experiments show that optimizing for performance separately to fairness means that we can succeed on one and fail on the other. 
+
+According to
+[Charaborty, 2019](REFS#chak-2019), fairness 
 
 ### Privacy and Security
 
@@ -241,6 +389,10 @@ privacy.centralized. target fr hackers. ditsibuted with transitions: dat tehft d
 prorotype generation.
 
 ### Reliability  and Safety
+
+Less on the columbia space shittle
+Certitication envelopes
+
 One an AI tools survives the commissioning process, it must be  monitored. Once again, as we stream
 across newly arrived data, it is useful to deploy incremental learners that can quickly react to new data.
 
@@ -379,8 +531,11 @@ EFFECTIVENESS Yu (Ph.D. 2019?): Inclusiveness
 - active learning, incrementa repair, streaming
 - data labelling via very small samples
 - infer laeblling trends (so you know when to stop)
-- labelling error mitation (by sometomes relabelling old examples_
+- labelling error mitation (by sometomes relabelling old examples
 
 FAIRNESS Chakraborty (Ph.D. 2022?)
 - hyperparamter optimzation and fairness
+
+## Notes
+
 

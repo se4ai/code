@@ -29,6 +29,11 @@ ICSE SEIP.
 
 ## B
 
+### Bellemy 2019
+
+R. K. E. Bellamy et al., "Think Your Artificial Intelligence Software Is Fair? Think Again," in IEEE Software, vol. 36, no. 4, pp. 76-80, July-Aug. 2019. 
+
+
 ### Benton 2019
 
 William Benton. 2019.  
@@ -150,6 +155,10 @@ G. Gigerenzer. (2008).
 Why Heuristics Work.
 Perspect Psychol Sci. 2008 Jan;3(1):20-9. doi: 10.1111/j.1745-6916.2008.00058.x.
 
+### Gos 2019
+
+A. Gosiewska and P. Biecek, “iBreakDown: Uncertainty of Model Explanations for Non-additive Predictive Models,” arXiv preprint arXiv:1903.11420, 2019.
+
 
 ### Grus 2019
 
@@ -182,6 +191,10 @@ IEEE, 2019. "Ethically-Aligned Design: A Vision for Priorizing Human
 Well-Begin with Autonomous and Intelligence Systems". First edition.
 
 ## K
+
+### Kelly 1955
+
+Kelly G (1955). The Psychology of Personal Constructs New York: W W Norton.
 
 ### Kim 2016
 
@@ -243,16 +256,19 @@ European Conference on. IEEE, 107–116.
 
 Marcilio Mendonca, Andrzej Wąsowski, and Krzysztof Czarnecki. 2009. SAT-based analysis of feature models is easy. In Proceedings of the 13th International Software Product Line Conference (SPLC '09). Carnegie Mellon University, Pittsburgh, PA, USA, 231-240.
 
-[download]
 
-### Menzies 2009a
+### Menzies 2003
 
-Tim Menzies, Oussama El-Rawas, Jairus Hihn, and Barry Boehm. 2009. Can we build software faster and better and cheaper?. In Proceedings of the 5th International Conference on Predictor Models in Software Engineering (PROMISE '09). ACM, New York, NY, USA, , Article 2 , 9 pages. DOI=http://dx.doi.org/10.1145/1540438.1540442
+Tim Menzies and Ying Hu. 2003. Data Mining for Very Busy People. Computer 36, 11 (November 2003), 22-29. DOI: https://doi.org/10.1109/MC.2003.1244531
 
 ### Menzies 2007
 
 Tim Menzies, Oussama Elrawas, Jairus Hihn, Martin Feather, Ray Madachy, and Barry Boehm. 2007. The business case for automated software engineering. ASE'07.
 http://doi.org/10.1145/1321631.1321676
+
+### Menzies 2009a
+
+Tim Menzies, Oussama El-Rawas, Jairus Hihn, and Barry Boehm. 2009. Can we build software faster and better and cheaper?. In Proceedings of the 5th International Conference on Predictor Models in Software Engineering (PROMISE '09). ACM, New York, NY, USA, , Article 2 , 9 pages. DOI=http://dx.doi.org/10.1145/1540438.1540442
 
 ### MicroAi 2019
 
