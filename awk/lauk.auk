@@ -6,20 +6,32 @@
 
 BEGIN{  DOT=sprintf("%c",46)}
 
-function lines(i,update,f,sep,  r,line,lst) {
+function trim(s) {
+  gsub(/^[ \t]*/,"",s)
+  gsub(/[ \t]*$/,"",s)
+  return s
+}
+function lines(i,update,f,sep,  r,line,lst,com) {
   f = f ? f : "/dev/stdin"
-  sep=sep ? sep : ","
+  sep=sep ? sep : "[ \t]*,[ \t]*"
+  com = "#"DOT"*"
   while((getline line < f) > 0) {
-    split(line,lst,sep)
-    @update(i,++r,lst) }
+    sub(com,"",line)
+    line=trim(line)
+    if (line) {
+      split(line,lst,sep)
+      @update(i,++r,lst) }
+  }
+  close(f)
 } 
-function oo(x,p, pre) {
+function oo(x,p,pre, i,txt) {
+  txt = pre ? pre : (p DOT)
   for(i in x)  {
     if (isarray(x[i]))   {
-      print(pre p"["i"]=" )
-      oo(x[i],p,"|  " pre)
+      print(txt i"=" )
+      oo(x[i],"","|  " pre)
     } else
-      print(pre p"["i"]=" x[i])
+      print(txt i (x[i]==""?"": "=(" x[i] ")"))
 }}
 
 # ---------------------------------
@@ -45,13 +57,12 @@ function is(f,got,want) {
 
 # ---------------------------------
 # object constructors
-function zap(i,k)        { i[k][0]; split("",i[k],""} 
+function zap(i,k)        { i[k][0]; split("",i[k],"")} 
 
 function List(i)         { split("",i,"") }
 function Object(i)       { List(i); i["oid"]=++OID }
 
-function has( i,k,f)     { f=f?f:"List"; zap(i,k); @f(i[k])
-function has1(i,k,f,m)   {               zap(i,l); @f(i[k],m) }
+function has( i,k,f)     { f=f?f:"List"; zap(i,k); @f(i[k]) }
+function has1(i,k,f,m)   {               zap(i,k); @f(i[k],m) }
 function has2(i,k,f,m,n) {               zap(i,k); @f(i[k],m,n) }
-
 

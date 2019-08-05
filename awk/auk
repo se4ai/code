@@ -4,26 +4,40 @@ Ext=auk
 Lib=$HOME/opt/$Ext/awk
 Bin=$HOME/opt/$Ext/bin
 Doc=$HOME/opt/$Ext/doc
-mkdir -p $Lib $Bin
 
 prep() { gawk ' {
   print gensub(/\.([^0-9])([a-zA-Z0-9_]*)/, 
                "[\"\\1\\2\"]","g",$0) }' 
 }
+preps() {
+  Files=$(find . -name "*.$Ext")
+  for i in $Files;do
+     f=$(basename $i)
+     l=$Lib/${f%.$Ext}.awk
+     b=$Bin/${f%.$Ext}
+     if [ "$i" -nt "$l" ]; then cat $i | prep > $l; fi
+     if [ "$l" -nt "$b" ]; then
+       echo '#!/usr/bin/env gawk -f ' > $b
+       cat $l >> $b
+       chmod +x $b
+     fi
+  done
+}
+mkdir -p $Lib $Bin
 
-Files=$(find . -name '*.gold')
-for i in $Files;do
-   f=$(basename $i)
-   exe=$Bin/${File%.$Ext}
-   awk=$Lib/${File%.$Ext}.awk
-   if [ "$i" -nt "$awk" ]; then prep $i > $awk; fi
-   if [ "$awk" -nt "$exe" ]; then
-     echo '#!/usr/bin/env gawk -f ' > $exe
-     cat $awk >> $exe
-     chmod +x $exe
-   fi
-done
+if [ "$1" == "-zap" ]; then
+  rm -rf $Lib/* $Bin/* $Doc/*
+  shift
+  exit 0
+fi
+
+chmod +x *.auk
+preps
+
+if [ -z "$1" ]; then exit 0; fi
+
+f=$(basename $1)
+l=$Lib/${f%.$Ext}.awk
 
 shift
-File=$(basename $1)
-AWKPATH="$Lib:$AWKPATH" gawk -f ${File%.$Ext}.awk $*
+AWKPATH="$Lib:$AWKPATH" gawk -f $l $*
