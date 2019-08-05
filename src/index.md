@@ -68,12 +68,6 @@ Thirdly,  we look
  engineering. Specifically, we will talk much about data mining
  algorithms; some about optimizers; and a little about theorem
  provers.
-When combined,
-these
- AI tools
-are  a rich tapestry within which software engineers can weave
-around to 
- achieve a variety of goals. 
 
 - Optimizers can better control the data  miners.
     Several research has  improved data mining performance via optimizers that tune the control parameters of the data miner (See [Agrawal 2018a](REFS:agrawal-2018a), 
@@ -95,6 +89,14 @@ show that their recursive descent bi-clustering algorithm (which is a data minin
      there are very many ways to solve constraints, theorem provers can take a while  to generate solutions that we prefer. In
   this case, a useful trick is to first , run theorem provers (a little) to get a sample of solutions; then  second
       run mutators and optimizers to [combine that sample in interesting ways](REFS#chen-2019).
+
+When combined,
+these
+ AI tools
+are  a rich tapestry within which software engineers can weave
+around to 
+ achieve a variety of goals. 
+
 
 ## Note to Educators
 
