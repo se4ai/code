@@ -8,24 +8,22 @@ BEGIN  {
   NUMCOL  = "\\$"
   SEP     = ","
 }
-BEGIN { _demo("weather.csv") }
+BEGIN { _demo("weather" DOT "csv") }
 function _demo(f,  i,j,k) { 
   Num(i,"c","v")
   for(j=1;j<=100;j++) Num1(i,j)
-  oo(i,"num")
-  print(i.sd)
   file2table(k,f) 
-  oo(k,"t")
+  #oo(k,"t")
 }
 #------------------------------------------------------------
 function Row(i,t,lst,     what,val) {
   Object(i)
   has(i,"cells")
   i.dom = 0
-  for(c in t.names) {
+  for(c in t.cols) {
     what = c in t.nums? "Num1" : "Sym1"
     val  = lst[c] 
-    i.cells[c] = val ~ SKIP ? val : @what(i.cols[c], val) }
+    i.cells[c] = val ~ SKIP ? val : @what(t.cols[c], val) }
 }
 #------------------------------------------------------------
 function Table(i) { 
@@ -36,22 +34,21 @@ function Table(i) {
   has(i,"rows") 
 }
 function file2table(i,f,  r,c,line,lst) {
-  print 1
+  print typeof(i)
   Table(i)
-print    2
-  f = f ? f : "-"
+  f = f ? f : "/dev/stdin"
   while((getline line < f) > 0) {
     split(line,lst,SEP)
-    if (++r==1) 
+    if (++r==1)  {
       for(c in lst)
         if (lst[c] !~ SKIPCOL) 
           TableHeader(i, c, lst[c])
-    else  
+    } else  
       has2(i.rows,r,"Row",i,lst)  }
 } 
 function TableHeader(i,c,v) {
-  if (v ~ NUMCOL) { i.nums[c]; has1(i.cols,c,"Num",c,v) }
-  else            { i.syms[c]; has1(i.cols,c,"Sym",c,v) }
+  if (v ~ NUMCOL) { i.nums[c]; has2(i.cols,c,"Num",c,v) }
+  else            { i.syms[c]; has2(i.cols,c,"Sym",c,v) }
 }
 #------------------------------------------------------------
 function Col(i,c,v) { 
@@ -70,6 +67,7 @@ function Sym(i,c,v) {
 function Sym1(i,c,v) {
   if (v ~ IGNORE) return v
   i.n++
+  print(333)
   tmp = ++i.cnt[v]
   if (tmp > i.most) {
     i.most = tmp
