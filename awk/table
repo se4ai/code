@@ -13,7 +13,6 @@ function _demo(f,  i,j) {
   Num(i)
   for(j=1;j<=100;j++) Num1(i,j)
   oo(i,"num")
-
   print(i.mu)
   #file2table(i,f) 
 }
