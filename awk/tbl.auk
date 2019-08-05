@@ -31,7 +31,7 @@ function Tbl1(i,r,lst,    c) {
       if (lst[c] !~ SKIPCOL) 
         TblCols(i, c, lst[c])
   } else  
-    has2(i.rows,r,"Row",i,lst)  
+    has2(i.rows,r-1,"Row",i,lst)  
 }
 function TblCols(i,c,v) {
   if (v ~ CLASSCOL) i.my.class = c
