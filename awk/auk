@@ -16,9 +16,10 @@ for i in $Files;do
    f=$(basename $i)
    exe=$Bin/${File%.$Ext}
    awk=$Lib/${File%.$Ext}.awk
-   if [ "$i" -nt "$out" ]; then
-     prep $i > $awk
-     (echo '#!/usr/bin/env gawk -f '; cat $awk ) > $exe
+   if [ "$i" -nt "$awk" ]; then prep $i > $awk; fi
+   if [ "$awk" -nt "$exe" ]; then
+     echo '#!/usr/bin/env gawk -f ' > $exe
+     cat $awk >> $exe
      chmod +x $exe
    fi
 done
