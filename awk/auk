@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+Ext=auk
+Lib=$HOME/opt/$Ext/awk
+Bin=$HOME/opt/$Ext/bin
+Doc=$HOME/opt/$Ext/doc
+mkdir -p $Lib $Bin
+
+prep() { gawk ' {
+  print gensub(/\.([^0-9])([a-zA-Z0-9_]*)/, 
+               "[\"\\1\\2\"]","g",$0) }' 
+}
+
+Files=$(find . -name '*.gold')
+for i in $Files;do
+   f=$(basename $i)
+   exe=$Bin/${File%.$Ext}
+   awk=$Lib/${File%.$Ext}.awk
+   if [ "$i" -nt "$out" ]; then
+     prep $i > $awk
+     (echo '#!/usr/bin/env gawk -f '; cat $awk ) > $exe
+     chmod +x $exe
+   fi
+done
+
+shift
+File=$(basename $1)
+AWKPATH="$Lib:$AWKPATH" gawk -f ${File%.$Ext}.awk $*

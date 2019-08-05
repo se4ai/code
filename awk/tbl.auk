@@ -1,52 +1,46 @@
-#!/usr/bin/env ./gold
+#!/usr/bin/env ./auk
 # vim: nospell filetype=awk ts=2 sw=2 sts=2  et :
+
+@include "lauk"
 
 #--------- --------- --------- --------- --------- ---------
 BEGIN  {
   SKIPCOL = "\\?"
   IGNORE  = SKIPCOL
   NUMCOL  = "\\$"
-  SEP     = ","
 }
 BEGIN { _demo("weather" DOT "csv") }
-function _demo(f,  i,j,k) { 
+function _demo(f,  i,j,t) { 
   Num(i,"c","v")
   for(j=1;j<=100;j++) Num1(i,j)
-  file2table(k,f) 
+  Tbl(t)
+  lines(t,"Tbl1",f) 
   #oo(k,"t")
 }
 #------------------------------------------------------------
-function Row(i,t,lst,     what,val) {
+function Row(i,t,lst,     c) {
   Object(i)
-  has(i,"cells")
   i.dom = 0
-  for(c in t.cols) {
-    what = c in t.nums? "Num1" : "Sym1"
-    val  = lst[c] 
-    i.cells[c] = val ~ SKIP ? val : @what(t.cols[c], val) }
+  for(c in t.cols) 
+    i.cells[c] = Col1(t.cols[c], lst[c]) 
 }
 #------------------------------------------------------------
-function Table(i) { 
+function Tbl(i) { 
   Object(i)
   has(i,"nums")
   has(i,"syms")
   has(i,"cols")
   has(i,"rows") 
 }
-function file2table(i,f,  r,c,line,lst) {
-  print typeof(i)
-  Table(i)
-  f = f ? f : "/dev/stdin"
-  while((getline line < f) > 0) {
-    split(line,lst,SEP)
-    if (++r==1)  {
-      for(c in lst)
-        if (lst[c] !~ SKIPCOL) 
-          TableHeader(i, c, lst[c])
-    } else  
-      has2(i.rows,r,"Row",i,lst)  }
-} 
-function TableHeader(i,c,v) {
+function Tbl1(i,r,lst) {
+  if (r==1)  {
+    for(c in lst)
+      if (lst[c] !~ SKIPCOL) 
+        TblCols(i, c, lst[c])
+  } else  
+    has2(i.rows,r,"Row",i,lst)  
+}
+function TblCols(i,c,v) {
   if (v ~ NUMCOL) { i.nums[c]; has2(i.cols,c,"Num",c,v) }
   else            { i.syms[c]; has2(i.cols,c,"Sym",c,v) }
 }
@@ -57,17 +51,21 @@ function Col(i,c,v) {
   i.col=c
   i.txt=v 
 } 
+function Col1(i,c,v,   add) {
+  if (v ~ IGNORE) return v
+  i.n++
+  add = i.add
+  return @add(i,c,v)
+} 
 #------------------------------------------------------------
 function Sym(i,c,v) { 
   Col(i,c,v)
   i.mode=""
   i.most=0
   has(i,"cnt") 
+  i.add ="Sym1" 
 }
 function Sym1(i,c,v) {
-  if (v ~ IGNORE) return v
-  i.n++
-  print(333)
   tmp = ++i.cnt[v]
   if (tmp > i.most) {
     i.most = tmp
@@ -80,11 +78,10 @@ function Num(i,c,v) {
   i.n  = i.mu = i.m2 = i.sd = 0
   i.lo = 10^32 
   i.hi = -1*i.lo
+  i.add ="Num1" 
 }
 function Num1(i,v,    d) {
   v += 0
-  if (v ~ IGNORE) return v
-  i.n++
   i.lo  = v < i.lo ? v : i.lo
   i.hi  = v > i.hi ? v : i.hi
   d     = v - i.mu
