@@ -139,6 +139,10 @@ Wei Fu and Tim Menzies. 2017. Easy over hard: a case study on deep learning. In 
 
 ## G
 
+### Garcia 2011
+
+Garcia, S., Derrac, J., Cano, J. R., & Herrera, F. (2011). Prototype selection for nearest neighbor classification: Taxonomy and empirical study. IEEE Transactions on Pattern Analysis & Machine Intelligence, (3), 417-435.
+
 ### Gay 2010
 
 Gregory Gay, Tim Menzies, Omid Jalali, Gregory Mundy, Beau Gilkerson, Martin Feather.
@@ -159,6 +163,9 @@ Perspect Psychol Sci. 2008 Jan;3(1):20-9. doi: 10.1111/j.1745-6916.2008.00058.x.
 
 A. Gosiewska and P. Biecek, “iBreakDown: Uncertainty of Model Explanations for Non-additive Predictive Models,” arXiv preprint arXiv:1903.11420, 2019.
 
+### Grech 2010
+
+M. Grechanik, C. Csallner, C. Fu, and Q. Xie, “Is data privacy always good for software testing?” in Proceedings of the 2010 IEEE 21st Inter- national Symposium on Software Reliability Engineering. Washington, DC, USA: IEEE Computer Society, 2010, pp. 368–377.
 
 ### Grus 2019
 

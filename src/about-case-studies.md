@@ -8,6 +8,52 @@ software engineers can weave
 through to a variety of goals (and which can include ethical goals). 
 This chapter offers specific examples of that process.
 
+We explore ethics since, More and more, AI tools  are making decisions that affect people’s
+lives in such high-stakes applications such as mortgage lending,
+hiring, and prison sentencing. Many high-stake applications such
+as finance, hiring, admissions, criminal justice use AI
+decision-making
+frequently[^ladd-1998],[^burrell-2016],[^corbett-2018],[^galindo-2000],[^yan-2013],[^chalfin-2016],[^ajit-2016],[^berk-2015],[^berk-2016].
+Unfortunately, some of  AI tools are  known to exhibit “group
+discrimination”; i.e. their decisions are inappropriately affected
+attributes like race, gender, age, etc:
+
+[^ladd-1998]:    [Ladd'98](/REFS#ladd-1998)
+[^burrell-2016]: [Burrell'16](/REFS#burrell-2016)
+[^corbett-2018]: [Corbett'18](/REFS#corbett-2018)
+[^galindo-2000]: [Galindo'00](/REFS#galindo-2000)
+[^yan-2013]:     [Yan'13](/REFS#yan-2013)
+[^chalfin-2016]: [Chalfin'16](/REFS#chalfin-2016)
+[^ajit-2016]:    [Ajit'16](/REFS#ajit-2016)
+[^berk-2015]:    [Berk'15](/REFS#berk-2015)
+[^berk-2016]:    [Berk'16](/REFS#berk-2016)
+
+
+- One older version of a [sentiment analyzer from Google](/REFS.md#Google-2017) gave negative (and wildly
+inappropriate) scores to sentences like 
+"I am a Jew" and "I am homosexual".
+- A popular photo tagging app assigned [animal category labels](/REFS.md#Google_Photo) to dark skinned people.
+- Recidivism assessment models predict who might commit crimes, in the future. Some such models used by the criminal justice system are more likely to
+[falsely label black defendants as future criminals](/REFS.md#Machine_Bias) (at twice the rate as white defendants).
+- Facial recognition software which predicts characteristics such as gender, age from images has been found to have a
+[much higher error rate](/REFS.md#skin-bias-2018) for dark-skinned women compared to light-skinned men
+- Amazon.com stopped using automated recruiting tools after finding [anti-women bias](/REFS.md#Amazon_Bias).
+
+
+
+We say that, to some degree, the ethical impact of AI tools can be controlled by the developers
+building that software. We stress "to some degree" since the best ethical intentions
+of any developer can be defeated by  malevolent forces, or even by just dumb luck.
+So it is wrong to say that if our guileless are followed that the result AI tool will always adhere to 
+socially-accepted ethical standards.
+
+But it also wrong to say that just because some ethical goals are not always reached, that we should not strive towards
+those goals.
+Developers will always try to adhere to ethical standards.
+Or, at the very least, they should monitor their AI tools and report unethical usage or consequences.
+
+## Technical Choices
+
 Our point will be that,
 in the 21st century, the wise software engineering
 knows how  different AI tools offer different services, and how some of those services
