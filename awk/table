@@ -4,7 +4,7 @@
 #--------- --------- --------- --------- --------- ---------
 BEGIN  {
   SKIPCOL = "\\?"
-  IGNORE  = SKIP
+  IGNORE  = SKIPCOL
   NUMCOL  = "\\$"
   SEP     = ","
 }
@@ -12,6 +12,8 @@ BEGIN { _demo("weather.csv") }
 function _demo(f,  i,j) { 
   Num(i)
   for(j=1;j<=100;j++) Num1(i,j)
+  oo(i,"num")
+
   print(i.mu)
   #file2table(i,f) 
 }
@@ -64,7 +66,7 @@ function Sym(i,c,v) {
   has(i,"cnt") 
 }
 function Sym1(i,c,v) {
-  if (v ~ SKIP) return v
+  if (v ~ IGNORE) return v
   i.n++
   tmp = ++i.cnt[v]
   if (tmp > i.most) {
@@ -76,11 +78,14 @@ function Sym1(i,c,v) {
 function Num(i,c,v) {
   Col(i)
   i.n  = i.mu = i.m2 = i.sd = 0
-  i.lo = 10^32; 
+  i.lo = 10^32 
   i.hi = -1*i.lo
 }
 function Num1(i,c,v,    d) {
-  if (v ~ SKIP) return v
+  print(10)
+  v+=0
+  if (v ~ IGNORE) return v
+  print(20)
   i.n++
   i.lo  = v < i.lo ? v : i.lo
   i.hi  = v > i.hi ? v : i.hi

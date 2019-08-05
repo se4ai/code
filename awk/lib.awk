@@ -22,3 +22,10 @@ function has( i,k,f) {
   split("",i,"")
   @f(a[k]) 
 }
+function oo(lst,p, pre) {
+  for(i in lst) 
+    if (isarray(lst[i]))
+      oo(lst[i],p,"|  " pre)
+    else
+      print pre p"["i"]=" lst[i]
+} 
