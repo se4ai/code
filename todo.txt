@@ -1,4 +1,8 @@
 # Code
+[Mathew'17]: like [Featyer'02], recongizing of a very small (12%) of the factors that mattered the most. all those factors
+were ranked so users could see what mas msot to elast improtant.  Here, the models being explored were some of the alrgers models yet 
+processed automatically in requirements engineering.
+
 
 ethis:why
 

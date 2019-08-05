@@ -103,13 +103,13 @@ sets of ethical concerns. Note that:
   are synonyms since they both reply on "fairness and "reliability and safely".
 
 
-|                | Accountable|Transparent|Fairness |Rely+Safe|Inclusive|Private+Secure|
+|                | Accountable|Transparent|Fairnessx |Rely+Safex|Inclusivex|Private+Secure|
 |Accountability  |  &#10004;  |           |         |         |         |              |
 |Transparency    |            |  &#10004; |         |         |         |              |
 |Well-being<br>+ aware of misuse||        | &#10004;| &#10004;|         |              |
 |Human-rights    |            |           | &#10004;|&#10004; |&#10004; |              |
 |Data agency     |            |           |         |         |&#10004; |   &#10004;   |
-|Effectiveness   |   &#10004; |           |         |&#10004; |         |   &#10004;   |
+|Effectivenessx   |   &#10004; |           |         |&#10004; |         |   &#10004;   |
 {: border="1px" align=center }
 
 The reader might dispute 
@@ -126,7 +126,7 @@ are wrong; but some are useful.
 
 In any case, what the above table does demonstrate is that:
 
-- Large organizations are now very concerned with ethics. 
+- Large organizations are now v:e REery concerned with ethics. 
 - When they talk about ethics, there is much overlap in what they say.
 - This is a pressing need to extend our current design thinking for AI tools. Hence, this book.
  
@@ -197,11 +197,35 @@ better or worse. Rather, our goal is to  map the trade-offs associated
 with  AI tool such that the best one can be selected from the next
 problem.
 
+### Fairness
+
+Machine learning software, by its nature, is always a  form  of  statistical  discrimination.   This  discrimination becomes objectionable when it places certain social groups  (e.g. those characterized by age, sex, gender, nationality) at  a  systematic  advantage or  Disadvantage
+
+There are various measures that can be applied to measure unfariness.
+The
+first step is to identify “protected attributes” (e.g. race, age,
+gender, etc). Next, we use all attributes (privileged and otherwise)
+to build a classifier.  Thirdly, we measure unfariness
+using measures like:
+
+- EOD: the delta of true positive rates in unprivileged and privileged groups;
+- AOD: the average delta in false positive rates and true positive rates between privileged and unprivileged groups.   
+
+After that, handling unfairness becomes a 
+hyperparameter optimization issue.
+ Recent result shows that hyperparameter  tuning can find
+fairer models (where “fair”  measured by EOD and AOD). The trick
+here is that such optimization must strive for fairness AND performance
+(precision, recall etc) since [experiments show](REFS#chak-2019) that optimizing
+for performance separately to fairness means that we can succeed
+on one and fail on the other.
+
 
 ### Inclusiveness
 
 AI tools that include humans in their reasoning process must do several  things:
 
+1. They must not unfairly discriminate against particular social groups (see above).
 1. The humans must be be able to understand  why an AI tool has made a conclusion.  
     - For this purpose, explanation algorithms are useful.
 2. Humans must be able to adjust that conclusion. 
@@ -372,44 +396,113 @@ better systems:
 
 This three points are an excellent demonstrator of the main point of this book: AI tools give
 software developers more choices in how  to implement a system. 
-Developers can use those chocides they can use to great benefit, including ethical benefits).
+Developers can use those choices they can use to great benefit, including ethical benefits).
 
-### Fairness
-
-  Machine learning software, by its nature, is always a  form  of  statistical  discrimination.   This  discrimination becomes objectionable when it places certain social groups  (e.g. those characteretized by age, sex, gender, nationality) at  a  systematic  advantage or  disadvantage
-
-s. How can we do this in a fair and defensible way, while still maintaining adequate performance? It turns out that algorithmic discrimination can be automatically recognized and repaired. The  first step is to identify “protected attributes” (e.g. race, age, gender, etc). Next, we use all attributes (privileged and otherwise) to build a classifier.  Thirdly, we measure discrimation using  IBM’s AI Fairness software suite(https://github.com/IBM/AIF360). For example,  EOD  is the delta of true positive rates in unprivileged & privileged groups and  AOD is the average delta in false positive rates and true positive rates between privileged and unprivileged groups.   Fourthly, we mitigate unfairness using hyperparameter optimization,. Hyperparameter optimizers explore a learner’s control parameters to find settings that produce models which better satisfy particular goals.  Recent result shows that such tuning can find fairer models (where “fair”  measured by EOD and AOD). The trick here is that such optimization must strive for fairness AND performance (precision, recall etc) since our experiments show that optimizing for performance separately to fairness means that we can succeed on one and fail on the other. 
-
-According to
-[Charaborty, 2019](REFS#chak-2019), fairness 
-
-### Privacy and Security
-
-privacy.centralized. target fr hackers. ditsibuted with transitions: dat tehft during transitions. why send alld ata
-prorotype generation.
 
 ### Reliability  and Safety
 
-Less on the columbia space shittle
-Certitication envelopes
+#### Reliability
 
-One an AI tools survives the commissioning process, it must be  monitored. Once again, as we stream
-across newly arrived data, it is useful to deploy incremental learners that can quickly react to new data.
+Formally, reliability  is the  probability of failure-free software operation for a specified period of 
+time in a specified environment.  Since  modern software is so complex, we cannot usually
+assign such a probability. Instead, a more pragmatic goal for "reliable software"
+is to decreases the odds that 
+it is  will do harm, in the future.
 
-- One useful tool for monitoring is an anomaly detector that can report when new data is far and away removed
-from the data seen so far.  Detecting such anomalies is important since we cannot trust an AI tool that encounters
-something far removed from its previous experience. 
-- One way to build an anomaly detector is to use RRP. As a side-effect of computing distance to each "_east,west_"
+Four tools for pragmatically assessing AI tool reliability are
+
+- _Understanding the goals of the system._ As mentioned above, one of results of
+  requirements engineering is most system stakeholders have multiple competing goals.
+  Hence, when we talk about "doing harm", we must also carefully define
+   "harm" for the perspective of the users. In practice, this requires some degree of
+  trade-off between competing humans goals (enter multi-goal optimization).
+- _Perturbation analysis_: In this approach,
+  we mess with some aspect of the software the check the impact
+   of that perturbation on the model. Note that, to some degree, the design of a system
+   can be mitigate for perturbation. For example, randomly reordering the inputs can
+   lead to certain clustering algorithms generating different clusters. [Agrawal et al.](REFS#agrawal-2018)
+   report that learning parameters found by hyperparamter optimization can reduce that problem.
+   For example, compare Table3 and Table8
+    (after hyperparamter optimziation) in  https://arxiv.org/pdf/1608.08176.pdf
+- _Certification envelopes_: In this approach, AI tools are  shipped with some data structure
+   that summarizes the data used to certify that system. If some new input arrives, and it is
+   outside of this certification envelope, then we know not to trust the conclusions of the AI. 
+       - Note
+   that for this to work, some anomaly detection algorithm must test if new inputs are outside
+   of the envelope.
+       - One way to build an anomaly detector is to use RRP. As a side-effect of computing distance to each "_east,west_"
   pair in any cluster, we can collect the mean and standard deviation of all the distances seen in that cluster.
   With that information, we can declare something to be anomalous if its distance is   
   [more than "_N_" standard deviations away from the mean](REFS#peters-2019).
-- Another way to build an anomaly detector is to continuing active learning (including SBMO) after the comissioning process.
+       - Another way to build an anomaly detector is to continuing active learning (including SBMO) after the comissioning process.
   Anomalies can be reported when the predictions from active learning/SMBO do not
   match the newly incoming data.
+- _Repair_ operators that can mitigate for poor behavior or the system leaving the certification envelope.
+       - Hierarchical clustering tools like RPP make repair somewhat easier since they divide the whole monitoring problem
+         into numerous smaller ones. In we colelct the anomalies seen in a subtree, and if the number
+         of anomalies exceeds some threshold, then we can relearn our models/subtree using the data
+         and anomalies in that sub-tree. Diana Gordon reports one application wherer this repair-in-subtrees
+         method can tens of thousands times fsater than soem global reset and relearn over all data.
+       - Another way to run repair operators is to never stop learning. If we keep running (e.g.) sequential
+         model-based optimization whenever new data arrives, then our models will always be changing in
+         response to new data. From a pragmatic perspective, this approach works best when the
+         model within SMBO can update itself incrementally, very quickly.
 
-    - via multi-goal reasoning (so you known how reliabilty you are satisfying the goals of different users of the ssytems),
-    - see [Sayyad'13](REFS#sayyad-2013)
-    - via certification envelope (see Peters13]
+
+Further to the last point, certification envelopes have two  major issues.
+Firstly, from a privacy perspective, it is problematic to share data least it reveals
+private information. For more on this point, see the next section.
+
+
+Secondly , from a systems perspective, it can be primitively expensive to pass around large
+  amounts of data with each AI tool. To address this problem, we suggest:
+
+- Learning _prototypes_;
+  i.e. rows of the data that are exemplars for many of their neighbors. Certification envelopes
+  comprising prototypes can be much smaller than those comprising all the data.
+To find  prototypes, run some clustering algorithm (e.g. RP) and the return only a random sample
+  of examples within each cluster.
+- Focus on anomalies. If data is passed from site to site, let each new site just 
+  [add in their data](REFS#peters-2015)  that has not been seen before; i.e. that is anomalous.
+
+
+#### Safety
+
+TBD
+
+### Privacy and Security
+
+
+#### Privacy
+To share data, while maintaining privacy, two important tricks are prototype section and mutation.
+Prototype section as discussed above. Piracy-based mutation must be done with care
+since, if otherwise, 
+[Grechanik et al.](REFS#grech-2010)
+and Brickell et al.](brickell-2008) warn that 
+ the more we obfuscate data (to maintain privacy), the worse
+the effectiveness of the models learned from that data.
+
+[Peters et al.](REFS:peters-2015) addresses this problem via supervised mutation methods.
+In that approach, after prototype selection, data is mutated by a random amount up to,
+but not more than the hyperspace boundary between classes.
+
+## Todo
+
+- privacy and sharing, cmompression (prootoype detection), streaming, sharing (transfer learning)
+- discretization to convert columns into bins
+- importantance ranking for bins 
+     - better bins better select for the target class
+- column pruning 
+     - to prune the dull columns
+- row purning (to prune rows without important bins)
+- clustering (to group the rows)
+- anomaly detection (to report when enw data is unlike what is already in the clsuter)
+- sharing via "keep the anaomalies" (only sharedata that extends an existing cache; i.e. only your anomalies)
+- privacy via row + column pruing, then mutation of the surivors up to, but not over the boudnary between this class and that
+
+
+privacy.centralized. target fr hackers. ditsibuted with transitions: dat tehft during transitions. why send alld ata
+prorotype generation.
 
 ### Transparency
 
@@ -424,118 +517,9 @@ Transparencey:
 - enabled by trasnparency and relaiblity abd safety
 
 
-### Well-being and Awareness of Misuse
-Well being & Awareness of Misue    
-- Fairness : 
-- Relaibility & safety: 
-- Also helped by transparency
-
-
-Human rights
-- enabled y Fairness
-- enabled by relaibir & Safey
-- enabled by inclusiveness
-   - a system is inclusiveness if it allows people toudenradnand change it see 
-   - see Hu'18 and anything that does human-in-the-loop reaasoning
-
-Data agency: 
-- inclusiveness
-- privacy and sharing
-
-Effectiveness
-- accountability (so you can see what is going on)
-- priavy and safety (so you can share what is going on, and when not to use)
-- reliabilty and safey
-- testability : need testing not tbe resource isntancesve (otherwise we are discoruaged to do it)
-     - optimziation
-     - prototype selection
-     - incremental learning
-       
-[Charaborty, 2019](REFS#chakrabory-2019).
-- Models are unfair when the eprformance ofa mdoel isvery differnt for social groups
-  with tranditioanlly different degrees of  privleidge (e.g. groups identified by race, gender, sex, age) 
-
-
-EFFEVECTIVENES, ACCOUNTABILITY, TRANSPARENCY Milton, Gay: Contrast set learning
-
-- Assess ranges via their 
-- repair
-
-SECURITY (while sharing)- Papakroni (master, 2019)
-- prototype generation.
-- Inclusiveness
-
-PRIVACY & SECURITY (while sharing): Peters: 
-- privacy and sharing, cmompression (prootoype detection), streaming, sharing (transfer learning)
-- discretization to convert columns into bins
-- importantance ranking for bins 
-     - better bins better select for the target class
-- column pruning 
-     - to prune the dull columns
-- row purning (to prune rows without important bins)
-- clustering (to group the rows)
-- anomaly detection (to report when enw data is unlike what is already in the clsuter)
-- sharing via "keep the anaomalies" (only sharedata that extends an existing cache; i.e. only your anomalies)
-- privacy via row + column pruing, then mutation of the surivors up to, but not over the boudnary between this class and that
-
-
-EFFECTIVENESS Krall: 
-- active learning, optimization, compression (prototype detection)
-- optimziation via recurisve bi-clsutering
-     - repeat for N generations
-         - find two distant points, rank them 
-         -   if cluster small: mutate all data towards top ranked point
-         - else,
-              split data by distance to those points, cull the worst half, recurse
-
-[Feather'02]:
-requireemetns ptimziaiton via rulebased programming. instead of demanding action on 90 items, the rule-based methods seen in theese studies
-found one-thrid of attributes that ost materredamd proposed controlelrs just for those.
-- accoring to aharmon, this was one of the first example sof automated multi-obejctive reasoning  in requiremetns engineering.
-
-[Menzies'07]: kike Featuer'02. but this time, for general mdoels of SE (not some very domain-specific mdoels for NASA).
-
-[Gay'12]: kYES2: liek Feather'02 but now much faser and applied to very complex NASA models (controlling sacrecreaft re-entry).
-
-[Mathew'17]: like [Featyer'02], recongizing of a very small (12%) of the factors that mattered the most. all those factors
-were ranked so users could see what mas msot to elast improtant.  Here, the models being explored were some of the alrgers models yet 
-processed automatically in requirements engineering.
-
-[Sayyad'13](REFS#sayyad-2013)
--  mutli-goal reasoning and  optimization
-- support exploratin of trade-off between miltiple competing goals
-
-EFFECTIVENESS Chen (Ph.D. 2019) 
-
-INCLUSION, EFFECTIVENESS Nair (Ph.D. 2019): 
-- sequantial model-based optimizaion, icnremntal reair, streaming
-- Do all the above using  very small samples of the data 
-- Faster reasoning, with a place for humans to peek in and guide the reasoing 
-
-EFFECTIVENESS Fu (ph.D. 2018): Effectiveness
-- Hyperparamter optimization
-
-
+Repair: reliabiltiy planning drihan
 EFFECTIVENESS, RELIABILTIY, Krishna (Ph.D. 2019?): 
 - planning. repair, sharing (transfer learning)
 
-TRSANSPARECENY, Chen (Masters, 2018): 
-- explanation, 
-- FFTs
-
-EFFECTIVENESS Amrit (Ph.D. 2019): 
-- very fast hyperpamater optimziation
-- jsut a few dozens samples
-
-EFFECTIVENESS Yu (Ph.D. 2019?): Inclusiveness
-- active learning, incrementa repair, streaming
-- data labelling via very small samples
-- infer laeblling trends (so you know when to stop)
-- labelling error mitation (by sometomes relabelling old examples
-
-FAIRNESS Chakraborty (Ph.D. 2022?)
-- hyperparamter optimzation and fairness
-
-## Notes
 
 
