@@ -1,4 +1,0 @@
-#!/bin/bash
-
-m4 $1 > /tmp/$$.awk 
-gawk -f /tmp/$$.awk
