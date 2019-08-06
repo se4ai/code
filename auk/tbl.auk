@@ -4,11 +4,13 @@
 
 @include "lauk"
 @include "col"
+@include "the"
 
 BEGIN  {
   SKIPCOL = "\\?"
-  NUMCOL = "[<>\\$]"
-  GOALCOL= "[<>!]"
+  NUMCOL  = "[<>\\$]"
+  GOALCOL = "[<>!]"
+  LESS    = "<"
 }
 #------------------------------------------------------------
 function Row(i,t,lst,     c) {
@@ -18,6 +20,25 @@ function Row(i,t,lst,     c) {
   for(c in t.cols) 
     i.cells[c] = Col1(t.cols[c],  lst[c]) 
 }
+function RowDoms(i,    a,t,n) {
+  n=THE.row.doms
+  while(--n>=0) 
+    i.dom += RowDominates(i,a[anyi(a)],a,t)
+  return i.dom
+}
+function RowDominations(i,j,t,   a,b,c,s1,s2,n) {
+   n = length(t.my.c)
+   for(c in t.my.w) {
+     a= i.cells[c]
+     b= j.cells[c]
+     a= NumNorm(t.cols[c],a)
+     b= NumNorm(t.cols[c],b)
+     s1 -= 10^(t.my.w[c] * (a-b)/n)
+     s2 -= 10^(t.my.w[c] * (b-a)/n)
+   }
+  return s1/n < s2/n
+}
+  
 #------------------------------------------------------------
 function Tbl(i) { 
   Object(i)
@@ -35,8 +56,10 @@ function Tbl1(i,r,lst,    c) {
 }
 function TblCols(i,c,v) {
   if (v ~ CLASSCOL) i.my.class = c
-  v ~ GOALCOL ? i.my.goals[c]: i.my.xs[c]
   v ~ NUMCOL  ? i.my.nums[c] : i.my.syms[c]
+  v ~ GOALCOL ? i.my.goals[c]: i.my.xs[c]
+  if (v ~ />/) i.my.w[c] =  1
+  if (v ~ /</) i.my.w[c] = -1
   has2(i.cols,c,
        v ~NUMCOL ? "Num" : "Sym",
        c,v) 

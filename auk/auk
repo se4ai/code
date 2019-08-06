@@ -25,10 +25,9 @@ preps() {
 }
 mkdir -p $Lib $Bin
 
-if [ "$1" == "-zap" ]; then
+if [ "$1" == "0" ]; then
   rm -rf $Lib/* $Bin/* $Doc/*
   shift
-  exit 0
 fi
 
 chmod +x *.auk

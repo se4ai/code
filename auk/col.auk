@@ -52,3 +52,15 @@ function Num1(i,v,    d) {
   i.sd  = i.n < 2 ? 0 : (i.m2/(i.n - 1))^0.5
   return v
 }
+function NumLess(i,v, d) {
+  if (i.n < 2) return v
+  i.n  -= 1
+  d     = v - i.mu
+  i.mu -= d/i.n
+  i.m2 -= d*(v - i.mu)
+  i.sd  = i.n < 2 ? 0 : (i.m2/(i.n - 1))^0.5
+  return v
+}
+function NumNorm(i,x) {
+  return (x - i.lo) / (i.hi - i.lo + 10^-32)
+}

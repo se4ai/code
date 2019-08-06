@@ -7,8 +7,14 @@
 
 BEGIN { tests("colok","_weather") }
 
-function _weather(f,  n,i) { 
+function _weather(f,  n,i, sd,mu) { 
   Num(n,"c","v")
-  for(i=1;i<=100;i++) Num1(n,i)
-  oo(n,"t")
+  for(i=1;i<=100;i+= 1) {
+    Num1(n,i)
+    if((i%10)==0) { sd[i]=n.sd; mu[i]=n.mu }
+  }
+  for(i=100;i>=1; i-= 1) {
+    if((i%10)==0) print i, n.mu/mu[i], n.sd/sd[i] 
+    NumLess(n,i)
+  }
 }
