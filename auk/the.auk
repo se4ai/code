@@ -5,7 +5,7 @@
 @include "lauk"
 
 function Config(i) {
-   i.row.doms=100
+   i.row.doms=64
 }
 
 BEGIN {Config(THE)}

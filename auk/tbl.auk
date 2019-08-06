@@ -20,22 +20,27 @@ function Row(i,t,lst,     c) {
   for(c in t.cols) 
     i.cells[c] = Col1(t.cols[c],  lst[c]) 
 }
-function RowDoms(i,a,  t,m,n) {
+function RowDoms(i,all,t,  m,n) {
   m = n = THE.row.doms
-  while(n--) 
-    i.dom += RowDom(i, a[anyi(a)], t) / m
+  while(n--)  { 
+    i.dom += RowDom(i, all[any(all)], t) / m
+  }
   return i.dom
 }
-function RowDom(i,j,t,   a,b,c,s1,s2,n) {
+function RowDom(i,j,t,   a,b,c,w,s1,s2,n) {
   n = length(t.my.w)
   for(c in t.my.w) {
-    a   = NumNorm( t.cols[c], i.cells[c] )
-    b   = NumNorm( t.cols[c], j.cells[c] )
+    w   = t.my.w[c] 
+    a   = i.cells[c] 
+    b   = j.cells[c] 
+    a   = NumNorm( t.cols[c], a )
+    b   = NumNorm( t.cols[c], b )
     s1 -= 10^( t.my.w[c] * (a-b)/n )
     s2 -= 10^( t.my.w[c] * (b-a)/n )
   }
   return s1/n < s2/n
 }
+
   
 #------------------------------------------------------------
 function Tbl(i) { 

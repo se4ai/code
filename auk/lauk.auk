@@ -24,10 +24,12 @@ function lines(i,update,f,sep,  r,line,lst,com) {
   }
   close(f)
 } 
-function flat(x,  show, s,i,sep) {
+function flat(x,  cols, s,i,sep) {
   ooSortOrder(x)
-  for(i in x) {s= s sep x[i]; sep=", "}
-  if (show) print s
+  if (isarray(cols)) 
+    for(i in cols) {s= s sep x[i]; sep="\t"}
+  else
+    for(i in x) {s= s sep x[i]; sep="\t"}
   return s
 }
 function oo(x,p,pre, i,txt) {
@@ -38,7 +40,7 @@ function oo(x,p,pre, i,txt) {
       print(txt i"" )
       oo(x[i],"","|  " pre)
     } else
-      print(txt i (x[i]==""?"": "(" x[i] ")"))
+      print(txt i (x[i]==""?"": ": " x[i]))
 }}
 
 function ooSortOrder(x, i) {
@@ -47,8 +49,19 @@ function ooSortOrder(x, i) {
       typeof(i+1)=="number" ? "@ind_num_asc" : "@ind_str_asc"
 }
 # ---------------------------------
-function anyi(x)  { return int(rand()*length(x)+0.5) }
+function any(x)  { return 1+int(rand()*length(x)) }
 
+function ksort(lst,k) {
+  KSORT=k
+  asort(lst,lst,"kcompare")
+}
+function kcompare(i1,v1,i2,v2,  l,r) {
+  l = v1[KSORT]
+  r = v2[KSORT]
+  if (l < r) return -1
+  if (l == r) return 0
+  return 1
+}  
 # ---------------------------------
 # testing
 function rogues(    s) {
