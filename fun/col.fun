@@ -1,11 +1,12 @@
-#!/usr/bin/env ./auk
+#!/usr/bin/env ./fun
 # vim: nospell filetype=awk ts=2 sw=2 sts=2  et :
 
-@include "lauk"
+@include "funny"
 
 BEGIN {IGNORE="\\?"}
 
-#------------------------------------------------------------
+
+------------------------------------------------------------
 function Col(i,c,v) { 
   Object(i)   
   i.n=0
@@ -17,7 +18,7 @@ function Col1(i,v,   add) {
   add = i.add
   return @add(i,v)
 } 
-#------------------------------------------------------------
+------------------------------------------------------------
 function Sym(i,c,v) { 
   Col(i,c,v)
   i.mode=""
@@ -33,7 +34,8 @@ function Sym1(i,v,  tmp) {
     i.mode = v }
   return v
 }
-#------------------------------------------------------------
+------------------------------------------------------------
+## Num
 function Num(i,c,v) {
   Col(i,c,v)
   i.n  = i.mu = i.m2 = i.sd = 0
