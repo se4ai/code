@@ -7,13 +7,13 @@
 BEGIN{  DOT=sprintf("%c",46)}
 
 function trim(s) {
-  gsub(/^[ \t]*/,"",s)
-  gsub(/[ \t]*$/,"",s)
+  gsub(/^[ \t\r]*/,"",s)
+  gsub(/[ \t\r]*$/,"",s)
   return s
 }
 function lines(i,update,f,sep,  r,line,lst,com) {
-  f = f ? f : "/dev/stdin"
-  sep=sep ? sep : "[ \t]*,[ \t]*"
+  f   = f ? f : "/dev/stdin"
+  sep = sep ? sep : "[ \t]*,[ \t]*"
   com = "#"DOT"*"
   while((getline line < f) > 0) {
     sub(com,"",line)

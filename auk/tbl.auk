@@ -20,22 +20,20 @@ function Row(i,t,lst,     c) {
   for(c in t.cols) 
     i.cells[c] = Col1(t.cols[c],  lst[c]) 
 }
-function RowDoms(i,    a,t,n) {
-  n=THE.row.doms
-  while(--n>=0) 
-    i.dom += RowDominates(i,a[anyi(a)],a,t)
+function RowDoms(i,a,  t,m,n) {
+  m = n = THE.row.doms
+  while(n--) 
+    i.dom += RowDom(i, a[anyi(a)], t) / m
   return i.dom
 }
-function RowDominations(i,j,t,   a,b,c,s1,s2,n) {
-   n = length(t.my.c)
-   for(c in t.my.w) {
-     a= i.cells[c]
-     b= j.cells[c]
-     a= NumNorm(t.cols[c],a)
-     b= NumNorm(t.cols[c],b)
-     s1 -= 10^(t.my.w[c] * (a-b)/n)
-     s2 -= 10^(t.my.w[c] * (b-a)/n)
-   }
+function RowDom(i,j,t,   a,b,c,s1,s2,n) {
+  n = length(t.my.w)
+  for(c in t.my.w) {
+    a   = NumNorm( t.cols[c], i.cells[c] )
+    b   = NumNorm( t.cols[c], j.cells[c] )
+    s1 -= 10^( t.my.w[c] * (a-b)/n )
+    s2 -= 10^( t.my.w[c] * (b-a)/n )
+  }
   return s1/n < s2/n
 }
   
