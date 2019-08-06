@@ -20,21 +20,16 @@ function Row(i,t,lst,     c) {
   for(c in t.cols) 
     i.cells[c] = Col1(t.cols[c],  lst[c]) 
 }
-function RowDoms(i,all,t,  m,n) {
-  m = n = THE.row.doms
-  while(n--)  { 
-    i.dom += RowDom(i, all[any(all)], t) / m
-  }
-  return i.dom
+function RowDoms(i,all,t,  j) {
+  i.dom = 0
+  for(j=1; j<=THE.row.doms; j++)
+    i.dom += RowDom(i, all[any(all)], t) / THE.row.doms
 }
-function RowDom(i,j,t,   a,b,c,w,s1,s2,n) {
+function RowDom(i,j,t,   a,b,c,s1,s2,n) {
   n = length(t.my.w)
   for(c in t.my.w) {
-    w   = t.my.w[c] 
-    a   = i.cells[c] 
-    b   = j.cells[c] 
-    a   = NumNorm( t.cols[c], a )
-    b   = NumNorm( t.cols[c], b )
+    a   = NumNorm( t.cols[c], i.cells[c] )
+    b   = NumNorm( t.cols[c], j.cells[c] )
     s1 -= 10^( t.my.w[c] * (a-b)/n )
     s2 -= 10^( t.my.w[c] * (b-a)/n )
   }

@@ -12,7 +12,7 @@ function _weather(f,  t,com) {
   lines(t,"Tbl1","weather" DOT "csv")
   oo(t,"t")
 }
-function _auto(f,  t,r,n) { 
+function _auto(f,  t,r,n,m) { 
   srand(1)
   Tbl(t)
   lines(t, "Tbl1", "auto" DOT "csv")
@@ -20,9 +20,10 @@ function _auto(f,  t,r,n) {
     RowDoms(t.rows[r], t.rows, t)
   ksort(t.rows,"dom")
   n = length(t.rows)
-  for(r=1;r<=5;r++)
-    print(t.rows[r].oid "\t" flat(t.rows[r].cells, t.my.goals)) 
+  m=5
+  for(r=1;r<=m;r++)
+    print(t.rows[r].oid "\t" t.rows[r].dom "\t" flat(t.rows[r].cells, t.my.goals)) 
   print ""
-  for(r=n-5;r<=n;r++)
-    print(t.rows[r].oid "\t" flat(t.rows[r].cells, t.my.goals)) 
+  for(r=n-m;r<=n;r++)
+    print(t.rows[r].oid "\t" t.rows[r].dom "\t" flat(t.rows[r].cells, t.my.goals)) 
 }
